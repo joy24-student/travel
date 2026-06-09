@@ -1,0 +1,241 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Invite &amp; Earn</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Google Fonts: Roboto for clean mobile feel -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style data-purpose="custom-layout">
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #f5f9ff;
+      }
+      .hero-gradient {
+        background: linear-gradient(180deg, #eef5ff 0%, #ffffff 100%);
+      }
+      .text-primary-blue {
+        color: #0066e0;
+      }
+      .bg-primary-blue {
+        background-color: #0066e0;
+      }
+      .border-primary-blue {
+        border-color: #0066e0;
+      }
+      /* Stat box shadow */
+      .stat-card {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen text-[#222222]">
+    <!-- BEGIN: Header -->
+    <header
+      class="flex items-center justify-between px-4 py-4 bg-white sticky top-0 z-50"
+    >
+      <div class="flex items-center gap-4">
+        <!-- Back Arrow -->
+        <button data-purpose="back-button">
+          <svg
+            class="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M15 19l-7-7 7-7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+        </button>
+        <h1 class="text-xl font-semibold">Invite &amp; earn</h1>
+      </div>
+      <!-- Share Icon -->
+      <button data-purpose="share-header-button">
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewbox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+      </button>
+    </header>
+    <!-- END: Header -->
+    <!-- BEGIN: Hero Section -->
+    <main class="flex-grow hero-gradient">
+      <div class="flex flex-col items-center px-8 pt-10 pb-6 text-center">
+        <h2 class="text-3xl font-black text-[#1a2b48] leading-tight">
+          Refer friends.<br />Earn up to $100.
+        </h2>
+        <!-- T&C Link -->
+        <div
+          class="flex items-center justify-center mt-2 gap-1 text-gray-400 text-sm"
+        >
+          <svg
+            class="h-4 w-4"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          <span class="underline decoration-dotted">T&amp;C</span>
+        </div>
+        <!-- Main Illustration -->
+        <div class="mt-6 w-full max-w-xs">
+          <img
+            alt="Referral Illustration"
+            class="w-full h-auto object-contain"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrBJFDt4jUzeFGrtYJIF7_nQK10uGle4UqOIqBHvihbOGKhbJytlLaJmO0XAmVRH1qHBzC2SJ2XnYTivHX0oQEqDjgcnxfk9H4boVKCbm-kTaIPQBrDhT5lrZqZ_1ct3vUQtDk1Arm0XAADdBvtzcURF8PqcJWYUL6lIdELLPzUEclM2FNNwlGeLWKTp4Khop5Qk-ZT2tUnMEs7rTwPSpP8_rOaH6C8syGPRxX2WNPiWfugchgUQ9d-fifHk_Hf-FcrZqNU3XuIYc"
+          />
+        </div>
+        <!-- Promo Text -->
+        <div class="mt-8">
+          <p class="text-[15px] text-[#444444] font-medium">
+            Give your friend up to 20% off their first booking.
+          </p>
+          <p class="text-[15px] text-[#444444] font-medium">
+            You earn $10 each time they book.
+          </p>
+        </div>
+        <!-- CTA Action Buttons -->
+        <div class="w-full mt-10 space-y-4">
+          <button
+            class="w-full bg-primary-blue text-white py-4 rounded-full font-bold text-lg shadow-md active:scale-[0.98] transition-transform"
+            data-purpose="invite-friends-btn"
+          >
+            Invite friends
+          </button>
+          <button
+            class="w-full bg-white text-primary-blue border border-primary-blue py-4 rounded-full font-bold text-lg shadow-sm active:scale-[0.98] transition-transform"
+            data-purpose="copy-code-btn"
+          >
+            Copy Refer Code
+          </button>
+        </div>
+        <!-- Social Share Row -->
+        <div class="mt-8 w-full flex flex-col items-start px-2">
+          <div class="flex items-center gap-4 w-full">
+            <span class="text-sm text-gray-400 whitespace-nowrap"
+              >Share to</span
+            >
+            <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+              <!-- Social Icons (Mocked with colors) -->
+              <div
+                class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs"
+              >
+                W
+              </div>
+              <div
+                class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 flex items-center justify-center text-white text-xs"
+              >
+                I
+              </div>
+              <div
+                class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs"
+              >
+                F
+              </div>
+              <div
+                class="w-8 h-8 rounded-full bg-sky-500 flex items-center justify-center text-white text-xs"
+              >
+                T
+              </div>
+              <div
+                class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs"
+              >
+                M
+              </div>
+            </div>
+            <!-- Float Right Badge Mockup -->
+            <div class="ml-auto">
+              <div
+                class="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shadow-sm"
+              >
+                <div
+                  class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center"
+                >
+                  <span class="text-[8px] text-blue-600 font-bold">VIP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- END: Hero Section -->
+    <!-- BEGIN: Stats Section -->
+    <section
+      class="bg-white rounded-t-3xl mt-4 px-6 pt-8 pb-12 stat-card"
+      data-purpose="invitation-stats"
+    >
+      <h3 class="text-lg font-bold text-center text-[#1a2b48] mb-8">
+        Your invitations
+      </h3>
+      <div class="flex justify-between items-start">
+        <!-- In progress -->
+        <div class="flex flex-col items-center flex-1">
+          <span class="text-xl font-black mb-1">0</span>
+          <span class="text-sm text-gray-500">In progress</span>
+        </div>
+        <!-- Vertical Divider -->
+        <div class="h-10 w-[1px] bg-gray-100 self-center"></div>
+        <!-- Completed -->
+        <div class="flex flex-col items-center flex-1">
+          <span class="text-xl font-black mb-1">0</span>
+          <span class="text-sm text-gray-500">Completed</span>
+        </div>
+        <!-- Vertical Divider -->
+        <div class="h-10 w-[1px] bg-gray-100 self-center"></div>
+        <!-- Total earned -->
+        <div class="flex flex-col items-center flex-1">
+          <div class="flex items-center gap-1 mb-1">
+            <div
+              class="w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+            >
+              T
+            </div>
+            <span class="text-xl font-black">0 ($0)</span>
+          </div>
+          <span class="text-sm text-gray-500">Total earned</span>
+        </div>
+      </div>
+      <!-- Bottom line -->
+      <div class="mt-12 w-full h-[1px] bg-gray-100"></div>
+    </section>
+    <!-- END: Stats Section -->
+    <!-- BEGIN: Navigation Bar (Bottom) -->
+    <nav
+      class="h-14 bg-white border-t border-gray-200 flex items-center justify-center gap-12 px-10"
+    >
+      <div class="w-6 h-6 border-2 border-gray-400 rotate-45"></div>
+      <div class="w-5 h-5 rounded-full border-2 border-gray-400"></div>
+      <div class="w-5 h-5 rounded-sm border-2 border-gray-400"></div>
+    </nav>
+    <!-- END: Navigation Bar -->
+  </body>
+</html>

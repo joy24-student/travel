@@ -1,0 +1,483 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Trip.com Recommended Tours</title>
+    <!-- Tailwind CSS v3 CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style data-purpose="custom-layout">
+      /* Hide scrollbar for horizontal scrolling containers */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* Specific styling for the tour card image overlay */
+      .image-badge {
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-900 font-sans">
+    <!-- BEGIN: NavigationHeader -->
+    <header
+      class="bg-white sticky top-0 z-50 px-4 py-3 flex items-center justify-between border-b border-gray-100"
+    >
+      <div class="flex items-center gap-4">
+        <!-- Back Arrow -->
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewbox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+        <h1 class="text-xl font-bold">Private Tours</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <!-- More Options -->
+        <svg
+          class="h-6 w-6"
+          fill="currentColor"
+          viewbox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="5" cy="12" r="2"></circle>
+          <circle cx="12" cy="12" r="2"></circle>
+          <circle cx="19" cy="12" r="2"></circle>
+        </svg>
+      </div>
+    </header>
+    <!-- END: NavigationHeader -->
+    <!-- BEGIN: FiltersSection -->
+    <section class="bg-white py-2" data-purpose="filters">
+      <!-- Main Filters Row -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar px-4 mb-2">
+        <button
+          class="flex items-center gap-1 border border-gray-300 rounded-full px-3 py-1 text-sm whitespace-nowrap"
+        >
+          Sort by
+          <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20">
+            <path
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            ></path>
+          </svg>
+        </button>
+        <button
+          class="flex items-center gap-1 border border-gray-300 rounded-full px-3 py-1 text-sm whitespace-nowrap"
+        >
+          Filter
+          <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20">
+            <path
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            ></path>
+          </svg>
+        </button>
+        <button
+          class="flex items-center gap-1 border border-gray-300 rounded-full px-3 py-1 text-sm whitespace-nowrap"
+        >
+          Duration/dates
+          <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20">
+            <path
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            ></path>
+          </svg>
+        </button>
+        <button
+          class="flex items-center gap-1 border border-gray-300 rounded-full px-3 py-1 text-sm whitespace-nowrap"
+        >
+          Budget
+          <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20">
+            <path
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+      <!-- Sub-Filters Row -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar px-4 py-1">
+        <button
+          class="bg-gray-100 rounded-md px-3 py-1 text-xs whitespace-nowrap"
+        >
+          Incl. international transport
+        </button>
+        <button
+          class="bg-gray-100 rounded-md px-3 py-1 text-xs whitespace-nowrap flex items-center gap-1"
+        >
+          Departure city
+          <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20">
+            <path
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            ></path>
+          </svg>
+        </button>
+        <button
+          class="bg-gray-100 rounded-md px-3 py-1 text-xs whitespace-nowrap"
+        >
+          Service
+        </button>
+      </div>
+    </section>
+    <!-- END: FiltersSection -->
+    <!-- BEGIN: MainContent -->
+    <main class="px-4 py-4" data-purpose="tour-results">
+      <h2 class="text-xl font-bold mb-4">Recommended Tours</h2>
+      <!-- BEGIN: TourCard1 -->
+      <div class="flex gap-3 mb-6" data-purpose="tour-card">
+        <div class="relative w-32 h-44 flex-shrink-0">
+          <img
+            alt="Hong Kong Night View"
+            class="w-full h-full object-cover rounded-lg"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtDVekIcLmtgCV-sfgIV-cZBtZJuRPRNAWgmgdWUcuoh_XbdvdDYOeEbi2AECOCmmBnWYmB9DoCeB-TCyTHxDwg0j2QJNvjBD98GYAvlf5qUqRCqWJPv0lRgcFzCyp1DtInvqCcelXiukqEg63AwPfke3bFyzFZj7-A7ftnVjZeW_u8WiuwK1eb3HioZLyW_Q2JZZGMD_epEPj3Y4v9gAInON92AmoVOfY8yfHKQ-uXsMxMugTR7ljoJ7jbyH3Q5Ez9xpj8dDOIVk"
+          />
+          <div
+            class="absolute bottom-2 left-2 text-white text-[10px] px-1 rounded image-badge"
+          >
+            Private Tours
+          </div>
+        </div>
+        <div class="flex-grow">
+          <div class="flex items-center gap-1 mb-1">
+            <span
+              class="bg-blue-600 text-white text-[10px] font-bold px-1 rounded flex items-center gap-0.5"
+            >
+              4
+              <svg class="w-2 h-2 fill-current" viewbox="0 0 20 20">
+                <path
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                ></path>
+              </svg>
+            </span>
+            <h3 class="font-bold text-[15px] leading-tight line-clamp-2">
+              3D2N•Hong Kong • Explore a Different Side of th...
+            </h3>
+          </div>
+          <div class="text-xs text-gray-600 space-y-1 mt-1">
+            <div class="flex items-center gap-1">
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              English
+            </div>
+            <div class="flex items-start gap-1">
+              <svg
+                class="w-3 h-3 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              <span class="line-clamp-1"
+                >Airport/station pick-up &amp; drop-of...</span
+              >
+            </div>
+            <div class="flex items-center gap-1">
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+                <path
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              Depart from Hong Kong
+            </div>
+            <div class="text-[#b18a6d] font-medium text-[11px]">
+              Departure guaranteed
+            </div>
+          </div>
+          <div class="mt-2 text-right">
+            <div class="text-xs text-gray-400">
+              From <span class="text-blue-600 text-lg font-bold">$359</span>
+            </div>
+            <div class="text-[10px] text-gray-400 mt-[-2px]">
+              (incl. taxes &amp; fees)
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END: TourCard1 -->
+      <!-- BEGIN: TourCard2 -->
+      <div class="flex gap-3 mb-6" data-purpose="tour-card">
+        <div class="relative w-32 h-44 flex-shrink-0">
+          <img
+            alt="Hong Kong Disneyland"
+            class="w-full h-full object-cover rounded-lg"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuQbYuSWUVodGA-DHK_hOPbDlIVSSOblHCn6ZYOZL6GEcjh2YOaifEJkpLmJuju_wy-2wCNWHdVGODR98ZrOW1hVN6E6Zzd-nAkkLr7gw4HNk5OrG0NkfXqQbZlbue4yyy46u4SW4-aucpoZvfCIHcNMb4BGPmeQPUXF3xi8wfqd5-X0oiZbbC9k93tL6g_53mwlLxgKLeDmPmoVn0W3Al_qa1sfpAHYwDAkysGQsXbSWwv_kd3JDfdO4EYA8VRmO0XDVFULYLHdk"
+          />
+          <div
+            class="absolute bottom-2 left-2 text-white text-[10px] px-1 rounded image-badge"
+          >
+            Private Tours
+          </div>
+        </div>
+        <div class="flex-grow">
+          <div class="flex items-center gap-1 mb-1">
+            <span
+              class="bg-blue-600 text-white text-[10px] font-bold px-1 rounded flex items-center gap-0.5"
+            >
+              4
+              <svg class="w-2 h-2 fill-current" viewbox="0 0 20 20">
+                <path
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                ></path>
+              </svg>
+            </span>
+            <h3 class="font-bold text-[15px] leading-tight line-clamp-2">
+              2D1N•Hong Kong: Hong Kong Disneyland + Includes 1...
+            </h3>
+          </div>
+          <div class="text-xs text-gray-600 space-y-1 mt-1">
+            <div class="flex items-center gap-1">
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              English
+            </div>
+            <div class="flex items-start gap-1">
+              <svg
+                class="w-3 h-3 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              <span class="line-clamp-1"
+                >Airport/station pick-up &amp; drop-of...</span
+              >
+            </div>
+            <div class="flex items-center gap-1">
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+                <path
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              Depart from Hong Kong
+            </div>
+            <div class="text-[#b18a6d] font-medium text-[11px]">
+              Departure guaranteed
+            </div>
+          </div>
+          <div class="mt-1 flex flex-col items-end">
+            <div class="flex items-center gap-1">
+              <span
+                class="bg-pink-50 text-pink-500 text-[10px] px-1 py-0.5 rounded"
+                >Limited-time sale</span
+              >
+              <span
+                class="bg-[#eb325a] text-white text-[10px] px-1 py-0.5 rounded flex items-center"
+              >
+                $16 off
+                <svg
+                  class="w-2 h-2 ml-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewbox="0 0 24 24"
+                >
+                  <path
+                    d="M9 5l7 7-7 7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  ></path>
+                </svg>
+              </span>
+            </div>
+            <div class="mt-1 text-right">
+              <div class="text-xs text-gray-400">
+                From <span class="text-blue-600 text-lg font-bold">$152</span>
+              </div>
+              <div class="text-[10px] text-gray-400 mt-[-2px]">
+                (incl. taxes &amp; fees)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END: TourCard2 -->
+      <!-- BEGIN: TourCard3 -->
+      <div class="flex gap-3 mb-6" data-purpose="tour-card">
+        <div class="relative w-32 h-44 flex-shrink-0">
+          <img
+            alt="Hong Kong Skyline Day"
+            class="w-full h-full object-cover rounded-lg"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3Kgr6FhKoRL-8egdy9K2EuFJItmicnpapSAFb3EsVfaS5LmhrNWI08U8mpaETyzorNiWo14y7u3X1FDLUgjn-25OCb5pn65WTPahL_T9wmy78IP0AsGBHy0XmMM4ZSWSPhyUpqxxXshJynjPJDwKCvZm9ruiLHfb9YCgAzHKnOzjB5Tlf7qyAIRC4nRhzCKz9-_qHEw2xgr8d25QAwpwRwjWCmwKYqc1SYvSdv0dsb4WruWCXPvgWzM9XSwT0dkSnxB62aTaZTXc"
+          />
+          <div
+            class="absolute bottom-2 left-2 text-white text-[10px] px-1 rounded image-badge"
+          >
+            Private Tours
+          </div>
+        </div>
+        <div class="flex-grow">
+          <div class="flex items-center gap-1 mb-1">
+            <span
+              class="bg-blue-600 text-white text-[10px] font-bold px-1 rounded flex items-center gap-0.5"
+            >
+              4
+              <svg class="w-2 h-2 fill-current" viewbox="0 0 20 20">
+                <path
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                ></path>
+              </svg>
+            </span>
+            <h3 class="font-bold text-[15px] leading-tight line-clamp-2">
+              2D1N•Special Tour: Explore Hong Kong in One Da...
+            </h3>
+          </div>
+          <div class="text-xs text-gray-600 space-y-1 mt-1">
+            <div class="flex items-center gap-1">
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              English
+            </div>
+            <div class="flex items-start gap-1">
+              <svg
+                class="w-3 h-3 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              <span class="line-clamp-1"
+                >Airport/station pick-up &amp; drop-of...</span
+              >
+            </div>
+            <div class="flex items-center gap-1">
+              <svg
+                class="w-3 h-3"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+                <path
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                ></path>
+              </svg>
+              Depart from Hong Kong
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END: TourCard3 -->
+    </main>
+    <!-- END: MainContent -->
+    <!-- BEGIN: BottomNav -->
+    <footer
+      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-8 py-2 flex justify-between items-center h-14"
+    >
+      <div class="flex flex-col items-center text-gray-400">
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewbox="0 0 24 24"
+        >
+          <path
+            d="M15 19l-7-7 7-7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+      </div>
+      <div class="w-4 h-4 rounded-full border-2 border-gray-400"></div>
+      <div class="w-4 h-4 rounded-sm border-2 border-gray-400"></div>
+    </footer>
+    <!-- END: BottomNav -->
+  </body>
+</html>

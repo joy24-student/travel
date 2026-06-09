@@ -1,0 +1,553 @@
+<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+      name="viewport"
+    />
+    <title>LuxeStay | Hotels &amp; Homes</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=Work+Sans:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-surface-variant": "#454652",
+              "primary-container": "#1a237e",
+              "primary-fixed": "#e0e0ff",
+              "on-primary-fixed-variant": "#343d96",
+              tertiary: "#675f32",
+              "on-secondary-container": "#745c00",
+              "outline-variant": "#c6c5d4",
+              "on-error-container": "#93000a",
+              "on-secondary-fixed": "#241a00",
+              "inverse-primary": "#bdc2ff",
+              "on-tertiary": "#ffffff",
+              surface: "#f8f9fa",
+              outline: "#767683",
+              primary: "#000666",
+              "on-tertiary-fixed-variant": "#4e471c",
+              background: "#f8f9fa",
+              "on-primary": "#ffffff",
+              "secondary-fixed-dim": "#e9c349",
+              "secondary-fixed": "#ffe088",
+              "secondary-container": "#fed65b",
+              "surface-variant": "#e1e3e4",
+              "on-primary-fixed": "#000767",
+              "primary-fixed-dim": "#bdc2ff",
+              "on-error": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "surface-bright": "#f8f9fa",
+              "surface-container-high": "#e7e8e9",
+              "on-tertiary-fixed": "#201c00",
+              "tertiary-container": "#b6ac77",
+              "on-primary-container": "#8690ee",
+              "inverse-on-surface": "#f0f1f2",
+              "error-container": "#ffdad6",
+              "on-surface": "#191c1d",
+              "surface-tint": "#4c56af",
+              "surface-container": "#edeeef",
+              "on-secondary": "#ffffff",
+              secondary: "#735c00",
+              "surface-container-low": "#f3f4f5",
+              "on-background": "#191c1d",
+              "tertiary-fixed": "#efe3aa",
+              "on-tertiary-container": "#474016",
+              "surface-container-highest": "#e1e3e4",
+              "on-secondary-fixed-variant": "#574500",
+              "surface-container-lowest": "#ffffff",
+              error: "#ba1a1a",
+              "tertiary-fixed-dim": "#d2c790",
+              "inverse-surface": "#2e3132",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              "stack-lg": "40px",
+              "stack-md": "24px",
+              base: "8px",
+              gutter: "16px",
+              "container-margin": "20px",
+              "stack-sm": "12px",
+            },
+            fontFamily: {
+              "headline-lg-mobile": ["Plus Jakarta Sans"],
+              "headline-sm": ["Plus Jakarta Sans"],
+              "label-lg": ["Work Sans"],
+              "headline-md": ["Plus Jakarta Sans"],
+              "display-lg": ["Plus Jakarta Sans"],
+              "body-sm": ["Work Sans"],
+              "body-lg": ["Work Sans"],
+              "body-md": ["Work Sans"],
+              "label-md": ["Work Sans"],
+              "headline-lg": ["Plus Jakarta Sans"],
+            },
+            fontSize: {
+              "headline-lg-mobile": [
+                "28px",
+                { lineHeight: "36px", fontWeight: "700" },
+              ],
+              "headline-sm": [
+                "20px",
+                { lineHeight: "28px", fontWeight: "600" },
+              ],
+              "label-lg": [
+                "14px",
+                {
+                  lineHeight: "16px",
+                  letterSpacing: "0.05em",
+                  fontWeight: "600",
+                },
+              ],
+              "headline-md": [
+                "24px",
+                {
+                  lineHeight: "32px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "600",
+                },
+              ],
+              "display-lg": [
+                "40px",
+                {
+                  lineHeight: "48px",
+                  letterSpacing: "-0.04em",
+                  fontWeight: "700",
+                },
+              ],
+              "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+              "label-md": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+              "headline-lg": [
+                "32px",
+                {
+                  lineHeight: "40px",
+                  letterSpacing: "-0.03em",
+                  fontWeight: "700",
+                },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+      }
+      .hero-gradient {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0) 0%,
+          rgba(0, 0, 0, 0.6) 100%
+        );
+      }
+      .premium-shadow {
+        box-shadow:
+          0 4px 10px rgba(0, 0, 0, 0.05),
+          0 20px 40px rgba(0, 0, 0, 0.03);
+      }
+      .inner-glow {
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-on-surface font-body-md selection:bg-secondary-container"
+  >
+    <!-- Top App Bar -->
+    <header
+      class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-sm flex items-center justify-between px-container-margin py-base w-full"
+    >
+      <div class="flex items-center gap-4">
+        <button class="active:scale-95 transition-transform">
+          <span
+            class="material-symbols-outlined text-primary dark:text-primary-fixed"
+            >menu</span
+          >
+        </button>
+        <h1
+          class="font-headline-md text-headline-md tracking-tighter text-primary dark:text-primary-fixed"
+        >
+          LuxeStay
+        </h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="active:scale-95 transition-transform">
+          <span
+            class="material-symbols-outlined text-primary dark:text-primary-fixed"
+            >notifications</span
+          >
+        </button>
+      </div>
+    </header>
+    <main class="pb-32">
+      <!-- Hero Section -->
+      <section class="relative h-[530px] w-full overflow-hidden">
+        <img
+          class="w-full h-full object-cover"
+          data-alt="A breathtaking luxury villa overlooking a tranquil Mediterranean coastline during a golden sunset. The sky is painted in soft oranges, pinks, and purples, reflecting perfectly in a private infinity pool. The architectural design is modern and minimalist with clean lines, large glass walls, and warm interior lighting. The overall mood is one of quiet luxury, serenity, and high-end travel indulgence."
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIab50A_VLkm-Y_5Xe6aKNSOuqZIK1owDhEvEfRRUGmN2FuHJaSJNwnHZLmh8TLzYB204ScV0mUMKmuUczmRwTJPz_5nm2ZYp5PYBWGMsc19epfOJb3Ssz1407UhQ7tPAeuQ0WJZuZp-Qh595FnzkXAkWTc9wxIcFPawGLV2RMA0KQ687Ms6g4wH0MmnsuXjX-2605MlmMac-cpIr9csLBRYhPA_RrLx6FRGQM4MFF8zKXMEQfcEf7wn-kS3PSzQIjf3HwUMb3chs"
+        />
+        <div class="absolute inset-0 hero-gradient"></div>
+        <div
+          class="absolute bottom-[20%] left-container-margin right-container-margin"
+        >
+          <h2
+            class="font-headline-lg-mobile text-headline-lg-mobile text-white drop-shadow-xl"
+          >
+            Hotels &amp; Homes
+          </h2>
+          <p class="font-body-md text-white/90 mt-2">
+            Curated sanctuaries for the discerning traveler.
+          </p>
+        </div>
+      </section>
+      <!-- Search Card (Floating Glassmorphism) -->
+      <section class="px-container-margin -mt-24 relative z-10">
+        <div
+          class="glass-card rounded-xl p-6 premium-shadow border border-white/40"
+        >
+          <div class="space-y-4">
+            <!-- Destination -->
+            <div
+              class="flex items-center gap-4 p-4 rounded-lg bg-surface-container-low border border-outline-variant/30 active:scale-[0.98] transition-transform"
+            >
+              <span
+                class="material-symbols-outlined text-primary-container opacity-60"
+                >location_on</span
+              >
+              <div class="flex flex-col">
+                <span
+                  class="font-label-md text-label-md text-on-surface-variant"
+                  >Destination</span
+                >
+                <span class="font-body-md text-body-md font-semibold"
+                  >Where are you going?</span
+                >
+              </div>
+            </div>
+            <!-- Dates & Guests -->
+            <div class="grid grid-cols-2 gap-3">
+              <div
+                class="flex items-center gap-3 p-4 rounded-lg bg-surface-container-low border border-outline-variant/30 active:scale-[0.98] transition-transform"
+              >
+                <span
+                  class="material-symbols-outlined text-primary-container opacity-60"
+                  >calendar_today</span
+                >
+                <div class="flex flex-col">
+                  <span
+                    class="font-label-md text-label-md text-on-surface-variant"
+                    >Dates</span
+                  >
+                  <span class="font-body-md text-body-md font-semibold"
+                    >Oct 12 - 19</span
+                  >
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-3 p-4 rounded-lg bg-surface-container-low border border-outline-variant/30 active:scale-[0.98] transition-transform"
+              >
+                <span
+                  class="material-symbols-outlined text-primary-container opacity-60"
+                  >person</span
+                >
+                <div class="flex flex-col">
+                  <span
+                    class="font-label-md text-label-md text-on-surface-variant"
+                    >Guests</span
+                  >
+                  <span class="font-body-md text-body-md font-semibold"
+                    >2 Guests</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- Search Button -->
+            <button
+              class="w-full bg-gradient-to-b from-primary-container to-primary py-4 rounded-full text-white font-headline-sm text-headline-sm shadow-lg active:scale-95 transition-transform flex items-center justify-center gap-2"
+            >
+              <span class="material-symbols-outlined">search</span>
+              Search
+            </button>
+          </div>
+        </div>
+      </section>
+      <!-- Quick Links -->
+      <section class="mt-stack-lg px-container-margin">
+        <div class="grid grid-cols-4 gap-2">
+          <div class="flex flex-col items-center gap-2 group cursor-pointer">
+            <div
+              class="w-14 h-14 rounded-full bg-primary-fixed-dim/20 flex items-center justify-center group-active:scale-90 transition-transform"
+            >
+              <span
+                class="material-symbols-outlined text-primary"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >bookmark</span
+              >
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Saved</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-2 group cursor-pointer">
+            <div
+              class="w-14 h-14 rounded-full bg-primary-fixed-dim/20 flex items-center justify-center group-active:scale-90 transition-transform"
+            >
+              <span class="material-symbols-outlined text-primary"
+                >event_available</span
+              >
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Bookings</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-2 group cursor-pointer">
+            <div
+              class="w-14 h-14 rounded-full bg-secondary-container/20 flex items-center justify-center group-active:scale-90 transition-transform"
+            >
+              <span class="material-symbols-outlined text-secondary"
+                >redeem</span
+              >
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Offers</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-2 group cursor-pointer">
+            <div
+              class="w-14 h-14 rounded-full bg-primary-fixed-dim/20 flex items-center justify-center group-active:scale-90 transition-transform"
+            >
+              <span class="material-symbols-outlined text-primary"
+                >notifications_active</span
+              >
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Alerts</span
+            >
+          </div>
+        </div>
+      </section>
+      <!-- Voucher Section -->
+      <section class="mt-stack-lg px-container-margin">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-headline-sm text-headline-sm">New user benefits</h3>
+          <button class="font-label-lg text-label-lg text-primary-container">
+            View all
+          </button>
+        </div>
+        <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+          <!-- Voucher Card 1 -->
+          <div
+            class="min-w-[280px] bg-white rounded-xl p-4 flex gap-4 premium-shadow border border-surface-variant relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 w-16 h-16 bg-secondary-container/10 rounded-bl-full -mr-4 -mt-4"
+            ></div>
+            <div
+              class="flex flex-col justify-center items-center px-4 border-r border-dashed border-outline-variant"
+            >
+              <span class="font-headline-md text-headline-md text-secondary"
+                >$15</span
+              >
+              <span
+                class="font-label-md text-label-md uppercase tracking-widest text-on-surface-variant"
+                >Off</span
+              >
+            </div>
+            <div class="flex flex-col justify-center gap-1">
+              <p class="font-body-md font-semibold">First Booking</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Min. spend $150
+              </p>
+              <button
+                class="mt-2 text-primary font-label-lg text-left hover:underline"
+              >
+                Claim now
+              </button>
+            </div>
+          </div>
+          <!-- Voucher Card 2 -->
+          <div
+            class="min-w-[280px] bg-white rounded-xl p-4 flex gap-4 premium-shadow border border-surface-variant relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 w-16 h-16 bg-primary-fixed-dim/10 rounded-bl-full -mr-4 -mt-4"
+            ></div>
+            <div
+              class="flex flex-col justify-center items-center px-4 border-r border-dashed border-outline-variant"
+            >
+              <span class="font-headline-md text-headline-md text-primary"
+                >$12</span
+              >
+              <span
+                class="font-label-md text-label-md uppercase tracking-widest text-on-surface-variant"
+                >Off</span
+              >
+            </div>
+            <div class="flex flex-col justify-center gap-1">
+              <p class="font-body-md font-semibold">Summer Escape</p>
+              <p class="font-body-sm text-body-sm text-on-surface-variant">
+                Selected homes
+              </p>
+              <button
+                class="mt-2 text-primary font-label-lg text-left hover:underline"
+              >
+                Claim now
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Featured Section -->
+      <section class="mt-stack-lg px-container-margin">
+        <h3 class="font-headline-sm text-headline-sm mb-4">
+          Trending destinations
+        </h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="relative h-48 rounded-xl overflow-hidden inner-glow">
+            <img
+              class="w-full h-full object-cover"
+              data-alt="A luxurious minimalist living space in a tropical villa in Bali, featuring polished wooden floors, large open windows looking out into a lush green jungle, and soft neutral-toned furniture. The lighting is ethereal and soft, emphasizing a serene, light-mode aesthetic with warm timber accents and deep forest greens."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPi66fMjfwNnTqSDOKmbITPBpJfI6ff-BRNFSP-Yjapx7EMzA_BTtd3qG-sEkAY0-Ki19imUGd-Vh-3_MPXW5q1EjANWM9OwvHA8B6RyzLAE07-xZ57qPrqiXufkwSnibaMnaqT2BHPu6ouJopRGU4Ype38Mc0bVF9e9XN_q3UTMPkW9s6qJXuSd_FlLF9VB_WZ7vwMeFwAsbOL1bF-sWG48bl_FRButrtLlWwKKSR2AjItUv7o9aDgZZHUekHn3E6cQesobhvYAE"
+            />
+            <div class="absolute inset-0 bg-black/20"></div>
+            <span class="absolute bottom-3 left-3 text-white font-headline-sm"
+              >Bali</span
+            >
+          </div>
+          <div class="relative h-48 rounded-xl overflow-hidden inner-glow">
+            <img
+              class="w-full h-full object-cover"
+              data-alt="A sophisticated mountain chalet in the Swiss Alps, captured during the blue hour. The warm yellow lights from the windows contrast against the cool blue tones of the surrounding snow-capped peaks. The style is cozy yet ultra-premium, with rich textures and a high-contrast editorial look."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkOnGyRpc2zxIdA-NlGl85_pQyzKKgS6v5b1Vlcvp_nH22MthDTNM80D-bRZndK9ADN7AqYPCY--I5vT5Ee-_naiVLWWjeOh9GX_foRU-Njq7oJcJRxR0YSBrehCs5ulF-eUEP7BWmtnOSypwVgbLCelXaW5FVf9hxuW-UhkVg77xIFYw5l6sFSlHqvJbBLtDcK4iasNAI0AvjgZt5wATjg01ciKN-g4Ud399admpvPZSdWE1KJfbzQGpxa2-OWXsZOgNXMslde9Q"
+            />
+            <div class="absolute inset-0 bg-black/20"></div>
+            <span class="absolute bottom-3 left-3 text-white font-headline-sm"
+              >Alps</span
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Floating AI Pill -->
+    <div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-40">
+      <div
+        class="bg-primary text-white flex items-center gap-3 px-6 py-3 rounded-full shadow-2xl backdrop-blur-md bg-opacity-90 active:scale-95 transition-transform cursor-pointer border border-white/10"
+      >
+        <span class="material-symbols-outlined text-[20px] animate-pulse"
+          >auto_awesome</span
+        >
+        <span class="font-label-lg text-label-lg whitespace-nowrap"
+          >Ask AI or hold to speak</span
+        >
+      </div>
+    </div>
+    <!-- Bottom Navigation Bar -->
+    <nav
+      class="fixed bottom-0 left-0 w-full flex justify-around items-center px-base py-stack-sm pb-safe bg-surface/90 dark:bg-surface-dim/90 backdrop-blur-2xl shadow-[0_-4px_20px_0_rgba(0,0,0,0.05)] rounded-t-xl z-50"
+    >
+      <a
+        class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed bg-secondary-container/30 rounded-full px-4 py-1 transition-transform active:scale-90"
+        href="#"
+      >
+        <span
+          class="material-symbols-outlined"
+          style="font-variation-settings: &quot;FILL&quot; 1"
+          >home</span
+        >
+        <span class="font-label-md text-label-md-mobile">Home</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined">chat_bubble</span>
+        <span class="font-label-md text-label-md-mobile">Messages</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined">add_circle</span>
+        <span class="font-label-md text-label-md-mobile">Post</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined">travel_explore</span>
+        <span class="font-label-md text-label-md-mobile">My Trips</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90"
+        href="#"
+      >
+        <span class="material-symbols-outlined">person_pin</span>
+        <span class="font-label-md text-label-md-mobile">Account</span>
+      </a>
+    </nav>
+    <script>
+      // Simple micro-interaction for the search card focus effect
+      const searchInputs = document.querySelectorAll(
+        ".bg-surface-container-low",
+      );
+      searchInputs.forEach((input) => {
+        input.addEventListener("mousedown", () => {
+          input.style.backgroundColor = "rgba(254, 214, 91, 0.1)";
+        });
+        input.addEventListener("mouseup", () => {
+          input.style.backgroundColor = "";
+        });
+        input.addEventListener("mouseleave", () => {
+          input.style.backgroundColor = "";
+        });
+      });
+
+      // Basic scroll fade for the TopAppBar
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector("header");
+        if (window.scrollY > 50) {
+          header.classList.add("shadow-md");
+        } else {
+          header.classList.remove("shadow-md");
+        }
+      });
+    </script>
+  </body>
+</html>

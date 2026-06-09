@@ -1,0 +1,236 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Trip.com Trains - Search</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Font Awesome for icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style data-purpose="custom-layout">
+      /* Custom background for the header area to mimic the train image */
+      .hero-bg {
+        background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuASaSaMI_5VlFnTP8K_LAfgTjP1SJJaxAK6W3jaAJn9d1Sv6TIi13rOUaMn7IwnEuCIriHYLbLCL5aGpKt5eesP5eUQp7uBSq64D6Ve8RLZRzeiNPM2teNKXe0BF47OaJ3K8-HsYSWDAp2XUIlqJPZRbJo5xsRFVx8b40fDvhlBG5TOJY6B179cll5ShqHykdahYD6PTp-CWONca53Uxr8wvidON1A9WwHcR0Lieb2LiRC83wUIHnGz15gD91XJl6qMkZfGdck2KP8");
+        background-size: cover;
+        background-position: center top;
+        height: 220px;
+      }
+      .main-container {
+        max-width: 480px; /* Standard mobile width for visual consistency */
+        margin: 0 auto;
+        background-color: #f5f7fa;
+        min-height: 100vh;
+      }
+      .search-card {
+        margin-top: -100px; /* Overlap the hero image */
+      }
+      /* Tab active state styles */
+      .tab-active {
+        background-color: white;
+        color: #333;
+        border-radius: 8px 8px 0 0;
+        font-weight: 600;
+      }
+      .tab-inactive {
+        background-color: rgba(230, 235, 245, 0.9);
+        color: #666;
+        border-radius: 8px 8px 0 0;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100">
+    <!-- BEGIN: MainContainer -->
+    <main class="main-container relative shadow-lg overflow-hidden">
+      <!-- BEGIN: HeroHeader -->
+      <header class="hero-bg relative p-4 flex flex-col justify-between">
+        <div class="flex justify-between items-center text-white">
+          <!-- Back Button -->
+          <button
+            aria-label="Go back"
+            class="w-10 h-10 bg-black/20 rounded-full flex items-center justify-center"
+          >
+            <i class="fa-solid fa-arrow-left text-xl"></i>
+          </button>
+          <!-- More Menu -->
+          <button
+            aria-label="More options"
+            class="w-10 h-10 bg-black/20 rounded-full flex items-center justify-center"
+          >
+            <i class="fa-solid fa-ellipsis text-xl"></i>
+          </button>
+        </div>
+        <div class="mb-24">
+          <h1 class="text-white text-3xl font-bold">
+            Trains<span class="text-yellow-400">.</span>
+          </h1>
+        </div>
+      </header>
+      <!-- END: HeroHeader -->
+      <!-- BEGIN: SearchSection -->
+      <section class="px-4 search-card relative z-10">
+        <!-- BEGIN: Tabs -->
+        <div class="flex w-full">
+          <button class="flex-1 py-3 text-center tab-active">Trains</button>
+          <button class="flex-1 py-3 text-center tab-inactive mx-0.5">
+            Buses
+          </button>
+          <button class="flex-1 py-3 text-center tab-inactive">Passes</button>
+        </div>
+        <!-- END: Tabs -->
+        <!-- BEGIN: SearchFormContainer -->
+        <div class="bg-white rounded-b-xl p-4 shadow-sm">
+          <!-- BEGIN: StationInputs -->
+          <div class="relative mb-4">
+            <!-- Left side icons and line -->
+            <div
+              class="absolute left-0 top-0 bottom-0 flex flex-col items-center justify-center w-8 py-2"
+            >
+              <i class="fa-regular fa-circle-dot text-gray-500 text-sm"></i>
+              <div
+                class="w-px h-full border-l border-dotted border-gray-300 my-1"
+              ></div>
+              <i class="fa-solid fa-location-dot text-gray-500 text-sm"></i>
+            </div>
+            <!-- Input Fields -->
+            <div class="ml-8">
+              <div class="border-b border-gray-100 py-3">
+                <input
+                  class="w-full border-none focus:ring-0 p-0 text-lg font-medium text-gray-900 placeholder-gray-300"
+                  placeholder="Departure station"
+                  type="text"
+                />
+              </div>
+              <div class="py-3">
+                <input
+                  class="w-full border-none focus:ring-0 p-0 text-lg font-medium text-gray-900 placeholder-gray-300"
+                  placeholder="Arrival station"
+                  type="text"
+                />
+              </div>
+            </div>
+            <!-- Swap Icon -->
+            <div class="absolute right-0 top-1/2 -translate-y-1/2">
+              <button
+                class="bg-white border border-gray-100 rounded-full w-10 h-10 shadow-sm flex items-center justify-center"
+              >
+                <i class="fa-solid fa-train-subway text-blue-600"></i>
+              </button>
+            </div>
+          </div>
+          <!-- END: StationInputs -->
+          <hr class="border-gray-100 my-2" />
+          <!-- BEGIN: DateSelector -->
+          <div class="flex justify-between items-center py-4">
+            <div class="flex-1">
+              <span class="text-lg font-semibold text-gray-800"
+                >Tue, Jun 2</span
+              >
+            </div>
+            <button class="flex items-center text-gray-600 text-sm">
+              <i class="fa-solid fa-circle-plus mr-2 text-lg text-blue-500"></i>
+              Add return trip
+            </button>
+          </div>
+          <!-- END: DateSelector -->
+          <hr class="border-gray-100 my-2" />
+          <!-- BEGIN: PassengerSelector -->
+          <div class="flex justify-between items-center py-4 cursor-pointer">
+            <div class="flex items-center">
+              <i class="fa-solid fa-user text-gray-700 mr-3"></i>
+              <span class="text-lg font-semibold text-gray-800"
+                >1 passenger</span
+              >
+            </div>
+            <i class="fa-solid fa-chevron-right text-gray-400"></i>
+          </div>
+          <!-- END: PassengerSelector -->
+          <!-- Search Button -->
+          <button
+            class="w-full bg-blue-600 text-white font-bold py-4 rounded-lg mt-4 text-lg hover:bg-blue-700 transition-colors"
+          >
+            Search
+          </button>
+        </div>
+        <!-- END: SearchFormContainer -->
+      </section>
+      <!-- END: SearchSection -->
+      <!-- BEGIN: MyBookingsSection -->
+      <section class="mt-4 px-4">
+        <div
+          class="bg-white rounded-xl p-4 flex justify-between items-center shadow-sm"
+        >
+          <h2 class="text-lg font-bold text-gray-800">My bookings</h2>
+          <a class="text-blue-500 font-medium" href="#">View</a>
+        </div>
+      </section>
+      <!-- END: MyBookingsSection -->
+      <!-- BEGIN: WhyBookSection -->
+      <section class="mt-8 px-4 pb-12">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">
+          Why book trains on Trip.com?
+        </h2>
+        <div class="space-y-8">
+          <!-- Feature 1 -->
+          <div class="flex items-start">
+            <div
+              class="w-12 h-12 flex-shrink-0 flex items-center justify-center"
+            >
+              <img
+                alt="Official partnerships"
+                class="w-full h-full object-contain"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc0m7e76l0j1FHfTOpy9GdxBOxyd9yFNrxVS3O_SQxZELqDrDDjtmuYlFVbCc-44LzhSuO2DA24q47mZW-Ti_iW5s0x-9zwXuYzaZ9JQotCF3KBqbkkh7kvXC_cwKWtgvZ5T0jfF3uS1Mu9OZ4exq-wzHVRN3lO_mV7fPcvp16ThayXDy0tHb90lCPa3x--uy05T0uUhlnvyf4zglOXx6vlqkMKZv56EWu4Pfl7ZO8DDFmdL4-4sed3IkbDjY2xZymvX-EPMoqg7E"
+              />
+            </div>
+            <div class="ml-4">
+              <h3 class="font-bold text-gray-900">Official partnerships</h3>
+              <p class="text-gray-500 text-sm">A platform you can trust</p>
+            </div>
+          </div>
+          <!-- Feature 2 -->
+          <div class="flex items-start">
+            <div
+              class="w-12 h-12 flex-shrink-0 flex items-center justify-center"
+            >
+              <img
+                alt="Currencies"
+                class="w-full h-full object-contain"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPL5Z-ZkGmeFMOFoBxZsbaScduy9y3geLCGmmMi50aDyjpdksx1CdysugSQre-Gcs-o20DoYIwpO2ycM-LLjypQ6QziZkxcIgRe9XGuJTC4-Bq7ObBk4VTCeZVpJnbwJS_1lk8H6Ch2pNanfusmAHOyc7S8LMPMsmu7izZOwVzhnc9aL99AfwMHN4G2GEY0lZrJNe2kqw7ZwqSJmyBK5qw58287d50frgX8Ii_7w28XdPqZPLk6HQAnDT60EPSnf1AFUEbnRMk3XQ"
+              />
+            </div>
+            <div class="ml-4">
+              <h3 class="font-bold text-gray-900">
+                Multiple currencies accepted
+              </h3>
+              <p class="text-gray-500 text-sm leading-tight">
+                Payments are secured using the latest industry standards
+              </p>
+            </div>
+          </div>
+          <!-- Feature 3 -->
+          <div class="flex items-start">
+            <div
+              class="w-12 h-12 flex-shrink-0 flex items-center justify-center"
+            >
+              <img
+                alt="E-tickets"
+                class="w-full h-full object-contain"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZ0Ck0-iSzJMiHXe6SDjYBtBKLZDWII_fyPOdOObLFct9Vx7cU4pkxWyFGvJNudWCxLtQx1NCBhCovo868EETiWkLnIVCThKmvN15GpzoH9N4FEqbaIIf9Tcq5tHkLhSkBIugzPhCdQjGqpBrHbAyoEf-lmhA5iXrrF3gWs_EcEzSS7jY42D6jvDz7TAsYljNcxCXh_jpRtufykbHIRqAUGQhib9WOsR5k_6fZceC9q6ha_3hp2CDpULtQ9SkNxpP6kork7CtB-LM"
+              />
+            </div>
+            <div class="ml-4">
+              <h3 class="font-bold text-gray-900">E-tickets available</h3>
+              <p class="text-gray-500 text-sm">Save time and skip the lines</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: WhyBookSection -->
+    </main>
+    <!-- END: MainContainer -->
+  </body>
+</html>

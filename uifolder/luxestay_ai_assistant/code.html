@@ -1,0 +1,551 @@
+<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+      name="viewport"
+    />
+    <title>Lumiere Travel - AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Work+Sans:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#f3f4f5",
+              "tertiary-fixed": "#efe3aa",
+              "tertiary-container": "#b6ac77",
+              "on-primary": "#ffffff",
+              "on-secondary-fixed": "#241a00",
+              "on-surface-variant": "#454652",
+              "error-container": "#ffdad6",
+              "on-primary-container": "#8690ee",
+              "outline-variant": "#c6c5d4",
+              background: "#f8f9fa",
+              "surface-variant": "#e1e3e4",
+              "secondary-fixed": "#ffe088",
+              "surface-container": "#edeeef",
+              "on-tertiary": "#ffffff",
+              "surface-tint": "#4c56af",
+              "surface-bright": "#f8f9fa",
+              surface: "#f8f9fa",
+              outline: "#767683",
+              secondary: "#735c00",
+              tertiary: "#675f32",
+              "surface-container-highest": "#e1e3e4",
+              "on-tertiary-container": "#474016",
+              "on-primary-fixed": "#000767",
+              "inverse-on-surface": "#f0f1f2",
+              "on-tertiary-fixed": "#201c00",
+              primary: "#000666",
+              "on-background": "#191c1d",
+              "primary-fixed-dim": "#bdc2ff",
+              "primary-fixed": "#e0e0ff",
+              "on-secondary-container": "#745c00",
+              "surface-dim": "#d9dadb",
+              error: "#ba1a1a",
+              "on-surface": "#191c1d",
+              "surface-container-lowest": "#ffffff",
+              "primary-container": "#1a237e",
+              "inverse-surface": "#2e3132",
+              "on-secondary-fixed-variant": "#574500",
+              "on-error": "#ffffff",
+              "inverse-primary": "#bdc2ff",
+              "on-primary-fixed-variant": "#343d96",
+              "on-error-container": "#93000a",
+              "tertiary-fixed-dim": "#d2c790",
+              "secondary-fixed-dim": "#e9c349",
+              "surface-container-high": "#e7e8e9",
+              "secondary-container": "#fed65b",
+              "on-tertiary-fixed-variant": "#4e471c",
+              "on-secondary": "#ffffff",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              base: "8px",
+              "stack-lg": "40px",
+              "stack-sm": "12px",
+              gutter: "16px",
+              "stack-md": "24px",
+              "container-margin": "20px",
+            },
+            fontFamily: {
+              "label-lg": ["Work Sans"],
+              "display-lg": ["Plus Jakarta Sans"],
+              "body-lg": ["Work Sans"],
+              "label-md": ["Work Sans"],
+              "headline-sm": ["Plus Jakarta Sans"],
+              "headline-lg": ["Plus Jakarta Sans"],
+              "body-sm": ["Work Sans"],
+              "headline-md": ["Plus Jakarta Sans"],
+              "headline-lg-mobile": ["Plus Jakarta Sans"],
+              "body-md": ["Work Sans"],
+            },
+            fontSize: {
+              "label-lg": [
+                "14px",
+                {
+                  lineHeight: "16px",
+                  letterSpacing: "0.05em",
+                  fontWeight: "600",
+                },
+              ],
+              "display-lg": [
+                "40px",
+                {
+                  lineHeight: "48px",
+                  letterSpacing: "-0.04em",
+                  fontWeight: "700",
+                },
+              ],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "label-md": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+              "headline-sm": [
+                "20px",
+                { lineHeight: "28px", fontWeight: "600" },
+              ],
+              "headline-lg": [
+                "32px",
+                {
+                  lineHeight: "40px",
+                  letterSpacing: "-0.03em",
+                  fontWeight: "700",
+                },
+              ],
+              "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+              "headline-md": [
+                "24px",
+                {
+                  lineHeight: "32px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "600",
+                },
+              ],
+              "headline-lg-mobile": [
+                "28px",
+                { lineHeight: "36px", fontWeight: "700" },
+              ],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .glass-effect {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+      .ai-shimmer {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.4) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 3s infinite linear;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: -200% 0;
+        }
+        100% {
+          background-position: 200% 0;
+        }
+      }
+      .floating-ai {
+        animation: float 6s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-on-background font-body-md min-h-screen pb-32"
+  >
+    <!-- TopAppBar -->
+    <header
+      class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.05)] flex items-center justify-between px-container-margin py-base"
+    >
+      <div class="flex items-center gap-4">
+        <button
+          class="text-primary active:scale-95 transition-transform duration-200"
+        >
+          <span class="material-symbols-outlined text-[24px]">menu</span>
+        </button>
+        <h1
+          class="font-display-lg text-headline-md tracking-tight text-primary"
+        >
+          Lumiere Travel
+        </h1>
+      </div>
+      <button
+        class="text-primary active:scale-95 transition-transform duration-200"
+      >
+        <span class="material-symbols-outlined text-[24px]">notifications</span>
+      </button>
+    </header>
+    <main class="pt-20 px-container-margin space-y-stack-lg">
+      <!-- AI Hero Header -->
+      <section
+        class="relative rounded-[32px] overflow-hidden bg-primary-container p-stack-md flex flex-col justify-end min-h-[300px] shadow-2xl"
+      >
+        <div class="absolute inset-0 z-0">
+          <img
+            class="w-full h-full object-cover opacity-60"
+            data-alt="A sophisticated abstract digital background with ethereal waves of deep blue and glowing champagne light. The scene is illuminated by soft, volumetric lighting that creates a high-end, futuristic travel aesthetic. Translucent geometric patterns float in the space, suggesting artificial intelligence and digital concierge services. The mood is calm, premium, and intelligently organized."
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0IOIEbK_8Ik65WK9Cs3tSYR1CDsYtGgMy3bzWD7dxBCWdGHIqDxwa3up3fygyQ6_jz8Qym8XvqN4riPXlyuoiyG_s874WeTkiMRBjHN-FtYgmav5BCmRuunN9uRikFHj5hrvuEbB2A2PpNQEstLEBkQPlq0RVs2ySeGzles0qXUY7YicPhKBeQpJW7X6nnrKBpBHbiSZJVAF2NRiSeZvKbKRiRfs21AW2OizwISk82Gfdob-b4IqZoOBmGICpwnyyRgr8slTOGIw"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-primary-container via-primary-container/40 to-transparent"
+          ></div>
+        </div>
+        <div class="relative z-10 space-y-2">
+          <div class="flex items-center gap-3 mb-base">
+            <div
+              class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center floating-ai shadow-lg overflow-hidden border-2 border-white/20"
+            >
+              <span
+                class="material-symbols-outlined text-on-secondary-container text-[28px]"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >auto_awesome</span
+              >
+            </div>
+            <div>
+              <span
+                class="text-secondary-fixed font-label-lg uppercase tracking-widest text-[10px]"
+                >AI Concierge</span
+              >
+              <h2
+                class="font-headline-lg-mobile text-headline-lg-mobile text-on-primary"
+              >
+                Hello, I'm Lumi
+              </h2>
+            </div>
+          </div>
+          <p class="text-on-primary-container/90 font-body-md max-w-[280px]">
+            Where shall we curate your next masterpiece of a journey today?
+          </p>
+          <div
+            class="mt-stack-md flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+          >
+            <button
+              class="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full whitespace-nowrap text-on-primary font-label-md active:scale-95 transition-all"
+            >
+              "Plan 5 days in Tokyo"
+            </button>
+            <button
+              class="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full whitespace-nowrap text-on-primary font-label-md active:scale-95 transition-all"
+            >
+              "Budget for Italy"
+            </button>
+          </div>
+        </div>
+      </section>
+      <!-- AI Planning Hub -->
+      <section class="space-y-stack-sm">
+        <div class="flex items-center justify-between">
+          <h3 class="font-headline-sm text-headline-sm text-primary">
+            Intelligence Hub
+          </h3>
+          <span class="text-primary font-label-md">View All</span>
+        </div>
+        <div class="grid grid-cols-1 gap-4">
+          <!-- AI Trip Planner -->
+          <div
+            class="group relative bg-white rounded-xl p-4 flex items-center gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.05)] active:scale-[0.98] transition-all"
+          >
+            <div
+              class="w-14 h-14 rounded-lg bg-primary-fixed flex items-center justify-center text-primary group-hover:scale-110 transition-transform"
+            >
+              <span class="material-symbols-outlined text-[32px]"
+                >event_note</span
+              >
+            </div>
+            <div class="flex-1">
+              <h4 class="font-headline-sm text-[16px] text-primary">
+                AI Trip Planner
+              </h4>
+              <p class="text-on-surface-variant text-body-sm">
+                Bespoke itineraries crafted in seconds.
+              </p>
+            </div>
+            <span class="material-symbols-outlined text-outline-variant"
+              >chevron_right</span
+            >
+          </div>
+          <!-- AI Budget Planner -->
+          <div
+            class="group relative bg-white rounded-xl p-4 flex items-center gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.05)] active:scale-[0.98] transition-all"
+          >
+            <div
+              class="w-14 h-14 rounded-lg bg-secondary-container/20 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform"
+            >
+              <span class="material-symbols-outlined text-[32px]"
+                >payments</span
+              >
+            </div>
+            <div class="flex-1">
+              <h4 class="font-headline-sm text-[16px] text-primary">
+                AI Budget Planner
+              </h4>
+              <p class="text-on-surface-variant text-body-sm">
+                Smart cost allocation and real-time tracking.
+              </p>
+            </div>
+            <span class="material-symbols-outlined text-outline-variant"
+              >chevron_right</span
+            >
+          </div>
+          <!-- AI Route Planner -->
+          <div
+            class="group relative bg-white rounded-xl p-4 flex items-center gap-4 shadow-[0_4px_30px_rgba(0,0,0,0.05)] active:scale-[0.98] transition-all"
+          >
+            <div
+              class="w-14 h-14 rounded-lg bg-tertiary-fixed flex items-center justify-center text-tertiary group-hover:scale-110 transition-transform"
+            >
+              <span class="material-symbols-outlined text-[32px]">route</span>
+            </div>
+            <div class="flex-1">
+              <h4 class="font-headline-sm text-[16px] text-primary">
+                AI Route Planner
+              </h4>
+              <p class="text-on-surface-variant text-body-sm">
+                Optimized logistics for seamless movement.
+              </p>
+            </div>
+            <span class="material-symbols-outlined text-outline-variant"
+              >chevron_right</span
+            >
+          </div>
+        </div>
+      </section>
+      <!-- Smart Discovery -->
+      <section class="space-y-stack-sm">
+        <h3 class="font-headline-sm text-headline-sm text-primary">
+          Smart Discovery
+        </h3>
+        <div
+          class="flex gap-4 overflow-x-auto pb-4 -mx-container-margin px-container-margin snap-x scrollbar-hide"
+        >
+          <!-- AI Destination Finder -->
+          <div
+            class="min-w-[280px] snap-center bg-surface-container-low rounded-2xl overflow-hidden relative shadow-lg"
+          >
+            <img
+              class="w-full h-48 object-cover"
+              data-alt="A cinematic, high-angle shot of a minimalist boutique hotel in a serene alpine landscape. The architecture features clean lines, expansive glass walls, and warm champagne-colored accents. The morning sun casts soft, long shadows across a pristine pool that reflects the surrounding snow-capped peaks. The overall mood is one of quiet luxury, isolation, and premium discovery."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt8ZbfhSUxFic1_EsKlr5-d1b5xAFX2NGX84McCFYwXttUTVOcxUEP-_PrKlvrH7HnZ9qSAOoHuQPg_tzIiXN46LHn0bQ7-c-zgqwUWuVT8M4AR0MQ_wEN6ftpmDzX8xM81cdW19NhxOXNltp5SWCpDhk0GVAoZI3G7hPjigz5PIfV3YfyO3tjjiafof7D5fTrMGvXQl80cCYHFlk1i1jkJ_eLRXGlB_l5TFzeUaCYUJ8Uq9oiHVjMr9MOw1lDZ6Iqm8-uovzINOE"
+            />
+            <div class="p-4 space-y-1">
+              <div class="flex items-center gap-2">
+                <span
+                  class="bg-secondary-container px-2 py-0.5 rounded-full text-[10px] font-bold text-on-secondary-container uppercase"
+                  >Trending Now</span
+                >
+              </div>
+              <h4 class="font-headline-sm text-[18px] text-primary">
+                AI Destination Finder
+              </h4>
+              <p class="text-on-surface-variant text-body-sm">
+                Personalized gems based on your soul's travel history.
+              </p>
+            </div>
+          </div>
+          <!-- AI Travel Insights -->
+          <div
+            class="min-w-[280px] snap-center bg-surface-container-low rounded-2xl overflow-hidden relative shadow-lg"
+          >
+            <div
+              class="w-full h-48 bg-primary-container p-6 flex flex-col justify-end"
+            >
+              <div class="flex items-end gap-1 mb-4 h-24">
+                <div
+                  class="flex-1 bg-secondary-fixed/40 rounded-t-sm h-[40%]"
+                ></div>
+                <div
+                  class="flex-1 bg-secondary-fixed/60 rounded-t-sm h-[60%]"
+                ></div>
+                <div
+                  class="flex-1 bg-secondary-fixed rounded-t-sm h-[90%] ai-shimmer"
+                ></div>
+                <div
+                  class="flex-1 bg-secondary-fixed/50 rounded-t-sm h-[70%]"
+                ></div>
+                <div
+                  class="flex-1 bg-secondary-fixed/30 rounded-t-sm h-[50%]"
+                ></div>
+              </div>
+              <span class="text-white/60 font-label-md"
+                >Real-time Global Data</span
+              >
+            </div>
+            <div class="p-4 space-y-1">
+              <h4 class="font-headline-sm text-[18px] text-primary">
+                Travel Insights
+              </h4>
+              <p class="text-on-surface-variant text-body-sm">
+                Global flight trends and hidden market shifts.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Safety & Assistance -->
+      <section class="space-y-stack-sm pb-10">
+        <h3 class="font-headline-sm text-headline-sm text-primary">
+          Safety &amp; Assistance
+        </h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div
+            class="bg-error-container/10 border border-error/10 p-4 rounded-2xl space-y-3 active:scale-95 transition-all"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-error"
+            >
+              <span class="material-symbols-outlined text-[20px]"
+                >gpp_maybe</span
+              >
+            </div>
+            <h4 class="font-label-lg text-primary">Scam Detection</h4>
+            <p class="text-[12px] leading-tight text-on-surface-variant">
+              Scan suspicious links or local vendor offers instantly.
+            </p>
+          </div>
+          <div
+            class="bg-primary-container p-4 rounded-2xl space-y-3 active:scale-95 transition-all shadow-xl"
+          >
+            <div
+              class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white"
+            >
+              <span class="material-symbols-outlined text-[20px]"
+                >support_agent</span
+              >
+            </div>
+            <h4 class="font-label-lg text-white">24/7 Concierge</h4>
+            <p class="text-[12px] leading-tight text-white/80">
+              Lumi is always awake. Start a private consultation.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- BottomNavBar -->
+    <nav
+      class="fixed bottom-0 left-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl flex justify-around items-center px-4 pt-2 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.05)] rounded-t-xl"
+    >
+      <button
+        class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-surface-container-high/50 active:scale-90 transition-all duration-300 ease-out"
+      >
+        <span class="material-symbols-outlined">home</span>
+        <span class="font-label-md text-label-md">Home</span>
+      </button>
+      <button
+        class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-surface-container-high/50 active:scale-90 transition-all duration-300 ease-out"
+      >
+        <span class="material-symbols-outlined">chat_bubble</span>
+        <span class="font-label-md text-label-md">Messages</span>
+      </button>
+      <button
+        class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold bg-secondary-container/30 rounded-full px-4 py-1 active:scale-90 transition-all duration-300 ease-out"
+      >
+        <span
+          class="material-symbols-outlined"
+          style="font-variation-settings: &quot;FILL&quot; 1"
+          >auto_awesome</span
+        >
+        <span class="font-label-md text-label-md">Assistant</span>
+      </button>
+      <button
+        class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-surface-container-high/50 active:scale-90 transition-all duration-300 ease-out"
+      >
+        <span class="material-symbols-outlined">explore</span>
+        <span class="font-label-md text-label-md">My Trips</span>
+      </button>
+      <button
+        class="flex flex-col items-center justify-center text-on-surface-variant/70 hover:bg-surface-container-high/50 active:scale-90 transition-all duration-300 ease-out"
+      >
+        <span class="material-symbols-outlined">account_circle</span>
+        <span class="font-label-md text-label-md">Account</span>
+      </button>
+    </nav>
+    <script>
+      // Simple micro-interaction for cards
+      document.querySelectorAll("div[active\\:scale-95]").forEach((card) => {
+        card.addEventListener("touchstart", () => {
+          card.style.transform = "scale(0.98)";
+        });
+        card.addEventListener("touchend", () => {
+          card.style.transform = "scale(1)";
+        });
+      });
+
+      // Horizontal scroll momentum enhancement
+      const scrollers = document.querySelectorAll(".overflow-x-auto");
+      scrollers.forEach((scroller) => {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        scroller.addEventListener("mousedown", (e) => {
+          isDown = true;
+          startX = e.pageX - scroller.offsetLeft;
+          scrollLeft = scroller.scrollLeft;
+        });
+        scroller.addEventListener("mouseleave", () => {
+          isDown = false;
+        });
+        scroller.addEventListener("mouseup", () => {
+          isDown = false;
+        });
+        scroller.addEventListener("mousemove", (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - scroller.offsetLeft;
+          const walk = (x - startX) * 2;
+          scroller.scrollLeft = scrollLeft - walk;
+        });
+      });
+    </script>
+  </body>
+</html>

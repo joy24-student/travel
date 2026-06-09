@@ -1,0 +1,31 @@
+import { useLocalSearchParams } from "expo-router";
+
+import { screens } from "../../src/data/screens";
+import { ConvertedScreen } from "../../src/screens/ConvertedScreen";
+import { SettingsSpecializedScreen } from "../../src/screens/SettingsScreen";
+import { CommunitySpecializedScreen } from "../../src/screens/CommunityScreen";
+import { BookingSystemScreen } from "../../src/screens/BookingSystemScreen";
+import { HomeScreen } from "../../src/screens/HomeScreen";
+import { ExploreScreen } from "../../src/screens/ExploreScreen";
+import { SearchScreen } from "../../src/screens/SearchScreen";
+import { PackageScreen } from "../../src/screens/PackageScreen";
+import { LiveScreen } from "../../src/screens/LiveScreen";
+
+export default function ScreenRoute() {
+  const { slug } = useLocalSearchParams<{ slug: string }>();
+  const screen = screens.find((item) => item.slug === slug) ?? screens[0];
+
+  if (screen.kind === "home" && screen.slug === "home") return <HomeScreen />;
+  if (screen.kind === "explore") return <ExploreScreen screen={screen} />;
+  if (screen.kind === "search" && screen.slug === "search")
+    return <SearchScreen screen={screen} />;
+  if (screen.kind === "package") return <PackageScreen screen={screen} />;
+  if (screen.kind === "live") return <LiveScreen screen={screen} />;
+  if (screen.kind === "settings")
+    return <SettingsSpecializedScreen screen={screen} />;
+  if (screen.kind === "community")
+    return <CommunitySpecializedScreen screen={screen} />;
+  if (screen.kind === "booking") return <BookingSystemScreen screen={screen} />;
+
+  return <ConvertedScreen screen={screen} />;
+}

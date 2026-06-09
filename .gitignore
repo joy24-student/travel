@@ -1,0 +1,122 @@
+# Dependencies
+node_modules/
+.expo/
+
+# Environment variables
+.env.local
+.env*
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+output/
+
+# Expo-specific
+.expo-shared/
+.webpack/
+metro-cache/
+.bun/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+expo-error.log*
+expo-web-auth.err.log
+expo-web-auth.out.log
+expo.err.log
+expo.out.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+.directory
+.hgcheckout
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+coverage/
+.nyc_output/
+.jest/
+
+# Security
+secret/
+secrets/
+keys/
+*.key
+*.pem
+*.p12
+*.pfx
+*.cer
+*.crt
+*.cert
+
+# IDE
+.vs/
+*.tmproj
+*.sublime-project
+*.sublime-workspace
+nbproject/
+*.fdb_latexmk
+
+# Mobile development
+*.mobileprovision
+ios/build/
+ios/Pods/
+ios/Podfile.lock
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+
+# Database
+*.sqlite
+*.sqlite3
+
+# Temporary files
+tmp/
+temp/
+.DS_Store
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# User-specific files
+*.env.local
+.env.production.local
+.env.development.local
+.env.test.local
+.env.staging.local
+.env.backup
+
+# Sensitive files containing credentials
+config/secrets.yml
+config/master.key
+config/credentials.yml.enc
+vendor/
+public/packs/*
+app/assets/builds/*
+
+# Cache folders
+.cache/
+.pnp/
+.pnp.js
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

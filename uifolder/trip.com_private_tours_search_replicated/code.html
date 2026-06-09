@@ -1,0 +1,321 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Private Tours Search - Trip.com Clone</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Font Awesome for icons -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style data-purpose="custom-layout">
+      body {
+        background-color: #f5f7fa;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+      }
+      .hero-bg {
+        background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAPxgfyE4q3dqn7oZqhJIDE922HQ_rW7BTIcCCy2ZfMPIpFgQzHRIvdC6hFzi1Q4LBbNtlB0VfwtMI_Ylr8cdu7s9TE3qNh0al8kQFsTzyuq96lCi3OoO66lxIzof2gIi5mVM09O1d5tFPw5QTQxkaZlCnlpfFv-VPD-VhLhBX7JYPbdKIbPkTSe4B6MPXD_ukQP2aKs3ZbmSuFYD-jatcen7iMjrhzQAQYGXuY4NqPHstLyUvLts90o4yENRavVnWvG6ph-DEeaJQ");
+        background-size: 100% auto;
+        background-repeat: no-repeat;
+        height: 320px;
+      }
+      /* Tab Clip Path to mimic the slanted tab design */
+      .tab-active {
+        clip-path: polygon(0 0, 90% 0, 100% 100%, 0% 100%);
+        background-color: white;
+      }
+      /* Scrollbar hidden for horizontal chips */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="max-w-md mx-auto shadow-lg min-h-screen">
+    <!-- BEGIN: HeroSection -->
+    <section
+      class="hero-bg relative w-full pt-10"
+      data-purpose="hero-container"
+    >
+      <!-- Header Icons -->
+      <div
+        class="flex justify-between items-center px-4"
+        data-purpose="top-navigation"
+      >
+        <button
+          class="bg-black/30 rounded-full w-8 h-8 flex items-center justify-center text-white"
+        >
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <div class="flex gap-2">
+          <button
+            class="bg-black/30 rounded-full w-8 h-8 flex items-center justify-center text-yellow-400"
+          >
+            <div
+              class="bg-yellow-400 text-black text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center"
+            >
+              T
+            </div>
+          </button>
+          <button
+            class="bg-black/30 rounded-full w-8 h-8 flex items-center justify-center text-white"
+          >
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
+        </div>
+      </div>
+      <!-- Title -->
+      <div class="px-4 mt-8">
+        <h1 class="text-3xl font-bold text-white drop-shadow-md">
+          Private Tours
+        </h1>
+      </div>
+      <!-- Search Card Container -->
+      <div class="px-4 mt-6 absolute w-full top-36">
+        <div
+          class="bg-white rounded-2xl shadow-xl overflow-hidden"
+          data-purpose="search-box"
+        >
+          <!-- Tabs -->
+          <div class="flex bg-gray-200 h-12" data-purpose="tour-type-tabs">
+            <div
+              class="w-1/2 flex items-center justify-center tab-active font-bold text-gray-800 text-sm"
+            >
+              Private Tours
+            </div>
+            <div
+              class="w-1/2 flex items-center justify-center text-gray-500 text-sm"
+            >
+              Group Tours
+            </div>
+          </div>
+          <!-- Search Input -->
+          <div class="p-4 space-y-4">
+            <div
+              class="flex items-center border-b border-gray-100 pb-3"
+              data-purpose="destination-input"
+            >
+              <i class="fa-solid fa-magnifying-glass text-gray-400 mr-3"></i>
+              <span class="text-gray-400 text-lg">Zhangjiajie</span>
+            </div>
+            <!-- Quick Chips -->
+            <div
+              class="flex overflow-x-auto no-scrollbar gap-2 py-1"
+              data-purpose="city-chips"
+            >
+              <span
+                class="bg-gray-100 text-gray-800 px-3 py-1.5 rounded-md text-sm whitespace-nowrap"
+                >Zhangjiajie</span
+              >
+              <span
+                class="bg-gray-100 text-gray-800 px-3 py-1.5 rounded-md text-sm whitespace-nowrap"
+                >Beijing</span
+              >
+              <span
+                class="bg-gray-100 text-gray-800 px-3 py-1.5 rounded-md text-sm whitespace-nowrap"
+                >Shanghai</span
+              >
+              <span
+                class="bg-gray-100 text-gray-800 px-3 py-1.5 rounded-md text-sm whitespace-nowrap"
+                >Japan</span
+              >
+              <span
+                class="bg-gray-100 text-gray-800 px-3 py-1.5 rounded-md text-sm whitespace-nowrap"
+                >Chengdu</span
+              >
+            </div>
+            <!-- Flexible Dates Row -->
+            <div
+              class="flex items-center text-gray-800 font-semibold py-1"
+              data-purpose="date-selector"
+            >
+              <i class="fa-regular fa-calendar-days text-xl mr-3"></i>
+              <span>Flexible dates</span>
+            </div>
+            <!-- CTA Buttons -->
+            <div
+              class="grid grid-cols-2 gap-3 pb-2"
+              data-purpose="search-actions"
+            >
+              <div class="relative">
+                <div
+                  class="absolute -top-3 left-2 bg-blue-50 px-1 flex items-center rounded border border-blue-100"
+                >
+                  <span class="text-[9px] text-blue-600 mr-1"
+                    >Travel experts</span
+                  >
+                  <div class="flex -space-x-1">
+                    <img
+                      alt="expert"
+                      class="w-3 h-3 rounded-full border border-white"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV0Df86-kVu4wJ4P1pmrKSo8TOf2LuI7UvgIfjlaZ55OmeiF6SrH3Itg9RDr0pBRY6M_fLqqLmfcOD-UvS2b0QoWVC_c8RLvQ_BU_fnG8SI9iUuys-xpNzKm1aYueqjxTEeyBac3fnm30AjznFJH6WLtItZF56c9DqZ1i0lnyXHS4GaWnM0LEpai5Y7lvqZyc8ySWmMIBbaoFeCMe37m4OcACAinARVXwU9DoNdLzgYoFaAlmrrSIZXRMa_E_gdPoxFkltUrtVrmE"
+                    />
+                    <img
+                      alt="expert"
+                      class="w-3 h-3 rounded-full border border-white"
+                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJcLFm5LMmuuRNLs30BOSXyugAlVw-aQ4ovclR_TA7TzYvZ3G9hSNknVoNh3R_rH-pTp1Ez4V-ySNTGuddB-aSqNBpqBrUYyfXIbN80_7IfY_aGXoDbyBj5m5TLrBEogJzdJXoZthTdd7Wk9K-qtNUOtJ7wPj8eVmrbWwmp7D21ARhN8uEpVKNheWPl_l46Cjl896evsS_FLv11YMFZQ0jQ3yiUbBka5vshxkDxpjeRhhZ7iLivyJ7gUUZ5wlt7fiNIfSXjT3xeQc"
+                    />
+                  </div>
+                </div>
+                <button
+                  class="w-full h-12 border border-blue-500 text-blue-600 rounded-lg font-semibold text-sm"
+                >
+                  Customize my trip
+                </button>
+              </div>
+              <button
+                class="w-full h-12 bg-blue-600 text-white rounded-lg font-bold text-lg"
+              >
+                Search
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- END: HeroSection -->
+    <!-- Spacer to account for absolute positioning of search box -->
+    <div class="h-64"></div>
+    <!-- BEGIN: MyBookings -->
+    <section class="px-4 mb-4">
+      <div
+        class="bg-white rounded-xl p-4 flex justify-between items-center shadow-sm"
+        data-purpose="bookings-shortcut"
+      >
+        <span class="font-bold text-gray-800 text-lg">My Bookings</span>
+        <i class="fa-solid fa-chevron-right text-gray-400"></i>
+      </div>
+    </section>
+    <!-- END: MyBookings -->
+    <!-- BEGIN: PopularItineraries -->
+    <section class="px-4 mb-10">
+      <div class="bg-white rounded-t-2xl p-4">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">
+          Popular China itineraries
+        </h2>
+        <div
+          class="flex gap-4 overflow-x-auto no-scrollbar"
+          data-purpose="itinerary-cards-container"
+        >
+          <!-- Itinerary Card 1 -->
+          <div
+            class="min-w-[85%] bg-white rounded-xl overflow-hidden shadow-sm relative border border-gray-100"
+          >
+            <div class="relative h-48">
+              <img
+                alt="China Discovery"
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhL7tt-TLEuBgVn30PYFnpITItMTul7A3DugIFd9jseJ1HkqSsO-A5VBg8ayaG5uswfgza6V8nVPyx6MzDpaoma5l7ZK71N2CtbNuOnL7FB15yLgeBRArH9sUhf4zWf0aCiHOBM7JbipYgJdzKqjgXzS-bBJW3LwVxz3ROGz46KylaA-FwLK4_57FabMkqzSRw9xLy3yAFjypM2Jx5qpaSF3XamcSPsIgY7VDt91NygQDL99luivFFNoJcoJ6-ChrHZln9T-Pp-Kk"
+              />
+              <!-- Map Overlay UI Simulation -->
+              <div
+                class="absolute inset-0 bg-black/20 p-3 flex flex-col justify-between"
+              >
+                <div>
+                  <h3 class="text-white font-bold text-lg leading-tight">
+                    Cities &amp;<br />Discovery
+                  </h3>
+                  <p class="text-white text-xs mt-1">Recommended 13-15 days</p>
+                </div>
+                <button
+                  class="absolute top-3 right-3 bg-white/90 text-black text-[10px] font-bold px-3 py-1 rounded-full flex items-center"
+                >
+                  Explore all <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+                <!-- Map pins simulation -->
+                <div
+                  class="flex-grow flex items-center justify-center relative"
+                >
+                  <div class="absolute bottom-10 left-10 text-[8px] text-white">
+                    Beijing
+                    <div
+                      class="w-1.5 h-1.5 bg-white rounded-full mx-auto"
+                    ></div>
+                  </div>
+                  <div class="absolute bottom-20 left-20 text-[8px] text-white">
+                    Xi'an
+                    <div
+                      class="w-1.5 h-1.5 bg-white rounded-full mx-auto"
+                    ></div>
+                  </div>
+                  <div
+                    class="absolute bottom-24 right-24 text-[8px] text-white"
+                  >
+                    Chengdu
+                    <div
+                      class="w-1.5 h-1.5 bg-white rounded-full mx-auto"
+                    ></div>
+                  </div>
+                  <div
+                    class="absolute bottom-28 right-12 text-[8px] text-white"
+                  >
+                    Chongqing
+                    <div
+                      class="w-1.5 h-1.5 bg-white rounded-full mx-auto"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-3">
+              <p class="text-xs text-gray-500 flex justify-between">
+                <span>14-night · Private Tour · China + ...</span>
+                <i class="fa-solid fa-chevron-right"></i>
+              </p>
+            </div>
+          </div>
+          <!-- Itinerary Card 2 -->
+          <div
+            class="min-w-[85%] bg-white rounded-xl overflow-hidden shadow-sm relative border border-gray-100"
+          >
+            <div class="relative h-48 bg-slate-800">
+              <!-- Representing the dark card shown on the right of the screenshot -->
+              <div class="p-4">
+                <h3 class="text-white font-bold text-lg leading-tight">
+                  Classic Yun<br />Charm Exp
+                </h3>
+                <p class="text-white/70 text-xs mt-1">Recommended</p>
+              </div>
+            </div>
+            <div class="p-3">
+              <p class="text-xs text-gray-500">8D7N · Private Tour</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- END: PopularItineraries -->
+    <!-- BEGIN: BottomNav -->
+    <nav
+      class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t flex justify-around py-3 text-gray-600"
+      data-purpose="bottom-bar"
+    >
+      <div class="flex flex-col items-center">
+        <i class="fa-solid fa-house text-blue-600"></i>
+        <span class="text-[10px] mt-1 text-blue-600">Home</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span class="text-[10px] mt-1">Search</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <i class="fa-solid fa-suitcase"></i>
+        <span class="text-[10px] mt-1">Trips</span>
+      </div>
+      <div class="flex flex-col items-center">
+        <i class="fa-solid fa-user"></i>
+        <span class="text-[10px] mt-1">Account</span>
+      </div>
+    </nav>
+    <!-- END: BottomNav -->
+  </body>
+</html>

@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en" style="">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Trip.com Mobile Interface</title>
+    <!-- Tailwind CSS v3 CDN with plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Custom Tailwind Configuration -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              tripBlue: "#0055F2",
+              tripLightBlue: "#EAF2FF",
+              tripGray: "#999999",
+              tripPink: "#FFF0F3",
+              tripTextDark: "#333333",
+            },
+          },
+        },
+      };
+    </script>
+    <style data-purpose="custom-styling">
+      /* Hide scrollbars for cleaner horizontal scroll areas */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      /* Specific styling for the discount cards perforated edge effect */
+      .promo-card {
+        position: relative;
+        background: #fff0f3;
+        border-radius: 8px;
+      }
+      .promo-card::after {
+        content: "";
+        position: absolute;
+        right: -1px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 12px;
+        width: 6px;
+        background-color: white;
+        border-radius: 6px 0 0 6px;
+      }
+      /* Floating AI pill styling */
+      .ai-pill {
+        box-shadow: 0 4px 15px rgba(0, 85, 242, 0.2);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 font-sans text-tripTextDark select-none">
+    <!-- BEGIN: MainHeader -->
+    <header
+      class="bg-tripBlue p-4 pb-12 flex justify-between items-center text-white sticky top-0 z-50"
+    >
+      <div class="flex items-center space-x-2">
+        <span class="text-2xl font-bold tracking-tight">Trip.com</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div
+          class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full flex items-center space-x-1 border border-white/30"
+        >
+          <div
+            class="w-4 h-4 bg-white rounded-full flex items-center justify-center"
+          >
+            <span class="text-tripBlue text-[10px] font-bold">T</span>
+          </div>
+          <span class="text-xs font-semibold">Silver</span>
+        </div>
+        <div
+          class="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center"
+        >
+          <span class="text-white text-xs font-bold">T</span>
+        </div>
+      </div>
+    </header>
+    <!-- END: MainHeader -->
+    <!-- BEGIN: MainContentContainer -->
+    <main
+      class="-mt-8 rounded-t-3xl bg-white min-h-screen relative overflow-hidden"
+    >
+      <!-- BEGIN: PrimaryServiceGrid -->
+      <section
+        class="p-4 grid grid-cols-4 gap-y-6 pt-6"
+        data-purpose="primary-services"
+      >
+        <!-- Hotels -->
+        <div class="flex flex-col items-center">
+          <div
+            class="w-14 h-14 bg-[#E8F1FF] rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-8 h-8 text-tripBlue"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-sm font-bold text-tripBlue"
+            >Hotels<span class="text-yellow-400 ml-0.5">.</span></span
+          >
+        </div>
+        <!-- Flights -->
+        <div class="flex flex-col items-center">
+          <div
+            class="w-14 h-14 bg-[#E8F1FF] rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-8 h-8 text-tripBlue transform rotate-45"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-sm font-bold text-tripBlue"
+            >Flights<span class="text-yellow-400 ml-0.5">.</span></span
+          >
+        </div>
+        <!-- Flight + Hotel -->
+        <div class="flex flex-col items-center">
+          <div
+            class="w-14 h-14 bg-[#E8F1FF] rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-8 h-8 text-tripBlue"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 7h-8v6h-2V7H4c-1.1 0-2 .9-2 2v10h2v-2h16v2h2v-7c0-2.21-1.79-4-4-4z"
+              ></path>
+            </svg>
+          </div>
+          <span
+            class="text-sm font-bold text-tripBlue text-center leading-tight"
+            >Flight + Hotel<span class="text-yellow-400 ml-0.5">.</span></span
+          >
+        </div>
+        <!-- Trains -->
+        <div class="flex flex-col items-center">
+          <div
+            class="w-14 h-14 bg-[#E8F1FF] rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-8 h-8 text-tripBlue"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-4-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-7H6V6h5v4zm5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm2-7h-5V6h5v4z"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-sm font-bold text-tripBlue"
+            >Trains<span class="text-yellow-400 ml-0.5">.</span></span
+          >
+        </div>
+      </section>
+      <!-- Secondary Small Grid -->
+      <section
+        class="px-2 grid grid-cols-5 gap-y-4 mb-6"
+        data-purpose="secondary-services"
+      >
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-6 h-6 text-tripBlue mb-1"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+          </svg>
+          <span class="text-[10px] text-center font-medium leading-tight"
+            >Vacation<br />Rentals</span
+          >
+        </div>
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-6 h-6 text-tripBlue mb-1"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            ></path>
+          </svg>
+          <span class="text-[10px] text-center font-medium leading-tight"
+            >Attractions<br />&amp; Tours</span
+          >
+        </div>
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-6 h-6 text-tripBlue mb-1"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"
+            ></path>
+          </svg>
+          <span class="text-[10px] text-center font-medium leading-tight"
+            >Car Rentals</span
+          >
+        </div>
+        <div class="flex flex-col items-center">
+          <svg
+            class="w-6 h-6 text-tripBlue mb-1"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+            ></path>
+          </svg>
+          <span class="text-[10px] text-center font-medium leading-tight"
+            >Package<br />Tours</span
+          >
+        </div>
+        <div class="flex flex-col items-center">
+          <div
+            class="w-6 h-6 bg-tripBlue rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-4 h-4 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M19 9l-7 7-7-7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-[10px] text-center font-medium leading-tight"
+            >+7 more</span
+          >
+        </div>
+      </section>
+      <!-- END: PrimaryServiceGrid -->
+      <!-- BEGIN: SearchBar -->
+      <section class="px-4 mb-4 sticky top-\[64px\] z-40 bg-white py-2">
+        <div
+          class="relative flex items-center bg-white border-2 border-tripBlue rounded-full p-1 h-12"
+        >
+          <div class="flex items-center flex-1 px-3 space-x-2">
+            <svg
+              class="w-5 h-5 text-tripBlue"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+              ></path>
+            </svg>
+            <span class="text-gray-600 font-medium">Rome</span>
+          </div>
+          <button
+            class="bg-tripBlue h-full px-5 rounded-full flex items-center justify-center"
+          >
+            <svg
+              class="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="3"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </section>
+      <!-- END: SearchBar -->
+      <!-- BEGIN: TagScroll -->
+      <section
+        class="flex items-center px-4 space-x-2 overflow-x-auto no-scrollbar mb-6"
+        data-purpose="location-tags"
+      >
+        <div
+          class="px-4 py-1.5 bg-gray-100 rounded-full text-sm font-medium whitespace-nowrap text-gray-700"
+        >
+          Beijing
+        </div>
+        <div
+          class="px-4 py-1.5 bg-gray-100 rounded-full text-sm font-medium whitespace-nowrap text-gray-700"
+        >
+          Shanghai
+        </div>
+        <div
+          class="px-4 py-1.5 bg-gray-100 rounded-full text-sm font-medium whitespace-nowrap text-gray-700"
+        >
+          Kuala Lumpur
+        </div>
+        <div
+          class="px-4 py-1.5 bg-gray-100 rounded-full text-sm font-medium whitespace-nowrap text-gray-700"
+        >
+          Seoul
+        </div>
+        <div class="flex items-center text-tripBlue font-semibold text-sm pl-2">
+          <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+            <path
+              d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"
+            ></path>
+          </svg>
+          Map
+        </div>
+      </section>
+      <!-- END: TagScroll -->
+      <!-- BEGIN: QuickActions -->
+      <section
+        class="grid grid-cols-4 gap-4 px-4 mb-6"
+        data-purpose="quick-actions"
+      >
+        <div class="flex flex-col items-center">
+          <div
+            class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-6 h-6 text-tripBlue"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-[11px] font-semibold">Deals</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <div
+            class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-6 h-6 text-tripBlue"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-[11px] font-semibold">Events</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <div
+            class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-6 h-6 text-tripBlue"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-[11px] font-semibold">Trip.Planner</span>
+        </div>
+        <div class="flex flex-col items-center">
+          <div
+            class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-1"
+          >
+            <svg
+              class="w-6 h-6 text-tripBlue"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-[11px] font-semibold">Trending</span>
+        </div>
+      </section>
+      <!-- END: QuickActions -->
+      <!-- BEGIN: PromoBanner -->
+      <section class="px-4 mb-6">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <div class="flex justify-between items-center mb-3">
+            <div class="flex items-center space-x-2">
+              <div class="w-8 h-8 flex items-center justify-center">
+                <span class="text-xl">🎁</span>
+              </div>
+              <span class="font-bold text-sm"
+                >New User Discounts Available</span
+              >
+            </div>
+            <svg
+              class="w-4 h-4 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M9 5l7 7-7 7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <div class="flex space-x-3 overflow-x-auto no-scrollbar">
+            <!-- Promo 1 -->
+            <div
+              class="promo-card min-w-[180px] p-3 flex items-center border border-pink-100"
+            >
+              <div class="mr-3">
+                <svg
+                  class="w-6 h-6 text-pink-500"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <div class="text-pink-600 font-bold text-base leading-none">
+                  10% off
+                </div>
+                <div class="text-pink-400 text-xs flex items-center font-bold">
+                  Use
+                  <svg
+                    class="w-3 h-3 ml-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M9 5l7 7-7 7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <!-- Promo 2 -->
+            <div
+              class="promo-card min-w-[180px] p-3 flex items-center border border-pink-100"
+            >
+              <div class="mr-3">
+                <svg
+                  class="w-6 h-6 text-pink-500"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <div class="text-pink-600 font-bold text-base leading-none">
+                  5% off
+                </div>
+                <div class="text-pink-400 text-xs flex items-center font-bold">
+                  Use
+                  <svg
+                    class="w-3 h-3 ml-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M9 5l7 7-7 7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: PromoBanner -->
+      <!-- BEGIN: DestinationCards -->
+      <section
+        class="px-4 pb-24 grid grid-cols-2 gap-4"
+        data-purpose="destination-grid"
+      >
+        <!-- Card 1: North America -->
+        <div class="relative rounded-2xl overflow-hidden aspect-[3/4]">
+          <img
+            alt="North America"
+            class="w-full h-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1YgCqAM1GLl4LkclUwZanP81m-mBUnFyNdVYP8sCHCoJJZYfMRijq1jZGABa_cUTBf0axXLSu5Kic9daI9JoER0T87XxF8FVUDAfEsd3reSujt8C8kPGBSfViR1sd6rn09V4HEJb3kreVnwC1MFBS9cKJZgwnmbf5gCG9J3y3kIEnaWQyVUyq0oJgPHrlblXcr_wZHUXc9bT3GTwIduju8AVEPpH8xk-8-zMIQTVVi2DpSBkUm3av38YxeBjxFj2cuwnYeNxvkzE"
+          />
+          <div class="absolute inset-0 bg-black/20"></div>
+          <div class="absolute top-4 left-4">
+            <div
+              class="text-white/80 text-[10px] font-bold uppercase tracking-wider"
+            >
+              Explore
+            </div>
+            <div class="text-white text-2xl font-black leading-tight">
+              North<br />America
+            </div>
+          </div>
+          <div class="absolute bottom-4 left-0 right-0 px-3">
+            <div
+              class="bg-blue-600/90 text-white text-[10px] font-bold py-1 px-2 mb-3 inline-block rounded-r-full"
+            >
+              Travel deals up to <span class="text-yellow-300">50% OFF</span>
+            </div>
+            <button
+              class="w-full bg-white text-tripBlue text-xs font-bold py-2 rounded-full shadow-lg"
+            >
+              View Deals
+            </button>
+            <div class="text-[8px] text-white/60 mt-1 text-center">
+              *T&amp;Cs apply. Subject to availability.
+            </div>
+          </div>
+          <div
+            class="absolute bottom-4 right-4 bg-black/40 text-white text-[10px] px-1.5 py-0.5 rounded"
+          >
+            8/11
+          </div>
+        </div>
+        <!-- Card 2: Dhaka -->
+        <div
+          class="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col"
+        >
+          <div class="relative h-40">
+            <img
+              alt="Dhaka"
+              class="w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqqF0klhUwsxJFYPz4bLHT8GPTOJiI8rohWPgTLM2SeWzL8PFImvY7udmRDs7JdI4AsuPDTfUqsKjVKcdZA0AwrSfJSqEML0Lky0ieFA2MDHYmVKnNMWwyatZkMY5XA0xExPf7z13aqb92X73UVPOU7xuSb1DYKMau9v8XunwKe7mURYdW0cqUvfMR3NKcpEFwgqysMlcIaJiCOcsnRqICiYvMEJTGsgOlUGaZPdGNsoFNCIYMqS2k37Guc-rmZu5ESOt-UQKjyxg"
+            />
+            <div
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            >
+              <div class="bg-black/60 px-4 py-1 text-white text-2xl font-serif">
+                Dhaka
+              </div>
+            </div>
+          </div>
+          <div class="p-3 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="text-sm font-bold leading-tight mb-2">
+                3-day classic trip in Dhaka
+              </h3>
+              <div
+                class="flex items-center text-tripBlue font-bold space-x-1 mb-2"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  ></path>
+                </svg>
+                <span class="text-xs">Trip.Planner</span>
+              </div>
+            </div>
+            <button
+              class="w-full bg-blue-600 text-white text-[10px] font-bold py-1.5 rounded flex items-center justify-center"
+            >
+              Create itinerary with AI
+            </button>
+          </div>
+        </div>
+        <!-- Card 3: Phi Phi -->
+        <div class="relative rounded-2xl overflow-hidden aspect-[3/4]">
+          <img
+            alt="Phi Phi"
+            class="w-full h-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWF-fJ-n7PPSJSkBCHUPWQ4uUwLdkAFXIWQmdM6L634pM0gNBYNhOBfBRCho4jQWZz9Hib1s9lY0KHMuygwThYaHi32LT8US5OCDsIjrLZIyi6hCnTSK6Z7gGw4LnUYjjet0Y3Ptl8JbBLKTGKCzQ1sM7hGykVUmcLAN1Wtj5yRhiQjh6ZqqIVixzkLWkBPS97HC1M4Ztn3dt2w00Lwxw5MOxLVKoeWSQZW0nT8BLNlm32hxX0BWhy9WxCQyn-nvclRINFZTyUV2k"
+          />
+          <div class="absolute top-3 right-3">
+            <svg
+              class="w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+          <div
+            class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent"
+          >
+            <div class="text-white font-bold text-sm">Phi Phi: Full-Day...</div>
+          </div>
+        </div>
+        <!-- Card 4: Generic Post -->
+        <div class="relative rounded-2xl overflow-hidden aspect-[3/4]">
+          <img
+            alt="View"
+            class="w-full h-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtxrG5NxCdLI4a9shMIbxDkffgZlX_a8MNVhSrq3XSd2KsYZSO9ZxaLKnwClIZRvpJjhZHWUqScnUYgg9oT-znvNPePjMbNOxvSSEW1QNwA0S7Z-6_LEwMpRU1dlAfcH2pfy6gdg_guKIBdEqXI6aG3bcSZeiLb1eyLwMg4rbzJOyDtdL3aTQ6tNoKNGiS2GzwfDG7tx5x1YfRVTBTGNnp91E1Q5D0hsJn1GRUJlWlMI4CWNdOKasy5PGPUMAMu_yO_fCuOdwyNdg"
+          />
+          <div class="absolute top-3 right-3">
+            <svg
+              class="w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </section>
+      <!-- END: DestinationCards -->
+      <!-- BEGIN: FloatingAIPill -->
+      <div class="fixed bottom-20 left-1/2 -translate-x-1/2 z-50">
+        <div
+          class="ai-pill flex items-center bg-white/90 backdrop-blur-md px-6 py-3 rounded-full border border-blue-100"
+        >
+          <div
+            class="w-6 h-6 bg-tripBlue rounded-full flex items-center justify-center mr-3"
+          >
+            <svg
+              class="w-4 h-4 text-white"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H3V7h18v2z"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-tripBlue font-bold text-sm whitespace-nowrap"
+            >Ask AI or hold to speak</span
+          >
+        </div>
+      </div>
+      <!-- END: FloatingAIPill -->
+    </main>
+    <!-- END: MainContentContainer -->
+    <!-- BEGIN: BottomNav -->
+    <nav
+      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around items-center py-2 px-1 z-40"
+    >
+      <div class="flex flex-col items-center">
+        <div class="relative">
+          <svg
+            class="w-7 h-7 text-tripBlue"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+          </svg>
+          <div
+            class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border-2 border-white"
+          ></div>
+        </div>
+        <span class="text-[10px] font-bold text-tripBlue">Home</span>
+      </div>
+      <div class="flex flex-col items-center opacity-50">
+        <svg
+          class="w-7 h-7 text-gray-800"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+        <span class="text-[10px] font-bold text-gray-800">Messages</span>
+      </div>
+      <div class="flex flex-col items-center opacity-50">
+        <div
+          class="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center"
+        >
+          <svg
+            class="w-5 h-5 text-gray-800"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 4v16m8-8H4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+        </div>
+        <span class="text-[10px] font-bold text-gray-800">Post</span>
+      </div>
+      <div class="flex flex-col items-center opacity-50">
+        <svg
+          class="w-7 h-7 text-gray-800"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+        <span class="text-[10px] font-bold text-gray-800">My Trips</span>
+      </div>
+      <div class="flex flex-col items-center opacity-50">
+        <div
+          class="w-7 h-7 bg-gray-300 rounded-full flex items-center justify-center overflow-hidden"
+        >
+          <svg
+            class="w-6 h-6 text-gray-500"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+            ></path>
+          </svg>
+        </div>
+        <span class="text-[10px] font-bold text-gray-800">Account</span>
+      </div>
+    </nav>
+    <!-- END: BottomNav -->
+  </body>
+</html>

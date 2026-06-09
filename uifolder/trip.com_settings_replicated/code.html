@@ -1,0 +1,191 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Settings Screen</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style data-purpose="custom-fonts">
+      /* Using sans-serif as a base to mimic the Android/System font style seen in the image */
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+    </style>
+    <style data-purpose="layout-adjustments">
+      /* Fine-tuning for the "pixel-perfect" look based on the image */
+      .setting-row {
+        min-height: 56px;
+      }
+      .separator {
+        height: 1px;
+        background-color: #e5e7eb; /* tailwind gray-200 */
+      }
+      .text-secondary-value {
+        color: #94a3b8; /* slate-400 */
+      }
+      .text-primary-label {
+        color: #1e293b; /* slate-800 */
+      }
+    </style>
+  </head>
+  <body class="bg-white text-slate-800">
+    <!-- BEGIN: Header -->
+    <header class="flex items-center px-4 py-4 border-b border-gray-100">
+      <button aria-label="Go back" class="mr-6">
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewbox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+      </button>
+      <h1 class="text-xl font-medium">Settings</h1>
+    </header>
+    <!-- END: Header -->
+    <!-- BEGIN: MainContent -->
+    <main class="w-full">
+      <!-- BEGIN: LocalizationSettings -->
+      <section class="px-4 py-2" data-purpose="localization-group">
+        <!-- Language -->
+        <div class="setting-row flex justify-between items-center py-4">
+          <span class="text-lg">Language</span>
+          <span class="text-secondary-value text-lg">English</span>
+        </div>
+        <!-- Country or Region -->
+        <div class="setting-row flex justify-between items-center py-4">
+          <span class="text-lg">Country or Region</span>
+          <span class="text-secondary-value text-lg text-right"
+            >United States</span
+          >
+        </div>
+        <!-- Currency -->
+        <div class="setting-row flex justify-between items-center py-4">
+          <span class="text-lg">Currency</span>
+          <span class="text-secondary-value text-lg">USD</span>
+        </div>
+        <!-- Units -->
+        <div class="setting-row flex justify-between items-center py-4">
+          <span class="text-lg">Units</span>
+          <span class="text-secondary-value text-lg text-right"
+            >Imperial (miles, ft², lb)</span
+          >
+        </div>
+        <!-- Temperature Scale -->
+        <div class="setting-row flex justify-between items-center py-4">
+          <span class="text-lg">Temperature Scale</span>
+          <span class="text-secondary-value text-lg">Fahrenheit (°F)</span>
+        </div>
+        <!-- Time format -->
+        <div class="setting-row flex justify-between items-center py-4">
+          <span class="text-lg">Time format</span>
+          <span class="text-secondary-value text-lg">12-hour (am/pm)</span>
+        </div>
+      </section>
+      <!-- END: LocalizationSettings -->
+      <div class="separator mx-4 my-2"></div>
+      <!-- BEGIN: AccountSettings -->
+      <section class="px-4 py-2" data-purpose="account-group">
+        <!-- Manage my account -->
+        <div class="setting-row flex items-center py-4 cursor-pointer">
+          <span class="text-lg">Manage my account</span>
+        </div>
+        <!-- Scan QR Code -->
+        <div class="setting-row flex items-center py-4 cursor-pointer">
+          <span class="text-lg">Scan QR Code</span>
+        </div>
+      </section>
+      <!-- END: AccountSettings -->
+      <div class="separator mx-4 my-2"></div>
+      <!-- BEGIN: InterfaceSettings -->
+      <section class="px-4 py-2" data-purpose="interface-group">
+        <!-- Dark Theme Toggle -->
+        <div class="setting-row flex justify-between items-center py-4">
+          <span class="text-lg">Dark Theme</span>
+          <!-- Custom Toggle Switch -->
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input class="sr-only peer" type="checkbox" value="" />
+            <div
+              class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"
+            ></div>
+          </label>
+        </div>
+        <!-- Notifications -->
+        <div class="setting-row flex items-center py-4 cursor-pointer">
+          <span class="text-lg">Notifications</span>
+        </div>
+        <!-- Accessibility -->
+        <div class="setting-row flex items-center py-4 cursor-pointer">
+          <span class="text-lg">Accessibility</span>
+        </div>
+      </section>
+      <!-- END: InterfaceSettings -->
+      <div class="separator mx-4 my-2"></div>
+      <!-- BEGIN: LegalSettings -->
+      <section class="px-4 py-2" data-purpose="legal-group">
+        <!-- Terms & Conditions -->
+        <div class="setting-row flex items-center py-4 cursor-pointer">
+          <span class="text-lg text-slate-700">Terms &amp; Conditions</span>
+        </div>
+        <!-- Privacy Statement -->
+        <div class="setting-row flex items-center py-4 cursor-pointer">
+          <span class="text-lg text-slate-700">Privacy Statement</span>
+        </div>
+        <!-- Opt-out -->
+        <div class="setting-row flex items-center py-4 cursor-pointer">
+          <span class="text-lg text-slate-700"
+            >Opt-out of Sales and Targeted Advertising</span
+          >
+        </div>
+      </section>
+      <!-- END: LegalSettings -->
+    </main>
+    <!-- END: MainContent -->
+    <!-- Floating Badge (Bottom Right) -->
+    <div class="fixed bottom-20 right-4">
+      <img
+        alt="Badge"
+        class="w-12 h-12 rounded-full shadow-sm object-cover opacity-20 hover:opacity-100 transition-opacity"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLWDN414PMNjspIfbQJbdRBrsDiq9FpHIzZBMbsBMWpIIFRy_YDoubKCd1m90T4bLLbuKCmPqFnpGE5ciEcNKcnkwIHUV2hgOSDPhxsC0UfNF96oGDyv1csUQ8icY4qVYJdrTf7h0EvjbCHzpTxzzo8oADJxUgRGd58B12KUhnHJExczpKJCSLuMMClCDr9RvJ3htdhwTO3aCI7qC2PoxAFpgNj6fHEXSEhz2g0_DneywnUeE5bHNZvJ4-RN4rYWcJjv4pvy_5PNc"
+        style="object-position: 95% 91%; width: 50px; height: 50px"
+      />
+    </div>
+    <!-- BEGIN: NavigationBar -->
+    <nav
+      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 h-16 flex justify-around items-center px-8"
+    >
+      <button aria-label="Back" class="p-2">
+        <svg
+          class="text-gray-600"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-width="2"
+          viewbox="0 0 24 24"
+          width="24"
+        >
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <button aria-label="Home" class="p-2">
+        <div class="w-4 h-4 rounded-full border-2 border-gray-600"></div>
+      </button>
+      <button aria-label="Recent" class="p-2">
+        <div class="w-4 h-4 border-2 border-gray-600 rounded-sm"></div>
+      </button>
+    </nav>
+    <!-- END: NavigationBar -->
+  </body>
+</html>

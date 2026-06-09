@@ -1,0 +1,686 @@
+<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+      name="viewport"
+    />
+    <title>LuxeStay | Travel Community</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Work+Sans:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary": "#ffffff",
+              outline: "#767683",
+              "inverse-surface": "#2e3132",
+              "on-secondary-fixed-variant": "#574500",
+              "surface-variant": "#e1e3e4",
+              "surface-container-highest": "#e1e3e4",
+              "on-error": "#ffffff",
+              primary: "#000666",
+              "on-background": "#191c1d",
+              "secondary-fixed-dim": "#e9c349",
+              "primary-fixed-dim": "#bdc2ff",
+              "surface-container": "#edeeef",
+              "tertiary-fixed": "#efe3aa",
+              "on-tertiary-fixed": "#201c00",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-primary-container": "#8690ee",
+              "on-secondary-container": "#745c00",
+              "surface-container-low": "#f3f4f5",
+              "on-tertiary-fixed-variant": "#4e471c",
+              "on-surface": "#191c1d",
+              background: "#f8f9fa",
+              tertiary: "#675f32",
+              "surface-bright": "#f8f9fa",
+              "primary-fixed": "#e0e0ff",
+              "primary-container": "#1a237e",
+              "on-primary-fixed-variant": "#343d96",
+              secondary: "#735c00",
+              "on-surface-variant": "#454652",
+              "on-primary-fixed": "#000767",
+              "surface-tint": "#4c56af",
+              "on-secondary-fixed": "#241a00",
+              "error-container": "#ffdad6",
+              "on-error-container": "#93000a",
+              "tertiary-fixed-dim": "#d2c790",
+              "secondary-fixed": "#ffe088",
+              "tertiary-container": "#b6ac77",
+              "surface-container-high": "#e7e8e9",
+              "inverse-primary": "#bdc2ff",
+              surface: "#f8f9fa",
+              "on-tertiary-container": "#474016",
+              "surface-dim": "#d9dadb",
+              "outline-variant": "#c6c5d4",
+              error: "#ba1a1a",
+              "secondary-container": "#fed65b",
+              "on-primary": "#ffffff",
+              "inverse-on-surface": "#f0f1f2",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              base: "8px",
+              "stack-lg": "40px",
+              "stack-sm": "12px",
+              gutter: "16px",
+              "stack-md": "24px",
+              "container-margin": "20px",
+            },
+            fontFamily: {
+              "headline-lg-mobile": ["Plus Jakarta Sans"],
+              "body-sm": ["Work Sans"],
+              "headline-md": ["Plus Jakarta Sans"],
+              "body-md": ["Work Sans"],
+              "body-lg": ["Work Sans"],
+              "headline-lg": ["Plus Jakarta Sans"],
+              "display-lg": ["Plus Jakarta Sans"],
+              "label-md": ["Work Sans"],
+              "label-lg": ["Work Sans"],
+              "headline-sm": ["Plus Jakarta Sans"],
+            },
+            fontSize: {
+              "headline-lg-mobile": [
+                "28px",
+                { lineHeight: "36px", fontWeight: "700" },
+              ],
+              "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+              "headline-md": [
+                "24px",
+                {
+                  lineHeight: "32px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "600",
+                },
+              ],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "headline-lg": [
+                "32px",
+                {
+                  lineHeight: "40px",
+                  letterSpacing: "-0.03em",
+                  fontWeight: "700",
+                },
+              ],
+              "display-lg": [
+                "40px",
+                {
+                  lineHeight: "48px",
+                  letterSpacing: "-0.04em",
+                  fontWeight: "700",
+                },
+              ],
+              "label-md": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+              "label-lg": [
+                "14px",
+                {
+                  lineHeight: "16px",
+                  letterSpacing: "0.05em",
+                  fontWeight: "600",
+                },
+              ],
+              "headline-sm": [
+                "20px",
+                { lineHeight: "28px", fontWeight: "600" },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .glass-nav {
+        background: rgba(248, 249, 250, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+      .story-ring {
+        background: linear-gradient(45deg, #1a237e, #fed65b);
+        padding: 2px;
+      }
+      .premium-shadow {
+        box-shadow:
+          0 4px 10px rgba(0, 0, 0, 0.08),
+          0 20px 40px rgba(0, 0, 0, 0.04);
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body class="bg-background text-on-surface font-body-md antialiased">
+    <!-- Top App Bar -->
+    <header
+      class="fixed top-0 w-full z-50 glass-nav shadow-sm flex items-center justify-between px-container-margin py-base"
+    >
+      <div class="flex items-center gap-base">
+        <span
+          class="material-symbols-outlined text-primary"
+          style="font-variation-settings: &quot;FILL&quot; 0"
+          >menu</span
+        >
+        <h1
+          class="font-headline-sm text-headline-sm tracking-tighter text-primary"
+        >
+          Travel Community
+        </h1>
+      </div>
+      <div class="flex items-center gap-gutter">
+        <span
+          class="material-symbols-outlined text-on-surface-variant active:scale-95 transition-transform"
+          >search</span
+        >
+        <div class="relative">
+          <span
+            class="material-symbols-outlined text-on-surface-variant active:scale-95 transition-transform"
+            >notifications</span
+          >
+          <span
+            class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"
+          ></span>
+        </div>
+      </div>
+    </header>
+    <main class="pt-[64px] pb-[100px]">
+      <!-- Stories Bar -->
+      <section class="py-stack-sm mt-base">
+        <div
+          class="flex items-center gap-gutter overflow-x-auto px-container-margin hide-scrollbar"
+        >
+          <!-- Add Story -->
+          <div class="flex flex-col items-center gap-1 flex-shrink-0">
+            <div
+              class="w-16 h-16 rounded-full border-2 border-dashed border-outline-variant flex items-center justify-center bg-surface-container-low active:scale-90 transition-transform"
+            >
+              <span class="material-symbols-outlined text-primary"
+                >add_circle</span
+              >
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Post</span
+            >
+          </div>
+          <!-- User Stories -->
+          <div class="flex flex-col items-center gap-1 flex-shrink-0">
+            <div
+              class="story-ring rounded-full active:scale-90 transition-transform"
+            >
+              <div
+                class="w-16 h-16 rounded-full border-2 border-surface overflow-hidden"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="A professional close-up portrait of a smiling solo traveler with a warm, sun-kissed complexion. The background is a soft-focus Mediterranean village with terracotta roofs and turquoise sea. The lighting is golden-hour soft, evoking a sense of adventure and refined luxury."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl0iWhRKgwp1vOz1VwEthPCmIbts-xjwFDoFR960YggifC2bxX3UCnh6GqtIG-EeBZOTLhqbkevh-tJw_iWryFwztTtMT6kGL-dXlElwapIRFwnIazmtqv6RM63bTpUvfPP5r7OApHatnA7CZ8lQQ0QHhJqizklIeEX992wqxoQoDVNgbnQu7E6SCzbsuU__dVlzs2_FSSKUio6DIblX9BxW6v2KfgDqtQidRQIT2VgFg9ZYYyqenUHX8IEg9YQlylDFC43ZL2c-k"
+                />
+              </div>
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Marcus</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-1 flex-shrink-0">
+            <div
+              class="story-ring rounded-full active:scale-90 transition-transform"
+            >
+              <div
+                class="w-16 h-16 rounded-full border-2 border-surface overflow-hidden"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="An editorial style headshot of a sophisticated woman traveler in a chic sun hat. The background shows a high-end infinity pool overlooking a tropical jungle at sunrise. Cool blues and warm oranges dominate the palette, creating an atmosphere of exclusivity and quiet luxury."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeSGbgMc_K5ZpySKHPXOynBpueeKtx6nEahFzCAt5NIyaGuUCcVkrpKfUB8PmGHCDBAoxq5gmL7TVZ8fnI0131yhYLnJHhCW96pVCHsu42w9GTej4h8a48yILNjWS6l3WV1kk_K0rj490esiptw1cTjxpshB2euLLIEQJu6Jbo_5UnnLGhbfnMMY96pIJ6d08txAYQ1UVNJnLsGZO39vb7ja0TiUv2bzgoMvUaga8dhb-YjWKy2afySjJWjJBEDLD5BWiUomMA81A"
+                />
+              </div>
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Elena</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-1 flex-shrink-0">
+            <div
+              class="story-ring rounded-full active:scale-90 transition-transform"
+            >
+              <div
+                class="w-16 h-16 rounded-full border-2 border-surface overflow-hidden"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="A candid, high-fidelity portrait of a young male explorer wearing premium outdoor gear. He stands before a mist-covered alpine lake with sharp granite peaks in the distance. The mood is moody, atmospheric, and adventurous, utilizing a palette of deep forest greens and slate grays."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA5CWLHtbDZHPy7ZJZnE4GxJojZdcWeNIm0qgTsLF84TdxA68zTVmH-QF5nwbpFYYyVwSz7ZlTjQjkfzmjdMiJ5UwZecrN9yQnTCBq6y6zCbqXuxXi6gfXf0iFrQWU3MsTk-15zhjS5ni8Wj8QF6skUwonapk5XwF3LI_00TYwPpbaJOkJlEZRng0b5F_K7tQknw1oONHA-kpoiCAGQt6wuviH8EbueNI120CJzGk_VM48-irwTsTUErIo5IDAVRzhqBUfkVO4O4M"
+                />
+              </div>
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Julian</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-1 flex-shrink-0">
+            <div
+              class="story-ring rounded-full active:scale-90 transition-transform"
+            >
+              <div
+                class="w-16 h-16 rounded-full border-2 border-surface overflow-hidden"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="A portrait of a vibrant woman in artisanal jewelry, laughing against the colorful, textured walls of a Moroccan souk. The image is rich with vibrant colors like saffron, cobalt blue, and terracotta. The lighting is bright and natural, capturing a moment of pure travel joy and cultural immersion."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIcSpK_yo1E_-facU7TnjCc2T8kySOZoZtuH0Y1nwqZxG9-5IcDSr0cRxU3xp7Qx9f79BiXEyaEnQY7U4UqQ0i0r-25r4yMyFHND9fWki_ThuYaKi90h9N5vYRb4-pZTAQhUMFgH1ijYdpfAateAEPFKg_MIVh2DNNGJDvwouxTlNAyrTpHErWZ5R4LwUhpfQj8jwOWMwnROiC_edaL0HKdG1H1tSXYRyJi3J9JuXIpc9H0oE8tGORAh4x-0lY8qCHXaItZlFVm24"
+                />
+              </div>
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Sasha</span
+            >
+          </div>
+        </div>
+      </section>
+      <!-- Main Feed -->
+      <section class="space-y-stack-lg px-container-margin">
+        <!-- Highlighted Influencer Post -->
+        <article
+          class="bg-surface-container-lowest rounded-xl overflow-hidden premium-shadow"
+        >
+          <div class="p-base flex items-center justify-between">
+            <div class="flex items-center gap-stack-sm">
+              <div class="w-10 h-10 rounded-full overflow-hidden">
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="A close-up of a fashion-forward traveler with a confident gaze. She is wearing a silk headscarf and gold accessories. The background is a soft blur of a luxury yacht deck under a clear blue sky. The visual style is polished, editorial, and aspirational."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtTEz6JOzioogYXyWVMGKsJ-UcKOQjj3UNaJf3qWvUtZa7pr63vlyT_W_KlJSsRYpt1Pe78BXnsSxQNsylE-FBGLxuYNQsyUqprdDypp1fuCTOf3TbSPouFnO70FMgLGeCT9JC4dwPzccRO_lhC6hPUNNjrb67nLtL-RRnxBO2GCb0IbUu3VkPq389Sj8YnNVQLn-tDOiCoCRP6qqI-Lo8aEzPTRRcfpOL4_0WWURS9ya8LoR23IwfMnmVY8mUBjY5rQLsKBAtlBU"
+                />
+              </div>
+              <div>
+                <div class="flex items-center gap-1">
+                  <h3 class="font-label-lg text-label-lg text-primary">
+                    Julianna V.
+                  </h3>
+                  <span
+                    class="material-symbols-outlined text-[14px] text-secondary"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >verified</span
+                  >
+                  <span
+                    class="bg-secondary-container/20 text-on-secondary-container text-[10px] px-2 py-0.5 rounded-full font-bold"
+                    >Influencer</span
+                  >
+                </div>
+                <p class="text-[12px] text-outline">Amalfi Coast, Italy</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant"
+              >more_vert</span
+            >
+          </div>
+          <div class="relative aspect-square">
+            <img
+              class="w-full h-full object-cover"
+              data-alt="A breathtaking wide-angle shot of a luxury cliffside villa in Positano, overlooking the shimmering Tyrrhenian Sea at dusk. The warm glow of villa lights contrasts beautifully with the deep indigo of the ocean and the soft pink sky. The composition is cinematic and evokes a high-end, editorial travel magazine aesthetic."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0q6b1CS4XV8lpMMXk3WU9zciUv5655SXopOCMZ3CJKTwiKCuR0ZNyhusKAyg8kldA93tQhg2hl8eAFcn8HoFG53nBzNtzRiYvj4RprvHoGLZRvu6eQKz9wnoQhz7zcdAeSMFizR-SxewaqeUAIqdNZ8HWOHt86SrSJeWX9oblDfWPrRd-AxwaHHGUyLGm9qIBwV4r1Qa_MkJPllInnZ2nzjKr6UjICu1cUpSlBQuB6mR3dqgKzAxM_1pZQHxP6HRUavb5RvN6tB4"
+            />
+            <div
+              class="absolute bottom-4 left-4 right-4 glass-nav p-stack-sm rounded-lg flex justify-between items-center"
+            >
+              <span class="text-primary font-label-md text-label-md"
+                >Book this Experience</span
+              >
+              <span class="material-symbols-outlined text-primary"
+                >arrow_forward_ios</span
+              >
+            </div>
+          </div>
+          <div class="p-base">
+            <div class="flex items-center gap-gutter mb-base">
+              <span
+                class="material-symbols-outlined text-error"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >favorite</span
+              >
+              <span class="material-symbols-outlined text-on-surface-variant"
+                >chat_bubble</span
+              >
+              <span class="material-symbols-outlined text-on-surface-variant"
+                >send</span
+              >
+              <div class="flex-grow"></div>
+              <span class="material-symbols-outlined text-on-surface-variant"
+                >bookmark</span
+              >
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface">
+              <span class="font-bold">Julianna V.</span> Waking up to this view
+              is a dream. Highly recommend staying at Villa Treville for the
+              ultimate Amalfi experience. #LuxuryTravel #AmalfiCoast
+            </p>
+            <p class="text-[12px] text-outline mt-1">View all 142 comments</p>
+          </div>
+        </article>
+        <!-- Poll Widget -->
+        <article
+          class="bg-primary-container p-stack-md rounded-xl text-on-primary"
+        >
+          <div class="flex items-center gap-2 mb-stack-sm">
+            <span class="material-symbols-outlined text-secondary-container"
+              >ballot</span
+            >
+            <h3 class="font-headline-sm text-headline-sm">Community Poll</h3>
+          </div>
+          <p class="font-body-md text-body-md mb-stack-md">
+            Where should we organize the next LuxeStay Member Meetup?
+          </p>
+          <div class="space-y-base">
+            <button
+              class="w-full py-base px-gutter border border-on-primary/30 rounded-lg flex items-center justify-between active:bg-on-primary/10 transition-colors"
+            >
+              <span class="font-label-lg text-label-lg">Santorini, Greece</span>
+              <span class="font-label-md text-label-md opacity-70">42%</span>
+            </button>
+            <button
+              class="w-full py-base px-gutter bg-secondary-container text-on-secondary-container rounded-lg flex items-center justify-between shadow-lg"
+            >
+              <span class="font-label-lg text-label-lg">Kyoto, Japan</span>
+              <span class="font-label-md text-label-md">58%</span>
+            </button>
+          </div>
+          <p class="text-[12px] opacity-60 mt-stack-sm">
+            1,204 members voted • 2 days left
+          </p>
+        </article>
+        <!-- Meet Travelers Section -->
+        <article>
+          <div class="flex items-center justify-between mb-stack-sm">
+            <h3 class="font-headline-sm text-headline-sm text-primary">
+              Meet Travelers
+            </h3>
+            <button class="text-secondary font-label-lg text-label-lg">
+              See All
+            </button>
+          </div>
+          <div class="flex gap-gutter overflow-x-auto hide-scrollbar pb-base">
+            <!-- Traveler Card -->
+            <div
+              class="flex-shrink-0 w-40 bg-surface-container-lowest p-stack-sm rounded-xl premium-shadow flex flex-col items-center text-center"
+            >
+              <div
+                class="w-20 h-20 rounded-full overflow-hidden mb-base border-2 border-secondary-container"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="A portrait of a ruggedly handsome man in a linen shirt, smiling warmly. He is standing on a cobblestone street in a historic European city. Soft afternoon sunlight highlights the textures and architecture behind him, creating a feeling of timeless, sophisticated travel."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR1pDcBQVQEsQ2jqk0joMYRuUkiz6TYVbj6g64JlugwLAo1pYMqWQf8Upg7lTmO5oTQCc_e1o3KhteEm4pGyx5-M8PBeaGA5DSSwxjWYJkOG7Rx0Ymb5VTjcuZ8WtwWtNtodbylJqVFFhC88iuMbCLOB_CDX1wY-lJRwtN-ON6v-fK8qXd0rrnEWLKt58VkxiZToelL438_UNadN2QIJvNk94u34LVvjsFBn_jzdfy73e4TU_YkSJdf22bmBCNx8Fsk5O91mBfOUY"
+                />
+              </div>
+              <h4 class="font-label-lg text-label-lg text-primary">David K.</h4>
+              <p
+                class="text-[10px] text-outline uppercase tracking-wider mb-base"
+              >
+                Global Nomad
+              </p>
+              <button
+                class="bg-primary text-on-primary px-4 py-1 rounded-full text-[12px] font-bold w-full active:scale-95 transition-transform"
+              >
+                Connect
+              </button>
+            </div>
+            <!-- Traveler Card -->
+            <div
+              class="flex-shrink-0 w-40 bg-surface-container-lowest p-stack-sm rounded-xl premium-shadow flex flex-col items-center text-center"
+            >
+              <div
+                class="w-20 h-20 rounded-full overflow-hidden mb-base border-2 border-secondary-container"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="A stylish woman with natural hair and oversized sunglasses, relaxing at an outdoor Parisian cafe. The background features blurred cafe tables and a hint of French architecture. The overall aesthetic is chic, urban, and luxury-focused with a bright, airy color palette."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT0rF8yxgoFepLBVf1Yt15HwdxO3892578JtkWPXPicbA9wFDQ907Pv8jLpY-CpDizjoJmO-q0dH8Zz3S_H_Q_MIwVANd_QLJZWkPnoZd7fc1myZv3y4FRiGd9hJkplDen93hUGZ3fTMpmYNbB3kreVTdg24T9k1rFWk2u8-6hRdz3tief0sV0bjqVIqToJoKiuCdZWfIGpMsP9cexqaeLNxkvILZGVRvbVx86K3yU2CfJXOsYydBvZLGYgVyvbcrR-dBw57opsPY"
+                />
+              </div>
+              <h4 class="font-label-lg text-label-lg text-primary">Amara L.</h4>
+              <p
+                class="text-[10px] text-outline uppercase tracking-wider mb-base"
+              >
+                Art Curator
+              </p>
+              <button
+                class="bg-primary text-on-primary px-4 py-1 rounded-full text-[12px] font-bold w-full active:scale-95 transition-transform"
+              >
+                Connect
+              </button>
+            </div>
+            <!-- Traveler Card -->
+            <div
+              class="flex-shrink-0 w-40 bg-surface-container-lowest p-stack-sm rounded-xl premium-shadow flex flex-col items-center text-center"
+            >
+              <div
+                class="w-20 h-20 rounded-full overflow-hidden mb-base border-2 border-secondary-container"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="A high-contrast black and white portrait of a man looking out over a mountain range. The lighting is dramatic, emphasizing the scale of the landscape and the thoughtfulness of the traveler. The style is adventurous yet deeply contemplative and artistic."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXXB6EakXKFoc_o_5Q_pDpCRanQXZLIPgGeJ4uDA98XIZPrsf6RFk9Fqnemro01O93JYI-0lyiFSFsS_ejNve1NnaCu-ltxnE_OpRlQ5fE7X62qz58j4wSzf9IlgB1cZceddKr_DYVxT2CxT4MiVkbyWbhPFbh8Q9FzUPuaiqwXvW4S1qzSf7_7pwlfZ-0_qz7kuUM81TxfRXFCQgLhTYyD_PMpLOYyshrL9NNTtox3R7gMiibgwEaX8gOUyA0BXovyyHa3CoJPU8"
+                />
+              </div>
+              <h4 class="font-label-lg text-label-lg text-primary">Leo S.</h4>
+              <p
+                class="text-[10px] text-outline uppercase tracking-wider mb-base"
+              >
+                Adventure Lead
+              </p>
+              <button
+                class="bg-primary text-on-primary px-4 py-1 rounded-full text-[12px] font-bold w-full active:scale-95 transition-transform"
+              >
+                Connect
+              </button>
+            </div>
+          </div>
+        </article>
+        <!-- Group Entries -->
+        <div class="grid grid-cols-2 gap-gutter">
+          <div
+            class="bg-surface-container-low p-stack-md rounded-xl flex flex-col gap-base border border-outline-variant/30 active:scale-95 transition-transform"
+          >
+            <span class="material-symbols-outlined text-primary text-[32px]"
+              >groups</span
+            >
+            <h3 class="font-headline-sm text-headline-sm text-primary">
+              Join Groups
+            </h3>
+            <p class="text-[12px] text-on-surface-variant">
+              Connect with like-minded travelers.
+            </p>
+          </div>
+          <div
+            class="bg-secondary-container/20 p-stack-md rounded-xl flex flex-col gap-base border border-secondary-container active:scale-95 transition-transform"
+          >
+            <span class="material-symbols-outlined text-secondary text-[32px]"
+              >forum</span
+            >
+            <h3 class="font-headline-sm text-headline-sm text-secondary">
+              Group Chats
+            </h3>
+            <p class="text-[12px] text-on-surface-variant">
+              Real-time tips for your destination.
+            </p>
+          </div>
+        </div>
+        <!-- Standard Feed Post -->
+        <article
+          class="bg-surface-container-lowest rounded-xl overflow-hidden premium-shadow"
+        >
+          <div class="p-base flex items-center justify-between">
+            <div class="flex items-center gap-stack-sm">
+              <div class="w-10 h-10 rounded-full overflow-hidden">
+                <img
+                  class="w-full h-full object-cover"
+                  data-alt="A close-up of a young man with a playful expression, wearing a beanie. Behind him is the colorful, blurred lights of a Tokyo street at night. The lighting is neon-drenched and vibrant, capturing the energy of modern Japanese urban life."
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY-XFFlaNOKC4JY3929W9Ujc2i10xLdOhH_D0ERgJyGp98ciiw4UZJOuTiywt32B44Jx1kvCRjkFJO7qGeGGceoKbSbEjfQAHEpKaVaAU_0oBXw4Qfw1GcXlVBXS5xyikEA77Dly6k2cyDJQdcaA_DrRXHG87BtmQQ9JU2uaxq9R-KPL0xWy-vpinoXzNoADa7nn0SmCOTyPbCpV3RpkG27PLLakPLMhq-zGCbilX6tnjZ1pDjBb2SPXDwn2fe8aas8TqYyIYNdjo"
+                />
+              </div>
+              <div>
+                <div class="flex items-center gap-1">
+                  <h3 class="font-label-lg text-label-lg text-primary">
+                    Marcus Wong
+                  </h3>
+                  <div
+                    class="flex items-center bg-tertiary-fixed text-on-tertiary-fixed text-[10px] px-2 py-0.5 rounded-full font-bold"
+                  >
+                    <span
+                      class="material-symbols-outlined text-[10px] mr-1"
+                      style="font-variation-settings: &quot;FILL&quot; 1"
+                      >workspace_premium</span
+                    >
+                    Gold Member
+                  </div>
+                </div>
+                <p class="text-[12px] text-outline">Shibuya, Japan</p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant"
+              >more_vert</span
+            >
+          </div>
+          <div class="px-base mb-base">
+            <p class="font-body-sm text-body-sm text-on-surface">
+              The energy in Shibuya tonight is unmatched. Found this hidden
+              sushi bar that only seats 6 people. Pure magic! 🍣🇯🇵
+            </p>
+          </div>
+          <div class="relative aspect-[4/3]">
+            <img
+              class="w-full h-full object-cover"
+              data-alt="A vivid, wide-angle nighttime photograph of the Shibuya crossing in Tokyo. The scene is illuminated by glowing neon billboards and streaks of light from traffic. The atmosphere is energetic and futuristic, with a sophisticated urban palette of electric blues, magentas, and crisp whites."
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYBCY-tMBB2j_TcdNPBmUdJlYYfKKboAp4m9Endb4BUXYmZ32lzUtlVejpoh1dczFngkK0OiE0ZPmpAuTSBmwaJ5mTp3lLBy__GojoFYmE0zycgARKzdrwKR-t9FNd1PeuRNx1h8e_KLdKvHG2ZZR8EBbJQxXXgqoqlNh7T8lnLZ-JQiIMzEAtnyy3zXBr6O8Fyv92IaIe5YUTRXG4w28CeyNAabbQiE3ySApeYhB-6lJif_IUq_E6V1I-d5BUNTUZSDbf_xy45y4"
+            />
+          </div>
+          <div class="p-base flex items-center justify-between">
+            <div class="flex items-center -space-x-2">
+              <div
+                class="w-6 h-6 rounded-full border-2 border-surface bg-primary text-white text-[8px] flex items-center justify-center"
+              >
+                LW
+              </div>
+              <div
+                class="w-6 h-6 rounded-full border-2 border-surface bg-secondary text-white text-[8px] flex items-center justify-center"
+              >
+                KP
+              </div>
+              <div
+                class="w-6 h-6 rounded-full border-2 border-surface bg-tertiary text-white text-[8px] flex items-center justify-center"
+              >
+                +12
+              </div>
+            </div>
+            <div class="flex items-center gap-stack-sm text-on-surface-variant">
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[18px]"
+                  >favorite</span
+                >
+                <span class="text-[12px]">284</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[18px]"
+                  >chat_bubble</span
+                >
+                <span class="text-[12px]">32</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <!-- Bottom Navigation Bar -->
+    <nav
+      class="fixed bottom-0 left-0 w-full glass-nav flex justify-around items-center px-base py-stack-sm pb-6 z-50 shadow-[0_-4px_20px_0_rgba(0,0,0,0.05)] rounded-t-xl"
+    >
+      <a
+        class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform"
+        href="#"
+      >
+        <span class="material-symbols-outlined">home</span>
+        <span class="font-label-md text-[10px]">Home</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform"
+        href="#"
+      >
+        <span class="material-symbols-outlined">chat_bubble</span>
+        <span class="font-label-md text-[10px]">Messages</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed bg-secondary-container/30 rounded-full px-4 py-1 active:scale-90 transition-transform"
+        href="#"
+      >
+        <span
+          class="material-symbols-outlined"
+          style="font-variation-settings: &quot;FILL&quot; 1"
+          >add_circle</span
+        >
+        <span class="font-label-md text-[10px] font-bold">Post</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform"
+        href="#"
+      >
+        <span class="material-symbols-outlined">travel_explore</span>
+        <span class="font-label-md text-[10px]">My Trips</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform"
+        href="#"
+      >
+        <span class="material-symbols-outlined">person_pin</span>
+        <span class="font-label-md text-[10px]">Account</span>
+      </a>
+    </nav>
+    <script>
+      // Simple micro-interaction for heart icon
+      document
+        .querySelectorAll(".material-symbols-outlined")
+        .forEach((icon) => {
+          if (icon.textContent === "favorite") {
+            icon.addEventListener("click", function () {
+              const isFilled =
+                this.style.fontVariationSettings.includes("'FILL' 1");
+              this.style.fontVariationSettings = isFilled
+                ? "'FILL' 0"
+                : "'FILL' 1";
+              this.classList.toggle("text-error", !isFilled);
+              this.classList.toggle("text-on-surface-variant", isFilled);
+            });
+          }
+        });
+    </script>
+  </body>
+</html>

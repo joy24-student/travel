@@ -1,0 +1,692 @@
+<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+      name="viewport"
+    />
+    <title>LuxeStay | Travel Community</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Work+Sans:wght@400;500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "secondary-fixed-dim": "#e9c349",
+              primary: "#000666",
+              "on-tertiary-fixed": "#201c00",
+              "on-surface-variant": "#454652",
+              "on-secondary-container": "#745c00",
+              background: "#f8f9fa",
+              "outline-variant": "#c6c5d4",
+              "on-error": "#ffffff",
+              "surface-container-low": "#f3f4f5",
+              tertiary: "#675f32",
+              "on-secondary-fixed-variant": "#574500",
+              "surface-bright": "#f8f9fa",
+              "inverse-primary": "#bdc2ff",
+              "inverse-on-surface": "#f0f1f2",
+              "primary-fixed": "#e0e0ff",
+              "on-primary-container": "#8690ee",
+              "tertiary-fixed": "#efe3aa",
+              outline: "#767683",
+              "on-error-container": "#93000a",
+              "tertiary-container": "#b6ac77",
+              "secondary-fixed": "#ffe088",
+              "surface-variant": "#e1e3e4",
+              "surface-container-high": "#e7e8e9",
+              "tertiary-fixed-dim": "#d2c790",
+              "surface-container": "#edeeef",
+              "on-primary-fixed-variant": "#343d96",
+              "on-primary": "#ffffff",
+              surface: "#f8f9fa",
+              "on-tertiary-container": "#474016",
+              "error-container": "#ffdad6",
+              "inverse-surface": "#2e3132",
+              "on-secondary": "#ffffff",
+              "on-tertiary": "#ffffff",
+              "surface-dim": "#d9dadb",
+              "on-surface": "#191c1d",
+              "on-background": "#191c1d",
+              "primary-container": "#1a237e",
+              "on-primary-fixed": "#000767",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#4e471c",
+              "on-secondary-fixed": "#241a00",
+              secondary: "#735c00",
+              "primary-fixed-dim": "#bdc2ff",
+              error: "#ba1a1a",
+              "surface-container-highest": "#e1e3e4",
+              "surface-tint": "#4c56af",
+              "secondary-container": "#fed65b",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              "stack-sm": "12px",
+              "stack-md": "24px",
+              "container-margin": "20px",
+              "stack-lg": "40px",
+              gutter: "16px",
+              base: "8px",
+            },
+            fontFamily: {
+              "display-lg": ["Plus Jakarta Sans"],
+              "label-md": ["Work Sans"],
+              "headline-md": ["Plus Jakarta Sans"],
+              "headline-lg": ["Plus Jakarta Sans"],
+              "headline-lg-mobile": ["Plus Jakarta Sans"],
+              "headline-sm": ["Plus Jakarta Sans"],
+              "body-lg": ["Work Sans"],
+              "label-lg": ["Work Sans"],
+              "body-md": ["Work Sans"],
+              "body-sm": ["Work Sans"],
+            },
+            fontSize: {
+              "display-lg": [
+                "40px",
+                {
+                  lineHeight: "48px",
+                  letterSpacing: "-0.04em",
+                  fontWeight: "700",
+                },
+              ],
+              "label-md": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+              "headline-md": [
+                "24px",
+                {
+                  lineHeight: "32px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "600",
+                },
+              ],
+              "headline-lg": [
+                "32px",
+                {
+                  lineHeight: "40px",
+                  letterSpacing: "-0.03em",
+                  fontWeight: "700",
+                },
+              ],
+              "headline-lg-mobile": [
+                "28px",
+                { lineHeight: "36px", fontWeight: "700" },
+              ],
+              "headline-sm": [
+                "20px",
+                { lineHeight: "28px", fontWeight: "600" },
+              ],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "label-lg": [
+                "14px",
+                {
+                  lineHeight: "16px",
+                  letterSpacing: "0.05em",
+                  fontWeight: "600",
+                },
+              ],
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+              "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .glass-nav {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      }
+      .story-ring {
+        padding: 2px;
+        background: linear-gradient(45deg, #000666, #fed65b);
+      }
+      .premium-shadow {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+      }
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-surface-container-lowest text-on-surface font-body-md antialiased"
+  >
+    <!-- Top App Bar - Refined per Brand Style -->
+    <header
+      class="fixed top-0 w-full z-50 bg-white border-b border-outline-variant/30 flex items-center justify-between px-container-margin h-[64px]"
+    >
+      <div class="flex items-center gap-4">
+        <span class="material-symbols-outlined text-on-surface">menu</span>
+        <h1
+          class="font-display-lg text-[22px] tracking-tight text-on-surface font-bold"
+        >
+          Travel Community
+        </h1>
+      </div>
+      <div class="flex items-center gap-5">
+        <span class="material-symbols-outlined text-on-surface text-[24px]"
+          >search</span
+        >
+        <div class="relative">
+          <span class="material-symbols-outlined text-on-surface text-[24px]"
+            >notifications</span
+          >
+          <span
+            class="absolute top-0 right-0 w-1.5 h-1.5 bg-error rounded-full"
+          ></span>
+        </div>
+      </div>
+    </header>
+    <main class="pt-[64px] pb-[100px]">
+      <!-- Stories Bar -->
+      <section class="py-stack-md bg-white border-b border-outline-variant/10">
+        <div
+          class="flex items-center gap- gutter overflow-x-auto px-container-margin hide-scrollbar"
+        >
+          <!-- Add Story -->
+          <div class="flex flex-col items-center gap-2 flex-shrink-0">
+            <div
+              class="w-16 h-16 rounded-full border border-dashed border-outline-variant flex items-center justify-center bg-surface-container-lowest active:scale-95 transition-transform"
+            >
+              <span class="material-symbols-outlined text-primary text-[28px]"
+                >add</span
+              >
+            </div>
+            <span class="font-label-md text-label-md text-on-surface-variant"
+              >Post</span
+            >
+          </div>
+          <!-- User Stories -->
+          <div class="flex flex-col items-center gap-2 flex-shrink-0">
+            <div class="story-ring rounded-full p-[2px]">
+              <div
+                class="w-16 h-16 rounded-full border-[2px] border-white overflow-hidden"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl0iWhRKgwp1vOz1VwEthPCmIbts-xjwFDoFR960YggifC2bxX3UCnh6GqtIG-EeBZOTLhqbkevh-tJw_iWryFwztTtMT6kGL-dXlElwapIRFwnIazmtqv6RM63bTpUvfPP5r7OApHatnA7CZ8lQQ0QHhJqizklIeEX992wqxoQoDVNgbnQu7E6SCzbsuU__dVlzs2_FSSKUio6DIblX9BxW6v2KfgDqtQidRQIT2VgFg9ZYYyqenUHX8IEg9YQlylDFC43ZL2c-k"
+                />
+              </div>
+            </div>
+            <span
+              class="font-label-md text-label-md text-on-surface font-medium"
+              >Marcus</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-2 flex-shrink-0">
+            <div class="story-ring rounded-full p-[2px]">
+              <div
+                class="w-16 h-16 rounded-full border-[2px] border-white overflow-hidden"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeSGbgMc_K5ZpySKHPXOynBpueeKtx6nEahFzCAt5NIyaGuUCcVkrpKfUB8PmGHCDBAoxq5gmL7TVZ8fnI0131yhYLnJHhCW96pVCHsu42w9GTej4h8a48yILNjWS6l3WV1kk_K0rj490esiptw1cTjxpshB2euLLIEQJu6Jbo_5UnnLGhbfnMMY96pIJ6d08txAYQ1UVNJnLsGZO39vb7ja0TiUv2bzgoMvUaga8dhb-YjWKy2afySjJWjJBEDLD5BWiUomMA81A"
+                />
+              </div>
+            </div>
+            <span
+              class="font-label-md text-label-md text-on-surface font-medium"
+              >Elena</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-2 flex-shrink-0">
+            <div class="story-ring rounded-full p-[2px]">
+              <div
+                class="w-16 h-16 rounded-full border-[2px] border-white overflow-hidden"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA5CWLHtbDZHPy7ZJZnE4GxJojZdcWeNIm0qgTsLF84TdxA68zTVmH-QF5nwbpFYYyVwSz7ZlTjQjkfzmjdMiJ5UwZecrN9yQnTCBq6y6zCbqXuxXi6gfXf0iFrQWU3MsTk-15zhjS5ni8Wj8QF6skUwonapk5XwF3LI_00TYwPpbaJOkJlEZRng0b5F_K7tQknw1oONHA-kpoiCAGQt6wuviH8EbueNI120CJzGk_VM48-irwTsTUErIo5IDAVRzhqBUfkVO4O4M"
+                />
+              </div>
+            </div>
+            <span
+              class="font-label-md text-label-md text-on-surface font-medium"
+              >Julian</span
+            >
+          </div>
+          <div class="flex flex-col items-center gap-2 flex-shrink-0">
+            <div class="story-ring rounded-full p-[2px]">
+              <div
+                class="w-16 h-16 rounded-full border-[2px] border-white overflow-hidden"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIcSpK_yo1E_-facU7TnjCc2T8kySOZoZtuH0Y1nwqZxG9-5IcDSr0cRxU3xp7Qx9f79BiXEyaEnQY7U4UqQ0i0r-25r4yMyFHND9fWki_ThuYaKi90h9N5vYRb4-pZTAQhUMFgH1ijYdpfAateAEPFKg_MIVh2DNNGJDvwouxTlNAyrTpHErWZ5R4LwUhpfQj8jwOWMwnROiC_edaL0HKdG1H1tSXYRyJi3J9JuXIpc9H0oE8tGORAh4x-0lY8qCHXaItZlFVm24"
+                />
+              </div>
+            </div>
+            <span
+              class="font-label-md text-label-md text-on-surface font-medium"
+              >Sasha</span
+            >
+          </div>
+        </div>
+      </section>
+      <!-- Main Feed -->
+      <section class="mt-4 space-y-4 px-container-margin">
+        <!-- Influencer Post - Julianna V. -->
+        <article
+          class="bg-white rounded-xl border border-outline-variant/30 overflow-hidden premium-shadow"
+        >
+          <div class="p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtTEz6JOzioogYXyWVMGKsJ-UcKOQjj3UNaJf3qWvUtZa7pr63vlyT_W_KlJSsRYpt1Pe78BXnsSxQNsylE-FBGLxuYNQsyUqprdDypp1fuCTOf3TbSPouFnO70FMgLGeCT9JC4dwPzccRO_lhC6hPUNNjrb67nLtL-RRnxBO2GCb0IbUu3VkPq389Sj8YnNVQLn-tDOiCoCRP6qqI-Lo8aEzPTRRcfpOL4_0WWURS9ya8LoR23IwfMnmVY8mUBjY5rQLsKBAtlBU"
+                />
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <h3 class="font-headline-sm text-[16px] text-primary">
+                    Julianna V.
+                  </h3>
+                  <span
+                    class="material-symbols-outlined text-[16px] text-secondary-fixed-dim"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >verified</span
+                  >
+                  <span
+                    class="bg-secondary-container/30 text-on-secondary-container text-[10px] px-2 py-0.5 rounded-full font-bold tracking-tight"
+                    >INFLUENCER</span
+                  >
+                </div>
+                <p class="text-[12px] text-on-surface-variant font-medium">
+                  Amalfi Coast, Italy
+                </p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant"
+              >more_horiz</span
+            >
+          </div>
+          <div class="relative aspect-square">
+            <img
+              class="w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0q6b1CS4XV8lpMMXk3WU9zciUv5655SXopOCMZ3CJKTwiKCuR0ZNyhusKAyg8kldA93tQhg2hl8eAFcn8HoFG53nBzNtzRiYvj4RprvHoGLZRvu6eQKz9wnoQhz7zcdAeSMFizR-SxewaqeUAIqdNZ8HWOHt86SrSJeWX9oblDfWPrRd-AxwaHHGUyLGm9qIBwV4r1Qa_MkJPllInnZ2nzjKr6UjICu1cUpSlBQuB6mR3dqgKzAxM_1pZQHxP6HRUavb5RvN6tB4"
+            />
+            <div
+              class="absolute bottom-4 left-4 right-4 glass-nav border border-white/20 p-3 rounded-xl flex justify-between items-center premium-shadow"
+            >
+              <span class="text-primary font-label-lg text-label-lg"
+                >Book this Experience</span
+              >
+              <span class="material-symbols-outlined text-primary text-[20px]"
+                >chevron_right</span
+              >
+            </div>
+          </div>
+          <div class="p-4">
+            <div class="flex items-center gap-5 mb-3">
+              <span
+                class="material-symbols-outlined text-error text-[24px]"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >favorite</span
+              >
+              <span
+                class="material-symbols-outlined text-on-surface text-[24px]"
+                >chat_bubble_outline</span
+              >
+              <span
+                class="material-symbols-outlined text-on-surface text-[24px]"
+                >send</span
+              >
+              <div class="flex-grow"></div>
+              <span
+                class="material-symbols-outlined text-on-surface text-[24px]"
+                >bookmark_outline</span
+              >
+            </div>
+            <p
+              class="font-body-md text-body-md text-on-surface leading-relaxed"
+            >
+              <span class="font-bold">Julianna V.</span> Waking up to this view
+              is a dream. Highly recommend staying at Villa Treville for the
+              ultimate Amalfi experience. #LuxuryTravel #AmalfiCoast
+            </p>
+            <p class="text-[14px] text-outline mt-2 cursor-pointer font-medium">
+              View all 142 comments
+            </p>
+          </div>
+        </article>
+        <!-- Community Poll Widget - Redesigned -->
+        <article
+          class="bg-primary text-white p-6 rounded-2xl overflow-hidden relative premium-shadow"
+        >
+          <div class="absolute top-0 right-0 p-4 opacity-10">
+            <span class="material-symbols-outlined text-[120px]">poll</span>
+          </div>
+          <div class="flex items-center gap-3 mb-4">
+            <span class="material-symbols-outlined text-secondary-container"
+              >ballot</span
+            >
+            <h3 class="font-headline-md text-headline-md">Community Poll</h3>
+          </div>
+          <p class="font-body-lg text-body-lg mb-6 opacity-90">
+            Where should we organize the next LuxeStay Member Meetup?
+          </p>
+          <div class="space-y-3 relative z-10">
+            <button
+              class="w-full h-[48px] px-4 border border-white/20 rounded-xl flex items-center justify-between active:bg-white/10 transition-colors"
+            >
+              <span class="font-label-lg text-label-lg">Santorini, Greece</span>
+              <span class="font-label-md text-label-md opacity-70">42%</span>
+            </button>
+            <button
+              class="w-full h-[48px] px-4 bg-secondary-container text-on-secondary-container rounded-xl flex items-center justify-between shadow-lg active:scale-[0.98] transition-transform"
+            >
+              <span class="font-label-lg text-label-lg">Kyoto, Japan</span>
+              <span class="font-label-md text-label-md font-bold">58%</span>
+            </button>
+          </div>
+          <p class="text-[12px] opacity-60 mt-4 font-medium">
+            1,204 members voted • 2 days left
+          </p>
+        </article>
+        <!-- Meet Travelers Section -->
+        <article class="py-2">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-headline-md text-headline-md text-on-surface">
+              Meet Travelers
+            </h3>
+            <button
+              class="text-primary font-label-lg text-label-lg hover:underline"
+            >
+              See All
+            </button>
+          </div>
+          <div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+            <!-- Traveler Card -->
+            <div
+              class="flex-shrink-0 w-[140px] bg-white border border-outline-variant/30 p-4 rounded-2xl premium-shadow flex flex-col items-center text-center"
+            >
+              <div
+                class="w-20 h-20 rounded-full overflow-hidden mb-3 border-[3px] border-secondary-container/30"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCR1pDcBQVQEsQ2jqk0joMYRuUkiz6TYVbj6g64JlugwLAo1pYMqWQf8Upg7lTmO5oTQCc_e1o3KhteEm4pGyx5-M8PBeaGA5DSSwxjWYJkOG7Rx0Ymb5VTjcuZ8WtwWtNtodbylJqVFFhC88iuMbCLOB_CDX1wY-lJRwtN-ON6v-fK8qXd0rrnEWLKt58VkxiZToelL438_UNadN2QIJvNk94u34LVvjsFBn_jzdfy73e4TU_YkSJdf22bmBCNx8Fsk5O91mBfOUY"
+                />
+              </div>
+              <h4 class="font-label-lg text-label-lg text-on-surface mb-0.5">
+                David K.
+              </h4>
+              <p
+                class="text-[10px] text-outline font-bold uppercase tracking-[1px] mb-3"
+              >
+                GLOBAL NOMAD
+              </p>
+              <button
+                class="bg-primary text-on-primary h-8 px-4 rounded-full text-[12px] font-bold w-full active:scale-95 transition-transform"
+              >
+                Connect
+              </button>
+            </div>
+            <!-- Traveler Card -->
+            <div
+              class="flex-shrink-0 w-[140px] bg-white border border-outline-variant/30 p-4 rounded-2xl premium-shadow flex flex-col items-center text-center"
+            >
+              <div
+                class="w-20 h-20 rounded-full overflow-hidden mb-3 border-[3px] border-secondary-container/30"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBT0rF8yxgoFepLBVf1Yt15HwdxO3892578JtkWPXPicbA9wFDQ907Pv8jLpY-CpDizjoJmO-q0dH8Zz3S_H_Q_MIwVANd_QLJZWkPnoZd7fc1myZv3y4FRiGd9hJkplDen93hUGZ3fTMpmYNbB3kreVTdg24T9k1rFWk2u8-6hRdz3tief0sV0bjqVIqToJoKiuCdZWfIGpMsP9cexqaeLNxkvILZGVRvbVx86K3yU2CfJXOsYydBvZLGYgVyvbcrR-dBw57opsPY"
+                />
+              </div>
+              <h4 class="font-label-lg text-label-lg text-on-surface mb-0.5">
+                Amara L.
+              </h4>
+              <p
+                class="text-[10px] text-outline font-bold uppercase tracking-[1px] mb-3"
+              >
+                ART CURATOR
+              </p>
+              <button
+                class="bg-primary text-on-primary h-8 px-4 rounded-full text-[12px] font-bold w-full active:scale-95 transition-transform"
+              >
+                Connect
+              </button>
+            </div>
+          </div>
+        </article>
+        <!-- Group Entries - Redesigned -->
+        <div class="grid grid-cols-2 gap-4">
+          <div
+            class="bg-white p-5 rounded-2xl flex flex-col gap-3 border border-outline-variant/30 premium-shadow active:scale-[0.98] transition-transform"
+          >
+            <div
+              class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-primary text-[24px]"
+                >groups</span
+              >
+            </div>
+            <div>
+              <h3 class="font-headline-sm text-[16px] text-on-surface mb-1">
+                Join Groups
+              </h3>
+              <p class="text-[12px] text-on-surface-variant leading-tight">
+                Connect with like-minded travelers.
+              </p>
+            </div>
+          </div>
+          <div
+            class="bg-secondary-container/10 p-5 rounded-2xl flex flex-col gap-3 border border-secondary-container/20 premium-shadow active:scale-[0.98] transition-transform"
+          >
+            <div
+              class="w-10 h-10 bg-secondary-container rounded-lg flex items-center justify-center"
+            >
+              <span
+                class="material-symbols-outlined text-on-secondary-container text-[24px]"
+                >forum</span
+              >
+            </div>
+            <div>
+              <h3
+                class="font-headline-sm text-[16px] text-on-secondary-container mb-1"
+              >
+                Group Chats
+              </h3>
+              <p class="text-[12px] text-on-surface-variant leading-tight">
+                Real-time tips for your destination.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Standard Feed Post - Marcus Wong -->
+        <article
+          class="bg-white rounded-xl border border-outline-variant/30 overflow-hidden premium-shadow"
+        >
+          <div class="p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/20"
+              >
+                <img
+                  class="w-full h-full object-cover"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY-XFFlaNOKC4JY3929W9Ujc2i10xLdOhH_D0ERgJyGp98ciiw4UZJOuTiywt32B44Jx1kvCRjkFJO7qGeGGceoKbSbEjfQAHEpKaVaAU_0oBXw4Qfw1GcXlVBXS5xyikEA77Dly6k2cyDJQdcaA_DrRXHG87BtmQQ9JU2uaxq9R-KPL0xWy-vpinoXzNoADa7nn0SmCOTyPbCpV3RpkG27PLLakPLMhq-zGCbilX6tnjZ1pDjBb2SPXDwn2fe8aas8TqYyIYNdjo"
+                />
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-headline-sm text-[16px] text-on-surface">
+                    Marcus Wong
+                  </h3>
+                  <div
+                    class="flex items-center bg-tertiary-fixed text-on-tertiary-fixed text-[10px] px-2 py-0.5 rounded-full font-bold"
+                  >
+                    <span
+                      class="material-symbols-outlined text-[12px] mr-1"
+                      style="font-variation-settings: &quot;FILL&quot; 1"
+                      >workspace_premium</span
+                    >
+                    GOLD MEMBER
+                  </div>
+                </div>
+                <p class="text-[12px] text-on-surface-variant font-medium">
+                  Shibuya, Japan
+                </p>
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant"
+              >more_horiz</span
+            >
+          </div>
+          <div class="px-4 pb-3">
+            <p
+              class="font-body-md text-body-md text-on-surface leading-relaxed"
+            >
+              The energy in Shibuya tonight is unmatched. Found this hidden
+              sushi bar that only seats 6 people. Pure magic! 🍣🇯🇵
+            </p>
+          </div>
+          <div class="relative aspect-[4/3] mx-4 rounded-xl overflow-hidden">
+            <img
+              class="w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYBCY-tMBB2j_TcdNPBmUdJlYYfKKboAp4m9Endb4BUXYmZ32lzUtlVejpoh1dczFngkK0OiE0ZPmpAuTSBmwaJ5mTp3lLBy__GojoFYmE0zycgARKzdrwKR-t9FNd1PeuRNx1h8e_KLdKvHG2ZZR8EBbJQxXXgqoqlNh7T8lnLZ-JQiIMzEAtnyy3zXBr6O8Fyv92IaIe5YUTRXG4w28CeyNAabbQiE3ySApeYhB-6lJif_IUq_E6V1I-d5BUNTUZSDbf_xy45y4"
+            />
+          </div>
+          <div class="p-4 flex items-center justify-between">
+            <div class="flex items-center -space-x-2">
+              <div
+                class="w-6 h-6 rounded-full border-2 border-white bg-primary text-white text-[8px] flex items-center justify-center font-bold"
+              >
+                LW
+              </div>
+              <div
+                class="w-6 h-6 rounded-full border-2 border-white bg-secondary text-white text-[8px] flex items-center justify-center font-bold"
+              >
+                KP
+              </div>
+              <div
+                class="w-6 h-6 rounded-full border-2 border-white bg-surface-variant text-on-surface-variant text-[8px] flex items-center justify-center font-bold"
+              >
+                +12
+              </div>
+            </div>
+            <div class="flex items-center gap-4 text-on-surface-variant">
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[20px]"
+                  >favorite</span
+                >
+                <span class="text-[13px] font-medium">284</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-[20px]"
+                  >chat_bubble_outline</span
+                >
+                <span class="text-[13px] font-medium">32</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <!-- Bottom Navigation Bar - Consistent with Brand App Chrome -->
+    <nav
+      class="fixed bottom-0 left-0 w-full bg-white flex justify-around items-center px-2 py-2 pb-6 z-50 border-t border-outline-variant/30 shadow-[0_-4px_20px_0_rgba(0,0,0,0.03)]"
+    >
+      <a
+        class="flex flex-col items-center justify-center w-16 text-on-surface-variant hover:text-primary transition-colors"
+        href="#"
+      >
+        <span class="material-symbols-outlined text-[26px]">home</span>
+        <span class="font-label-md text-[10px] mt-0.5">Home</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center w-16 text-on-surface-variant hover:text-primary transition-colors"
+        href="#"
+      >
+        <span class="material-symbols-outlined text-[26px]"
+          >chat_bubble_outline</span
+        >
+        <span class="font-label-md text-[10px] mt-0.5">Messages</span>
+      </a>
+      <a class="flex flex-col items-center justify-center w-16 group" href="#">
+        <div
+          class="bg-secondary-container text-on-secondary-container w-10 h-10 rounded-full flex items-center justify-center mb-0.5 active:scale-90 transition-transform shadow-md"
+        >
+          <span
+            class="material-symbols-outlined text-[26px]"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >add</span
+          >
+        </div>
+        <span
+          class="font-label-md text-[10px] text-on-secondary-container font-bold"
+          >Post</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center w-16 text-on-surface-variant hover:text-primary transition-colors"
+        href="#"
+      >
+        <span class="material-symbols-outlined text-[26px]"
+          >travel_explore</span
+        >
+        <span class="font-label-md text-[10px] mt-0.5">My Trips</span>
+      </a>
+      <a
+        class="flex flex-col items-center justify-center w-16 text-on-surface-variant hover:text-primary transition-colors"
+        href="#"
+      >
+        <span class="material-symbols-outlined text-[26px]">person</span>
+        <span class="font-label-md text-[10px] mt-0.5">Account</span>
+      </a>
+    </nav>
+    <script>
+      // Simple micro-interaction for heart icon
+      document
+        .querySelectorAll(".material-symbols-outlined")
+        .forEach((icon) => {
+          if (
+            icon.textContent === "favorite" ||
+            icon.textContent === "favorite_outline"
+          ) {
+            icon.addEventListener("click", function () {
+              const isFilled =
+                this.style.fontVariationSettings &&
+                this.style.fontVariationSettings.includes("'FILL' 1");
+              this.style.fontVariationSettings = isFilled
+                ? "'FILL' 0"
+                : "'FILL' 1";
+              this.classList.toggle("text-error", !isFilled);
+              if (!isFilled) {
+                this.textContent = "favorite";
+              } else {
+                // Switch back to outline if it was outline originally
+              }
+            });
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,519 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>My Trips - Travel App</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style data-purpose="typography">
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #ffffff;
+        color: #333;
+      }
+    </style>
+    <style data-purpose="custom-layouts">
+      .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .card-shadow {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .active-nav-text {
+        color: #3662d8;
+      }
+    </style>
+  </head>
+  <body class="max-w-md mx-auto bg-white min-h-screen pb-24">
+    <!-- BEGIN: Header Section -->
+    <header class="p-4 bg-white sticky top-0 z-50">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-2xl font-bold flex items-center">
+          My Trips<span
+            class="w-1.5 h-1.5 bg-yellow-400 rounded-full ml-1 self-end mb-1"
+          ></span>
+        </h1>
+        <div class="flex gap-4">
+          <div class="flex flex-col items-center">
+            <svg
+              class="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
+            >
+              <path
+                d="M4 6h16M4 12h16m-7 6h7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+            <span class="text-[10px] text-gray-500">Widget</span>
+          </div>
+          <div class="flex flex-col items-center">
+            <svg
+              class="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewbox="0 0 24 24"
+            >
+              <path
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              ></path>
+            </svg>
+            <span class="text-[10px] text-gray-500">Calendar</span>
+          </div>
+        </div>
+      </div>
+      <!-- Segmented Control -->
+      <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+        <button
+          class="flex items-center gap-1 border border-gray-300 rounded-md px-3 py-1.5 whitespace-nowrap text-sm font-medium"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+          >
+            <path
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          All Bookings
+        </button>
+        <button
+          class="flex items-center gap-1 border border-gray-300 rounded-md px-3 py-1.5 whitespace-nowrap text-sm font-medium"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+          >
+            <path
+              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          My itineraries
+        </button>
+        <button
+          class="flex items-center gap-1 border border-gray-300 rounded-md px-3 py-1.5 whitespace-nowrap text-sm font-medium"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+          >
+            <path
+              d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9h18"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+          >
+            <path
+              d="M19 9l-7 7-7-7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+    <!-- END: Header Section -->
+    <main>
+      <!-- BEGIN: Empty State -->
+      <div class="flex flex-col items-center justify-center py-12 px-6">
+        <div class="w-32 h-32 mb-4">
+          <!-- Woman with binoculars illustration placeholder -->
+          <img
+            alt="Trip Illustration"
+            class="rounded-full"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuARiu_Ao9hqqvKLrJUdonbXOOP3j5jfIU0h7a0rD-69-k0gwBjSe6iSuhVtz21uTg3QnsWq_nnWWWX1FgIBBtAowizg-vVs5Qh0de-UcOBzGDSoj5ts2M3JF5VJocdEj8QuTt8pBMM9uGqVC9ZL1crASht2LeL4IBS68VvX6e_gMM0j15KoA_snxpKzVfEl5I68HWcMjizCTqpFO91-VildSX6ZX0R9VFjB5Q9FaZYOmBW4qxSanDRqGj4KpvO3uTBxH3Il9--akUQ"
+          />
+        </div>
+        <h2 class="text-xl font-semibold mb-1">No upcoming trips</h2>
+        <div class="flex items-center w-full py-8">
+          <div class="flex-grow border-t border-gray-200"></div>
+          <span class="flex-shrink mx-4 text-gray-500 text-sm"
+            >Where to Next?</span
+          >
+          <div class="flex-grow border-t border-gray-200"></div>
+        </div>
+      </div>
+      <!-- END: Empty State -->
+      <!-- BEGIN: Tokyo Section -->
+      <section class="px-4 mb-8">
+        <h3 class="text-xl font-bold mb-4">Tokyo</h3>
+        <div class="grid grid-cols-2 gap-3 overflow-x-auto hide-scrollbar pb-2">
+          <!-- Card 1 -->
+          <div
+            class="min-w-[160px] bg-white rounded-lg border border-gray-100 card-shadow overflow-hidden"
+          >
+            <div class="relative h-28">
+              <img
+                alt="KOKO Hotel"
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAY5MLYfFPk_ZZ8VGlwVGDVU7tTiiEmD0sFDzVC5daMUhZerzxc3dNHROtREENEL13-7cNV2yy9vWYlulLxw38C3iVKnTqjjUCtUpEZGNv6N2b3wCojhg-JjLIp9oJCMkNwL-ZiWhT_QpB_NqGAmulnOh5mjxSgYHSSe6bQ6wys8VYb7euoU2-j2L139T3N66V4-R9QzE20eoWy5nqmgFdaUwvgE9-JNMdjJ9FwGvzeTSiIYib_-rdDO5GZm3tjovWzKQr63EPPY58"
+              />
+            </div>
+            <div class="p-2">
+              <h4 class="text-sm font-semibold line-clamp-2 mb-1">
+                KOKO HOTEL Tokyo Nishikasai
+              </h4>
+              <div class="flex text-yellow-400 text-[10px] mb-1">★★★</div>
+              <div class="text-[11px] text-gray-500 mb-2">
+                <span class="text-blue-600 font-bold">8.4</span>/10 · 800
+                reviews
+              </div>
+              <div class="text-right">
+                <div class="text-lg font-bold leading-none">$43.00</div>
+                <div class="flex justify-end items-center gap-1 mt-1">
+                  <span class="text-[10px] text-gray-400 line-through"
+                    >$78.00</span
+                  >
+                  <span class="bg-red-500 text-white text-[9px] px-1 rounded"
+                    >44% off</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 2 -->
+          <div
+            class="min-w-[160px] bg-white rounded-lg border border-gray-100 card-shadow overflow-hidden"
+          >
+            <div class="relative h-28">
+              <img
+                alt="Shinjuku Hotel"
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuA11Xgknb6zPJT--5hGDUEnXigMKaY5x7ry9bH4uZqigD-crTK6W6qvtfMi0SMfqs_HbvvVo_jGbHc3yoWlaAwLVgLNlMHryODe1qk-uAWZP7K25GInphdpn3T6tdJ0oV2m2eAuEuig4YQASF6D0rr9gxPXRClqczJ1uEKJIj1M3opod7gdGlTH0VxhUEqj-TKJceSAwffZQduIT3xpkkGomkmvsNeE380vhacQxu0Jzw4i5ItDur0G2nTE2FzORTtLW0Zn0t3fWiY"
+              />
+            </div>
+            <div class="p-2">
+              <h4 class="text-sm font-semibold line-clamp-2 mb-1">
+                Shinjuku Kuyakusho-Mae Ca...
+              </h4>
+              <div class="flex text-yellow-400 text-[10px] mb-1">●●●</div>
+              <div class="text-[11px] text-gray-500 mb-2">
+                <span class="text-blue-600 font-bold">8</span>/10 · 766 reviews
+              </div>
+              <div class="text-right">
+                <div class="text-lg font-bold leading-none">$47.00</div>
+                <div class="flex justify-end items-center gap-1 mt-1">
+                  <span class="text-[10px] text-gray-400 line-through"
+                    >$66.00</span
+                  >
+                  <span class="bg-red-500 text-white text-[9px] px-1 rounded"
+                    >28% off</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: Tokyo Section -->
+      <!-- BEGIN: Bangkok Section (IMAGE_21 context) -->
+      <section class="px-4 mb-6">
+        <div class="grid grid-cols-2 gap-3 overflow-x-auto hide-scrollbar pb-2">
+          <!-- Card 3 -->
+          <div
+            class="min-w-[160px] bg-white rounded-lg border border-gray-100 card-shadow overflow-hidden"
+          >
+            <div class="relative h-28">
+              <img
+                alt="Livotel Hotel"
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdVWFzM6V1G1cY9uYeEvQmEqXz4i4J-BBz75hji66K94lQu3iNHa_yW6Qs9uIZlLaK6ttMNdL_DAYoyfczIAn2OBjpxANSQ16Nf5doweIdjoupfhX15OuFzDnpSBxiowlsoGd5BOoUNg0jzC5GPyCZfZPL_ZLKM7dJYmpZGlc_n-fHPFfMm8lMYRwK6yxqQKfhhffp31ZEedQ6E6fxpd1isuWIUA0dyIQbOusKSKDVu5tBvUMZ_E9yYVeVDh2jUBZE079mPJKfed0"
+              />
+            </div>
+            <div class="p-2">
+              <h4 class="text-sm font-semibold line-clamp-2 mb-1">
+                Livotel Hotel Lat Phrao Bangkok
+              </h4>
+              <div class="flex text-yellow-400 text-[10px] mb-1">★★★★</div>
+              <div class="text-[11px] text-gray-500 mb-2">
+                <span class="text-blue-600 font-bold">8.1</span>/10 · 1,621
+                reviews
+              </div>
+              <div class="text-right">
+                <div class="text-lg font-bold leading-none">$15.00</div>
+                <div class="flex justify-end items-center gap-1 mt-1">
+                  <span class="text-[10px] text-gray-400 line-through"
+                    >$17.00</span
+                  >
+                  <span class="bg-red-500 text-white text-[9px] px-1 rounded"
+                    >11% off</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Card 4 -->
+          <div
+            class="min-w-[160px] bg-white rounded-lg border border-gray-100 card-shadow overflow-hidden"
+          >
+            <div class="relative h-28">
+              <img
+                alt="Divalux Resort"
+                class="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhsZexrhd_LaWvk-5DeXrn4rMa-LtcYiL_xK7uChIGphVoDQ5EnuNPFZ2Dvvvt1rhDw-_kbMRGiFwERBGz8Ng3BA07YiUL_GLqOjsy9lZevZr61eSupg96CmkoqkG_kmTHpOcXjBhibayewhXTQInIuTCkt4VA2TUsuxsvNW2SOwv1B21Kwa9r_TAwfJz-vRGyxD0WPPu8YICgHB9jJLey0Z35k5BGeTzFdV9R6E5EbBpHGbxZBwAXnmsjPekpISWc2v_id-exETY"
+              />
+            </div>
+            <div class="p-2">
+              <h4 class="text-sm font-semibold line-clamp-2 mb-1">
+                Divalux Resort and Spa Bangkok, S...
+              </h4>
+              <div class="flex text-yellow-400 text-[10px] mb-1">★★★★</div>
+              <div class="text-[11px] text-gray-500 mb-2">
+                <span class="text-blue-600 font-bold">8.6</span>/10 · 811
+                reviews
+              </div>
+              <div class="text-right">
+                <div class="text-lg font-bold leading-none">$44.00</div>
+                <div class="flex justify-end items-center gap-1 mt-1">
+                  <span class="text-[10px] text-gray-400 line-through"
+                    >$320.00</span
+                  >
+                  <span class="bg-red-500 text-white text-[9px] px-1 rounded"
+                    >86% off</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- END: Bangkok Section -->
+      <!-- BEGIN: Quick Action Buttons -->
+      <div class="px-4 flex gap-3 mb-10">
+        <button
+          class="flex-1 flex items-center justify-center gap-1 bg-gray-100 py-2.5 rounded-full text-sm font-medium"
+        >
+          <span class="text-blue-500">✨</span> Plan a trip with AI
+        </button>
+        <button
+          class="flex-1 flex items-center justify-center gap-1 bg-gray-100 py-2.5 rounded-full text-sm font-medium"
+        >
+          <svg
+            class="w-4 h-4 text-gray-700"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+          >
+            <path
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+            <path
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+          Explore on map
+        </button>
+      </div>
+      <!-- END: Quick Action Buttons -->
+      <!-- BEGIN: Travelers Favorites -->
+      <section class="px-4 mb-20 relative">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold">Travelers' favorites</h3>
+          <a class="text-blue-600 text-sm font-medium" href="#">Moments &gt;</a>
+        </div>
+        <div class="flex gap-3 overflow-x-auto hide-scrollbar">
+          <!-- NY Card -->
+          <div
+            class="relative min-w-[180px] h-[280px] rounded-xl overflow-hidden shadow-lg"
+          >
+            <img
+              alt="New York"
+              class="absolute inset-0 w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3LcYfKTYwwJOobLU1Bu4JE4vVsHffYVLYlLNgGxjG62q-ehILdzfkQ82wfUmrcFu7FMVb9mMjz2rqiZYHvXnazH99ZNpQkeVoXXQpuEePkl_HoP6L-mH0Vj47ww4u0dnj0gNT1WDa2xbPbqLmvraGMw18LB3uaI6jigQ6HGN7Mqz3dOD_29RWXrMh5gWq7xSL4bv2aBlEK7pwgY5Gb_Dg8eEumpUX5OO-oIqVOoYDmQWLNURUZT5Bk6XqcVxY4BupmyDPhEbXn14"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"
+            ></div>
+            <div class="absolute bottom-0 p-3 w-full text-white">
+              <h4 class="text-lg font-bold">New York</h4>
+              <p class="text-[11px] mb-2 opacity-90">
+                Summit One Vanderbilt, Rooftop
+              </p>
+              <div class="flex items-center gap-1">
+                <img
+                  alt="User"
+                  class="w-5 h-5 rounded-full"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU6k25oblCTX8eVJlqmVarLpo8vu6LDxMNp6tJaUcZOeCJuSmwc6OGnnB_HDwc4UjGmOf_8QNHFdhnwhMyyVRAFTbYg9Cq8d9hpR1_ybKu4OIhI1xq9xenpzVYX_b2BeKBBk7DMRrVi7UmSmHf8RfFuyVUxIsm9XH_Z9K7ah6As47veu-i7ElSBjPHu9mz_DDo_oLgBDZf6aiaeQ6cdqNE8e3Yln5pp_vLCAri7aY4gTqhU6TqmZ4SzTdob7D-farHskPcY85BTKo"
+                />
+                <span class="text-[10px]">Me'mories</span>
+              </div>
+            </div>
+          </div>
+          <!-- Shanghai Card -->
+          <div
+            class="relative min-w-[180px] h-[280px] rounded-xl overflow-hidden shadow-lg"
+          >
+            <img
+              alt="Shanghai"
+              class="absolute inset-0 w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpRN6oqHhlh_S6NLrcI6cx0i9nbgTfJM0c2_tVkKBDdv7zyQY-2fplme9-vwV-ezIeKAb_UntsmrtuOdI36_ted5BXX3EuMqkD2TYg5kbIG6jLXV_nE0Tc-lnNsJCOCmAs2XEzhmVwzFgseTR9e9WnY4EvYXOWwSl8dkwGUUa4yqhyypemtM6J2nqTxxVY8337BB4Bke7EGMEjGTM0RkO0aou53OaXabtJW_bS9qiNPtUNOCnpddo0zdAfj292atp4WkCCWvIrhmM"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"
+            ></div>
+            <div class="absolute bottom-0 p-3 w-full text-white">
+              <h4 class="text-lg font-bold">Shanghai</h4>
+              <p class="text-[11px] mb-2 opacity-90">
+                Shanghai Disneyland: best attractions ✨
+              </p>
+              <div class="flex items-center gap-1">
+                <img
+                  alt="User"
+                  class="w-5 h-5 rounded-full"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1xtQ-12inAvHazQ2_HLbJeYPDILZqQJ1dbcGw7kGlu28X3y_k8RVubdiNw1_fVvpHGE9MYr5GsGM7VxC8ZOsb9kivOE-mzhV_gNdLD5qDw6T7m_t_dOiIe8z4y1-5Q1yn2Bm9KhubObc_uS-cV9MuOIgFrM_tN1QkhrrMxPlcMvMlW53rNAMQF6T3g6pZRpyOcumuHMJAdVVAZLElhd7eWF8FAAqO1i6YvhQm84VALD0cyGBhGCi8vpWoxLS2NptZb9rGP8BULGg"
+                />
+                <span class="text-[10px]">Graphic designer &amp;...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Floating Back to Top -->
+        <div class="fixed bottom-24 right-4 z-40">
+          <button
+            class="bg-white rounded-full p-2 shadow-lg flex flex-col items-center border border-gray-100"
+          >
+            <div
+              class="bg-orange-400 rounded-full w-8 h-8 flex items-center justify-center text-white mb-0.5"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewbox="0 0 24 24"
+              >
+                <path
+                  d="M5 15l7-7 7 7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="3"
+                ></path>
+              </svg>
+            </div>
+            <span class="text-[9px] text-blue-600 font-bold whitespace-nowrap"
+              >Back to top</span
+            >
+          </button>
+        </div>
+      </section>
+      <!-- END: Travelers Favorites -->
+    </main>
+    <!-- BEGIN: Bottom Navigation -->
+    <nav
+      class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 flex justify-around items-center py-2 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]"
+    >
+      <div class="flex flex-col items-center gap-1">
+        <svg
+          class="w-6 h-6 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewbox="0 0 24 24"
+        >
+          <path
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+        <span class="text-[11px] text-gray-500">Home</span>
+      </div>
+      <div class="flex flex-col items-center gap-1">
+        <svg
+          class="w-6 h-6 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewbox="0 0 24 24"
+        >
+          <path
+            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          ></path>
+        </svg>
+        <span class="text-[11px] text-gray-500">Messages</span>
+      </div>
+      <div class="flex flex-col items-center gap-1">
+        <div
+          class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center"
+        >
+          <svg
+            class="w-5 h-5 text-gray-500"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+          >
+            <path
+              d="M12 4v16m8-8H4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+        </div>
+        <span class="text-[11px] text-gray-500">Post</span>
+      </div>
+      <div class="flex flex-col items-center gap-1">
+        <div class="bg-blue-600 rounded-md p-1 shadow-sm">
+          <svg
+            class="w-4 h-4 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewbox="0 0 24 24"
+          >
+            <path
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+        </div>
+        <span class="text-[11px] active-nav-text font-bold">My Trips</span>
+      </div>
+      <div class="flex flex-col items-center gap-1">
+        <div class="w-6 h-6 bg-gray-200 rounded-full"></div>
+        <span class="text-[11px] text-gray-500">Account</span>
+      </div>
+    </nav>
+    <!-- END: Bottom Navigation -->
+  </body>
+</html>
