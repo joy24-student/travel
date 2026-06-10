@@ -63,7 +63,7 @@ export default function ResetPasswordScreen() {
         "Password updated",
         "You can now sign in with your new password.",
       );
-      router.replace("/login");
+      router.replace("/(auth)/login");
     } catch (error) {
       Alert.alert(
         "Reset failed",

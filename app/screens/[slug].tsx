@@ -10,6 +10,7 @@ import { ExploreScreen } from "../../src/screens/ExploreScreen";
 import { SearchScreen } from "../../src/screens/SearchScreen";
 import { PackageScreen } from "../../src/screens/PackageScreen";
 import { LiveScreen } from "../../src/screens/LiveScreen";
+import { AgencyChatScreen } from "../../src/screens/AgencyChatScreen";
 
 export default function ScreenRoute() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -17,15 +18,22 @@ export default function ScreenRoute() {
 
   if (screen.kind === "home" && screen.slug === "home") return <HomeScreen />;
   if (screen.kind === "explore") return <ExploreScreen screen={screen} />;
-  if (screen.kind === "search" && screen.slug === "search")
-    return <SearchScreen screen={screen} />;
+  if (screen.kind === "search") return <SearchScreen screen={screen} />;
   if (screen.kind === "package") return <PackageScreen screen={screen} />;
   if (screen.kind === "live") return <LiveScreen screen={screen} />;
-  if (screen.kind === "settings")
-    return <SettingsSpecializedScreen screen={screen} />;
-  if (screen.kind === "community")
-    return <CommunitySpecializedScreen screen={screen} />;
+  if (screen.kind === "settings") return <SettingsSpecializedScreen screen={screen} />;
+  if (screen.kind === "community") return <CommunitySpecializedScreen screen={screen} />;
   if (screen.kind === "booking") return <BookingSystemScreen screen={screen} />;
+  if (screen.kind === "hotel") return <SearchScreen screen={screen} />;
+  if (screen.kind === "assistant") return <ConvertedScreen screen={screen} />;
+  if (screen.kind === "list") return <ConvertedScreen screen={screen} />;
+  if (screen.kind === "payments") return <ConvertedScreen screen={screen} />;
+  if (screen.kind === "support") return <ConvertedScreen screen={screen} />;
+  if (screen.kind === "rewards") return <ConvertedScreen screen={screen} />;
+  if (screen.kind === "invite") return <ConvertedScreen screen={screen} />;
+  if (screen.kind === "trips") return <ConvertedScreen screen={screen} />;
+  if (screen.kind === "messages") return <ConvertedScreen screen={screen} />;
+  if (screen.slug === "agency-chat") return <AgencyChatScreen />;
 
   return <ConvertedScreen screen={screen} />;
 }

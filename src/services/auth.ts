@@ -45,21 +45,26 @@ export const authService = {
   // Send a passwordless email or phone OTP for sign in
   async sendOtp(identifier: string) {
     const isPhone = /^\+?[0-9\s()-]+$/.test(identifier.trim());
-    const payload = isPhone
-      ? { phone: identifier.trim() }
-      : { email: identifier.trim() };
-
-    const options = isPhone
-      ? { shouldCreateUser: false }
-      : { shouldCreateUser: false, emailRedirectTo: authRedirectTo("/otp") };
-
-    const { data, error } = await supabase.auth.signInWithOtp({
-      ...payload,
-      options,
-    });
-
-    if (error) throw error;
-    return data;
+    
+    if (isPhone) {
+      const { data, error } = await supabase.auth.signInWithOtp({
+        phone: identifier.trim(),
+        options: { shouldCreateUser: false }
+      });
+      if (error) throw error;
+      return data;
+    } else {
+      // For email, use signInWithOtp without emailRedirectTo to get OTP codes
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email: identifier.trim(),
+        options: {
+          shouldCreateUser: false,
+          // Don't set emailRedirectTo - this forces OTP code delivery
+        },
+      });
+      if (error) throw error;
+      return data;
+    }
   },
 
   // Verify OTP codes for email or phone sign in
@@ -130,14 +135,35 @@ export const authService = {
     if (error) throw error;
   },
 
-  // Reset password
+  // Reset password - use OTP instead of link
   async resetPassword(email: string) {
+    // Use OTP method for password reset
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: authRedirectTo("/reset-password"),
+      // Don't set redirectTo - this forces OTP code delivery
     });
 
     if (error) throw error;
     return data;
+  },
+
+  // Verify password reset OTP and update password
+  async verifyPasswordResetOtp(email: string, token: string, newPassword: string) {
+    // First verify the OTP
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: 'recovery',
+    });
+
+    if (error) throw error;
+
+    // Now update the password
+    const { data: updateData, error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (updateError) throw updateError;
+    return updateData;
   },
 
   // Sign in with a passkey. On supported devices this can invoke Face ID,
@@ -189,6 +215,43 @@ export const authService = {
       throw error;
     }
     return session;
+  },
+
+  // Check if user exists by email
+  async checkUserExists(email: string): Promise<boolean> {
+    try {
+      // Check if we can send a password reset - this will tell us if user exists
+      // Supabase returns success even if user doesn't exist (security), 
+      // so we use a different approach
+      
+      // Alternative: Check the auth.users table via RPC or public endpoint
+      // For now, we'll use the signup confirmation check
+      const { data, error } = await supabase.rpc('check_user_exists', { 
+        user_email: email 
+      });
+      
+      if (error) {
+        // RPC function doesn't exist, fall back to password check
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password: '__check__' + Math.random().toString(36),
+        });
+
+        if (signInError) {
+          // Check error message
+          const msg = signInError.message.toLowerCase();
+          if (msg.includes('invalid') || msg.includes('password') || msg.includes('credentials')) {
+            return true; // User exists, wrong password
+          }
+          return false; // User doesn't exist or unconfirmed
+        }
+        return true;
+      }
+      
+      return data === true;
+    } catch {
+      return false;
+    }
   },
 
   // Listen to auth state changes

@@ -163,9 +163,10 @@ export default function AdvancedSplashScreen({ onFinish }: { onFinish?: () => vo
           ]}
         >
           <Image
-              source={require('../../app/screens/ChatGPT Image Jun 3, 2026, 01_07_18 AM.png')}
-          ]}
-        >
+              source={require('../../assets/images/splash-icon.png')}
+              style={styles.birdImage}
+              resizeMode="contain"
+          />
           <Text style={styles.title}>SHOPNO</Text>
           <Text style={[styles.title, styles.titleAccent]}>JATRA</Text>
         </Animated.View>
@@ -210,7 +211,7 @@ function ProgressBar() {
   });
 
   return (
-    <View style={styles.progressTrack}>
+      <View style={styles.progressBarTrack}>
       <Animated.View
         style={[
           styles.progressFill,
@@ -226,39 +227,35 @@ function ProgressBar() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
+    backgroundColor: '#f0f8ff',
     alignItems: 'center',
-    overflow: 'hidden',
+    justifyContent: 'center',
   },
   content: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    zIndex: 10,
   },
   particle: {
     position: 'absolute',
-    borderRadius: 50,
+    borderRadius: 100,
   },
   birdContainer: {
-    marginBottom: 50,
+    alignItems: 'center',
+    marginBottom: 40,
   },
-  bird: {
-    width: 140,
-    height: 140,
+  birdImage: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
   },
   titleContainer: {
     marginBottom: 30,
     alignItems: 'center',
   },
   title: {
-    fontSize: 52,
-    fontWeight: '800',
+    fontSize: 32,
+    fontWeight: 'bold',
     color: '#003399',
-    letterSpacing: 2,
-    lineHeight: 58,
+    textAlign: 'center',
   },
   titleAccent: {
     color: '#FF5722',
@@ -268,11 +265,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subtitle: {
-    fontSize: 14,
-    color: '#666666',
-    fontWeight: '600',
-    letterSpacing: 1,
-    marginBottom: 8,
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 10,
   },
   underline: {
     width: 40,
@@ -282,18 +277,25 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     position: 'absolute',
-    bottom: 40,
-    width: '80%',
-  },
-  progressTrack: {
-    height: 3,
-    backgroundColor: '#EEEEEE',
+    bottom: 50,
+    left: 50,
+    right: 50,
+    height: 4,
+    backgroundColor: '#ddd',
     borderRadius: 2,
-    overflow: 'hidden',
+  },
+  progressBarTrack: {
+    position: 'absolute',
+    left: 50,
+    right: 50,
+    bottom: 50,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#ddd',
   },
   progressFill: {
-    height: 3,
-    backgroundColor: '#FF5722',
+    height: '100%',
+    backgroundColor: '#003399',
     borderRadius: 2,
   },
 });

@@ -16,8 +16,10 @@ import {
   Modal,
   Dimensions,
   TextInput,
+  StatusBar,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 import { COLORS } from '../../App';
 import { Card, SectionHeader } from '../ui/UIComponents';
 
@@ -33,9 +35,9 @@ export default function SettingsScreen({ navigation }: any) {
   const [verificationCode, setVerificationCode] = useState('');
 
   const theme = {
-    background: darkMode ? '#0b1326' : '#F8FAFC',
-    surface: darkMode ? '#171f33' : '#FFFFFF',
-    text: darkMode ? '#dae2fd' : '#1E293B',
+    background: darkMode ? '#0B1326' : '#F8FAFC',
+    surface: darkMode ? 'rgba(255, 255, 255, 0.05)' : '#FFFFFF',
+    text: darkMode ? '#DAE2FD' : '#1E293B',
     textTertiary: darkMode ? '#918fa0' : '#64748B',
     border: darkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
     overlay: darkMode ? 'rgba(0, 0, 0, 0.75)' : 'rgba(0, 0, 0, 0.4)',
@@ -50,9 +52,10 @@ export default function SettingsScreen({ navigation }: any) {
 
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.background }]}>
+      <StatusBar barStyle={darkMode ? "light-content" : "dark-content"} />
       <View style={styles.container}>
         {/* Header */}
-        <View style={[styles.header, { borderBottomColor: theme.border }]}>
+        <View style={[styles.header, { borderBottomWidth: 0 }]}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <MaterialCommunityIcons
               name="chevron-left"
@@ -60,7 +63,7 @@ export default function SettingsScreen({ navigation }: any) {
               color={theme.text}
             />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>Settings</Text>
+          <Text style={[styles.headerTitle, { color: theme.text, fontFamily: 'PlusJakartaSans-Bold' }]}>System Preferences</Text>
           <View style={{ width: 28 }} />
         </View>
 
@@ -68,13 +71,14 @@ export default function SettingsScreen({ navigation }: any) {
           {/* Notifications */}
           <View style={styles.section}>
             <SectionHeader title="Notifications" />
-            <Card style={StyleSheet.flatten([styles.card, { backgroundColor: theme.surface }])}>
+            <View style={[styles.glassGroup, { backgroundColor: theme.surface }]}>
+              <BlurView intensity={10} tint={darkMode ? "dark" : "light"}>
               <View style={styles.settingItem}>
-                <View style={[styles.iconWrapper, { backgroundColor: '#4F46E520' }]}>
-                  <MaterialCommunityIcons name="bell-outline" size={22} color="#4F46E5" />
+                <View style={[styles.iconWrapper, { backgroundColor: '#c3c0ff20' }]}>
+                  <MaterialCommunityIcons name="bell-badge-outline" size={20} color="#c3c0ff" />
                 </View>
                 <View style={styles.settingContent}>
-                  <Text style={[styles.settingTitle, { color: theme.text }]}>Push Notifications</Text>
+                  <Text style={[styles.settingTitle, { color: theme.text, fontWeight: '700' }]}>Push Notifications</Text>
                   <Text style={[styles.settingSubtitle, { color: theme.textTertiary }]}>Receive app notifications</Text>
                 </View>
                 <Switch
@@ -83,11 +87,10 @@ export default function SettingsScreen({ navigation }: any) {
                   trackColor={{ false: 'rgba(0,0,0,0.1)', true: COLORS.primary }}
                 />
               </View>
-            </Card>
-            <Card style={StyleSheet.flatten([styles.card, { backgroundColor: theme.surface }])}>
+              <View style={styles.separator} />
               <View style={styles.settingItem}>
-                <View style={[styles.iconWrapper, { backgroundColor: '#06B6D420' }]}>
-                  <MaterialCommunityIcons name="email-outline" size={22} color="#06B6D4" />
+                <View style={[styles.iconWrapper, { backgroundColor: '#4cd7f620' }]}>
+                  <MaterialCommunityIcons name="email-fast-outline" size={20} color="#4cd7f6" />
                 </View>
                 <View style={styles.settingContent}>
                   <Text style={[styles.settingTitle, { color: theme.text }]}>Email Notifications</Text>
@@ -95,7 +98,8 @@ export default function SettingsScreen({ navigation }: any) {
                 </View>
                 <Switch value={true} disabled trackColor={{ false: 'rgba(0,0,0,0.1)', true: COLORS.primary }} />
               </View>
-            </Card>
+              </BlurView>
+            </View>
           </View>
 
           {/* Security */}

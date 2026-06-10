@@ -11,11 +11,12 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
-  Image,
   Animated,
   SafeAreaView,
+  StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
 import {
   MaterialCommunityIcons,
   Ionicons,
@@ -37,10 +38,9 @@ const HEADER_MAX_HEIGHT = 80;
 const HEADER_MIN_HEIGHT = 60;
 
 const UI_COLORS = {
-  bg: "#070b14",
-  bgSecondary: "rgba(7, 11, 20, 0.8)",
-  card: "rgba(255, 255, 255, 0.03)",
-  border: "rgba(255, 255, 255, 0.05)",
+  bg: "#0B1326",
+  card: "rgba(255, 255, 255, 0.05)",
+  border: "rgba(255, 255, 255, 0.1)",
   trendUp: "#10b981",
   textSecondary: "#94a3b8",
   brand: "#3b82f6",
@@ -149,12 +149,13 @@ export default function DashboardScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
       {/* Fixed Header */}
       <View style={styles.header}>
         <View style={styles.headerContent}>
           <View style={styles.headerProfile}>
             <LinearGradient
-              colors={["#4f46e5", "#a855f7"]}
+              colors={["#c3c0ff", "#4338ca"]}
               style={styles.avatarCircle}
             >
               <MaterialCommunityIcons
@@ -288,21 +289,26 @@ export default function DashboardScreen() {
                 activeOpacity={0.7}
                 style={styles.miniStatCard}
               >
-                <View
-                  style={[
-                    styles.statIconBox,
-                    { backgroundColor: `${stat.color}20` },
-                  ]}
-                >
-                  <MaterialCommunityIcons
-                    name={stat.icon as any}
-                    size={20}
-                    color={stat.color}
-                  />
-                </View>
-                <Text style={styles.miniLabel}>{stat.label}</Text>
-                <Text style={styles.miniVal}>{stat.val}</Text>
-                <Text style={styles.miniTrend}>{stat.trend}</Text>
+                <BlurView intensity={15} tint="dark" style={styles.miniStatBlur}>
+                  <View
+                    style={[
+                      styles.statIconBox,
+                      { backgroundColor: `${stat.color}15` },
+                    ]}
+                  >
+                    <MaterialCommunityIcons
+                      name={stat.icon as any}
+                      size={18}
+                      color={stat.color}
+                    />
+                  </View>
+                  <Text style={styles.miniLabel}>{stat.label}</Text>
+                  <Text style={styles.miniVal}>{stat.val}</Text>
+                  <View className="flex-row items-center gap-1 mt-1">
+                     <Ionicons name="trending-up" size={10} color={UI_COLORS.trendUp} />
+                     <Text style={styles.miniTrend}>{stat.trend}</Text>
+                  </View>
+                </BlurView>
               </TouchableOpacity>
             ))}
           </View>

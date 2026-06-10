@@ -10,5 +10,11 @@ module.exports = function (api) {
       ],
       "nativewind/babel",
     ],
+    overrides: [
+      {
+        test: ['./node_modules/@babel/code-frame/'],
+        compact: false,
+      },
+    ],
   };
 };

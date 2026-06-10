@@ -59,25 +59,25 @@ const QUICK_ACTIONS = [
   {
     label: "Live Streams",
     icon: "radio",
-    route: "/screens/live",
+    route: "/(screens)/live",
     color: "#ef4444",
   },
   {
     label: "Support Chat",
     icon: "chatbubble-ellipses",
-    route: "/screens/customer-support",
+    route: "/(screens)/customer-support",
     color: "#287dfa",
   },
   {
     label: "Agency Chat",
     icon: "business",
-    route: "/(tabs)/agency",
+    route: "/(screens)/agency-chat",
     color: "#10b981",
   },
   {
     label: "Community",
     icon: "people",
-    route: "/screens/travel-community-posts",
+    route: "/(screens)/travel-community-posts",
     color: "#8b5cf6",
   },
 ];
