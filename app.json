@@ -23,7 +23,12 @@
       ["expo-facebook", { "userTrackingPermission": false }]
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "NSCameraUsageDescription": "This app uses the camera to scan QR codes and capture images for your profile.",
+        "NSPhotoLibraryUsageDescription": "This app uses the photo library to select images for your profile."
+      }
     },
     "android": {
       "package": "com.s025.convertedtravelui",
@@ -31,7 +36,13 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.POST_NOTIFICATIONS"
+      ]
     }
   }
 }

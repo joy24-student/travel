@@ -367,9 +367,8 @@ export const AgencyManagementScreen: React.FC<{ admin: AdminUser | null }> = ({
   const loadAgencies = async () => {
     setLoading(true);
     try {
-      // TODO: Implement getAllAgencies in agencyManagementService
-      // For now, use empty array
-      setAgencies([]);
+      const allAgencies = await agencyManagementService.getAllAgencies(100, 0);
+      setAgencies(allAgencies);
     } catch (error) {
       console.error("Error loading agencies:", error);
     } finally {
@@ -408,8 +407,11 @@ export const AgencyManagementScreen: React.FC<{ admin: AdminUser | null }> = ({
           );
           break;
         case "reject":
-          // TODO: Implement reject action in service
-          success = true;
+          success = await agencyManagementService.rejectAgency(
+            selectedAgency.agency_id,
+            reason || "Rejected by admin",
+            admin.id,
+          );
           break;
       }
 

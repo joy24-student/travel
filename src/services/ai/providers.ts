@@ -1,5 +1,13 @@
 import type { AICompletionInput, AIProvider } from "./types";
 
+type AICompletionInput = {
+  systemPrompt: string;
+  userPrompt: string;
+  temperature?: number;
+  provider?: AIProvider;
+  model?: string;
+};
+
 type ProxyResponse = {
   text?: string;
   data?: unknown;

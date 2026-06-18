@@ -1,6 +1,6 @@
 import { supabase } from "../utils/supabase";
 
-export type EmailOtpType = "email" | "sms" | "signup" | "recovery";
+export type EmailOtpType = "signup" | "invite" | "magiclink" | "recovery" | "email_change" | "email" | "sms_otp";
 
 const authRedirectTo = (path: string) => {
   const baseUrl = process.env.EXPO_PUBLIC_AUTH_REDIRECT_URL;
@@ -42,14 +42,28 @@ export const authService = {
     return data;
   },
 
+  // Sign in with OAuth (Google, Facebook, etc)
+  async signInWithOAuth(provider: "google" | "facebook" | "apple") {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: "converted-travel-ui://auth/callback",
+        skipBrowserRedirect: true,
+      },
+    });
+
+    if (error) throw error;
+    return data;
+  },
+
   // Send a passwordless email or phone OTP for sign in
-  async sendOtp(identifier: string) {
+  async sendOtp(identifier: string, shouldCreateUser: boolean = false) {
     const isPhone = /^\+?[0-9\s()-]+$/.test(identifier.trim());
     
     if (isPhone) {
       const { data, error } = await supabase.auth.signInWithOtp({
         phone: identifier.trim(),
-        options: { shouldCreateUser: false }
+        options: { shouldCreateUser }
       });
       if (error) throw error;
       return data;
@@ -58,7 +72,7 @@ export const authService = {
       const { data, error } = await supabase.auth.signInWithOtp({
         email: identifier.trim(),
         options: {
-          shouldCreateUser: false,
+          shouldCreateUser,
           // Don't set emailRedirectTo - this forces OTP code delivery
         },
       });
@@ -74,10 +88,15 @@ export const authService = {
       ? { phone: identifier.trim() }
       : { email: identifier.trim() };
 
+    // Map common types to Supabase types
+    let supabaseType = type;
+    if (type === "email") supabaseType = "magiclink";
+    if (type === "signup" && !isPhone) supabaseType = "signup";
+
     const { data, error } = await supabase.auth.verifyOtp({
       ...payload,
       token,
-      type,
+      type: supabaseType as any,
     });
 
     if (error) throw error;
@@ -110,19 +129,6 @@ export const authService = {
     const { data, error } = await supabase.auth.verifyOtp({
       token_hash: tokenHash,
       type,
-    });
-
-    if (error) throw error;
-    return data;
-  },
-
-  // Sign in with OAuth (Google, Facebook, etc)
-  async signInWithOAuth(provider: "google" | "facebook" | "apple") {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        skipBrowserRedirect: true,
-      },
     });
 
     if (error) throw error;

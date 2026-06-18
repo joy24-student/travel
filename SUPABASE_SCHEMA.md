@@ -1051,8 +1051,72 @@ FOR EACH ROW
 EXECUTE FUNCTION log_booking_status_change();
 
 -- ============================================================================
--- PERFORMANCE INDEXES
+-- LIVE STREAMS & MEDIA
 -- ============================================================================
+
+CREATE TABLE live_streams (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    streamer_id UUID NOT NULL REFERENCES users(id),
+    streamer_name VARCHAR(255) NOT NULL,
+    title VARCHAR(500) NOT NULL,
+    description TEXT,
+    thumbnail_url VARCHAR(500),
+    hls_url VARCHAR(500),
+    category VARCHAR(100), -- agency, influencer, event
+    status VARCHAR(50) DEFAULT 'upcoming', -- live, upcoming, ended
+    viewers_count INT DEFAULT 0,
+    started_at TIMESTAMP WITH TIME ZONE,
+    ended_at TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_live_streams_status ON live_streams(status);
+CREATE INDEX idx_live_streams_category ON live_streams(category);
+
+-- ============================================================================
+-- PROMOTIONS & DEALS
+-- ============================================================================
+
+CREATE TABLE promotions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title VARCHAR(300) NOT NULL,
+    description TEXT,
+    discount_percentage INT,
+    original_price DECIMAL(10,2),
+    discounted_price DECIMAL(10,2),
+    duration_minutes INT,
+    image_url VARCHAR(500),
+    status VARCHAR(50) DEFAULT 'active', -- active, expired
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP WITH TIME ZONE
+);
+
+ALTER TABLE destinations ADD COLUMN is_trending BOOLEAN DEFAULT FALSE;
+ALTER TABLE destinations ADD COLUMN promotion_text VARCHAR(255);
+ALTER TABLE destinations ADD COLUMN is_popular BOOLEAN DEFAULT FALSE;
+ALTER TABLE destinations ADD COLUMN tagline TEXT;
+ALTER TABLE destinations ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
+ALTER TABLE destinations ADD COLUMN average_budget VARCHAR(100);
+ALTER TABLE destinations ADD COLUMN best_season VARCHAR(100);
+ALTER TABLE destinations ADD COLUMN safety_score INT;
+ALTER TABLE destinations ADD COLUMN attractions JSONB;
+ALTER TABLE destinations ADD COLUMN activities JSONB;
+ALTER TABLE destinations ADD COLUMN restaurants JSONB;
+ALTER TABLE destinations ADD COLUMN reviews JSONB;
+ALTER TABLE destinations ADD COLUMN gallery_images JSONB;
+ALTER TABLE destinations ADD COLUMN hero_image_url VARCHAR(500);
+
+-- Agencies details
+CREATE TABLE agencies (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES users(id),
+    name VARCHAR(255) NOT NULL,
+    rating DECIMAL(3,2) DEFAULT 4.5,
+    packages_count INT DEFAULT 0,
+    is_verified BOOLEAN DEFAULT TRUE,
+    logo_url VARCHAR(500),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
 -- Composite indexes for common queries
 CREATE INDEX idx_hotel_availability_search

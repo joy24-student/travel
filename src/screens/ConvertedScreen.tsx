@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -14,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import type { UIScreen } from "../data/screens";
 import { TopBar } from "./TopBar";
 import { BottomNav, AiPill } from "./Navigation";
+import { useScreenData } from "../hooks/useScreenData";
 
 const themeMap = {
   trip: {
@@ -42,6 +44,17 @@ const bottomTabs = [
 
 export function ConvertedScreen({ screen }: { screen: UIScreen }) {
   const theme = themeMap[screen.theme];
+  const { data, loading, error } = useScreenData(screen);
+
+  // Map dynamic data to cards if available
+  const dynamicCards = data && Array.isArray(data) ? data.map((item: any) => ({
+    title: item.name || item.title || item.hotel_name || "Unknown",
+    subtitle: item.description || item.destination_city || item.bio || "",
+    meta: item.city || item.category || (item.rating ? `⭐ ${item.rating}` : ""),
+    price: item.price ? `$${item.price}` : (item.final_price ? `$${item.final_price}` : ""),
+  })) : null;
+
+  const displayCards = dynamicCards || screen.cards;
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: theme.bg }}>
@@ -52,6 +65,10 @@ export function ConvertedScreen({ screen }: { screen: UIScreen }) {
       >
         <Hero screen={screen} />
         <View style={styles.pageStack}>
+          {loading && !displayCards ? (
+            <ActivityIndicator color={theme.primary} size="large" style={{ marginVertical: 40 }} />
+          ) : null}
+
           {screen.tabs ? (
             <TabCard tabs={screen.tabs} color={theme.primary} />
           ) : null}
@@ -70,7 +87,7 @@ export function ConvertedScreen({ screen }: { screen: UIScreen }) {
           {screen.kind === "assistant" ? (
             <AssistantBlocks screen={screen} color={theme.primary} />
           ) : null}
-          {screen.kind === "community" ? (
+          {screen.kind === "community" && !data ? (
             <CommunityPost screen={screen} color={theme.primary} />
           ) : null}
           {screen.image ? (
@@ -79,8 +96,14 @@ export function ConvertedScreen({ screen }: { screen: UIScreen }) {
               title={screen.cards?.[0]?.title ?? screen.title}
             />
           ) : null}
-          {screen.cards ? (
-            <ContentCards cards={screen.cards} color={theme.primary} />
+          {displayCards ? (
+            <ContentCards cards={displayCards} color={theme.primary} />
+          ) : null}
+
+          {error ? (
+            <Text style={{ color: 'red', textAlign: 'center', margin: 20 }}>
+              Connect failed: {error.message}
+            </Text>
           ) : null}
         </View>
       </ScrollView>
@@ -221,7 +244,10 @@ function SearchCard({ fields, color }: { fields: string[]; color: string }) {
           <Ionicons color="#c8c8c8" name="chevron-forward" size={16} />
         </View>
       ))}
-      <Pressable style={[styles.searchButton, { backgroundColor: color }]}>
+      <Pressable
+        onPress={() => router.push("/screens/search" as any)}
+        style={[styles.searchButton, { backgroundColor: color }]}
+      >
         <Text style={styles.searchButtonText}>Search</Text>
       </Pressable>
     </View>
@@ -248,17 +274,26 @@ function ChipRail({ chips, color }: { chips: string[]; color: string }) {
   );
 }
 
-function ActionGrid({ actions, color }: { actions: string[]; color: string }) {
+function ActionGrid({ actions, color }: { actions: any[]; color: string }) {
   return (
     <View style={styles.actionGrid}>
-      {actions.slice(0, 4).map((action) => (
-        <View key={action} style={styles.actionItem}>
-          <View style={[styles.actionIcon, { backgroundColor: `${color}12` }]}>
-            <Ionicons color={color} name={iconFor(action)} size={23} />
-          </View>
-          <Text style={styles.actionLabel}>{action}</Text>
-        </View>
-      ))}
+      {actions.slice(0, 4).map((action) => {
+        const label = typeof action === 'string' ? action : action.label;
+        const route = action.route || `/screens/${label.toLowerCase().replace(/ /g, '-')}`;
+
+        return (
+          <Pressable
+            key={label}
+            onPress={() => router.push(route as any)}
+            style={styles.actionItem}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: `${color}12` }]}>
+              <Ionicons color={color} name={iconFor(label)} size={23} />
+            </View>
+            <Text style={styles.actionLabel}>{label}</Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }
@@ -357,9 +392,13 @@ function ContentCards({
   return (
     <View style={styles.contentStack}>
       {cards.map((card, index) => (
-        <View key={`${card.title}-${index}`} style={styles.contentCard}>
+        <Pressable
+          key={`${card.title}-${index}`}
+          onPress={() => card.route && router.push(card.route as any)}
+          style={styles.contentCard}
+        >
           <View style={[styles.contentIcon, { backgroundColor: `${color}12` }]}>
-            <Ionicons color={color} name={iconFor(card.title)} size={24} />
+            <Ionicons color={color} name={(card.icon as any) || iconFor(card.title)} size={24} />
           </View>
           <View style={styles.contentText}>
             <Text style={styles.contentTitle}>{card.title}</Text>
@@ -375,7 +414,7 @@ function ContentCards({
           ) : (
             <Ionicons color="#c8c8c8" name="chevron-forward" size={18} />
           )}
-        </View>
+        </Pressable>
       ))}
     </View>
   );

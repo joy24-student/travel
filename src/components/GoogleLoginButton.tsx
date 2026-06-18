@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { signInWithGoogle } from '../services/oauth';
 
 interface GoogleLoginButtonProps {
@@ -21,6 +20,15 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
   style,
 }) => {
   const [loading, setLoading] = React.useState(false);
+  const [GoogleSigninButton, setGoogleSigninButton] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    import('@react-native-google-signin/google-signin')
+      .then((module) => setGoogleSigninButton(module.GoogleSigninButton))
+      .catch(() => {
+        console.warn('Google Sign-In native module not available. Use expo run:android/ios for native auth.');
+      });
+  }, []);
 
   const handlePress = async () => {
     try {
@@ -44,6 +52,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 
   // Map the size prop to the GoogleSigninButton.Size enum
   const getSize = () => {
+    if (!GoogleSigninButton) return 0;
     switch (size) {
       case 'standard':
         return GoogleSigninButton.Size.Standard;
@@ -57,6 +66,7 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 
   // Map the color prop to the GoogleSigninButton.Color enum
   const getColor = () => {
+    if (!GoogleSigninButton) return 0;
     switch (color) {
       case 'light':
         return GoogleSigninButton.Color.Light;
@@ -65,6 +75,25 @@ const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
         return GoogleSigninButton.Color.Dark;
     }
   };
+
+  if (!GoogleSigninButton) {
+    return (
+      <TouchableOpacity 
+        onPress={handlePress} 
+        disabled={loading}
+        style={[styles.container, styles.fallbackButton, style]}
+      >
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="small" color="#fff" />
+            <Text style={styles.loadingText}>Signing in...</Text>
+          </View>
+        ) : (
+          <Text style={styles.fallbackText}>Sign in with Google</Text>
+        )}
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <TouchableOpacity 
@@ -105,6 +134,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginLeft: 10,
     fontWeight: 'bold',
+  },
+  fallbackButton: {
+    backgroundColor: '#4285F4',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 4,
+  },
+  fallbackText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 

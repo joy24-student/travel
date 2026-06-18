@@ -405,9 +405,8 @@ export const RefundManagementScreen: React.FC<{ admin: AdminUser | null }> = ({
   const loadRefunds = async () => {
     setLoading(true);
     try {
-      // TODO: Implement getAllRefunds in refundService
-      // For now, use empty array
-      setRefunds([]);
+      const allRefunds = await refundService.getAllRefunds(filterStatus, 100);
+      setRefunds(allRefunds);
     } catch (error) {
       console.error("Error loading refunds:", error);
     } finally {
@@ -439,8 +438,11 @@ export const RefundManagementScreen: React.FC<{ admin: AdminUser | null }> = ({
           );
           break;
         case "process":
-          // TODO: Implement process in refundService
-          success = true;
+          success = await refundService.processRefund(
+            selectedRefund.id,
+            admin.id,
+            data?.notes || "",
+          );
           break;
         case "reject":
           success = await refundService.rejectRefund(
@@ -450,8 +452,11 @@ export const RefundManagementScreen: React.FC<{ admin: AdminUser | null }> = ({
           );
           break;
         case "hold":
-          // TODO: Implement hold in refundService
-          success = true;
+          success = await refundService.holdRefund(
+            selectedRefund.id,
+            admin.id,
+            data?.reason || "",
+          );
           break;
       }
 

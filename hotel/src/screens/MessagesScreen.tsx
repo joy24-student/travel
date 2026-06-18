@@ -1,361 +1,186 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
-  Animated,
-  Dimensions,
-  Easing,
-  Pressable,
-  ScrollView,
-  StyleSheet,
+  View,
   Text,
   TextInput,
-  View,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { styled } from 'nativewind';
 
-const filters = ['All', 'Unread', 'VIP', 'Archive'] as const;
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledTouchableOpacity = styled(TouchableOpacity);
 
-type Conversation = {
-  id: string;
-  name: string;
-  badge?: 'VIP';
-  time: string;
-  message: string;
-  unread?: number;
-};
-
-const baseConversations: Conversation[] = [
+const conversations = [
   {
-    id: 'robert',
+    id: '1',
     name: 'Robert Fox',
-    badge: 'VIP',
-    time: '10:30 AM',
     message: 'Thank you for the quick check-in!',
+    time: '10:30 AM',
     unread: 5,
+    isVIP: true,
+    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAFXcmcQ1W1CNhPZCLA-dpqnwTAf8O54mmzRJKEZcG6UYz_7FKWtQfdYpgmK32-QNUn7Yvj3eVKcFsB0hfBV1PPrakK0HxCi6vtcQXKlHY52xWlzRrk_2V35-Kfn-ujI7ywRYxh4KVOsikcPq8_aOxZDbVtPYTdXbO9wQW-eEYym_zJeNpXvTwxL6IwpUG5GrzNyKn5HabegjXuO-O7yh_WTpgb3OghjTGn5j0H68783TrJ5KP9c6v7nO-iGavew_0nIpzaAJdlXWA',
   },
   {
-    id: 'jane',
+    id: '2',
     name: 'Jane Cooper',
-    time: '09:15 AM',
     message: 'Is breakfast included in my current suite package?',
+    time: '09:15 AM',
+    unread: 0,
+    isVIP: false,
+    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDBVdIffrxHKlEoFhCv_eLnbFRdUBhdDwVNm5a-HKpkQGBcB3clKypD3dE46fpvhukD68EP-WwOY9SaLevkoFkTYaFsf5c0_aB8YGnp-G9LH-iyoUulGefYUMA5Ggue9lTeiTTI5HuQQVOTtCn-QYT11oQpceNZ6E0UaPcaSLEkqeCkcbi_nSA9f3nvZiFaw1_AhjzhwqNsNzBYQuAW8MzqZ0IrhXuiiEh917ifhYaoSS8bAyqaVO7ldi7w5nNVr5tqvah9Li0j200',
   },
   {
-    id: 'wade',
+    id: '3',
     name: 'Wade Warren',
-    time: 'Yesterday',
     message: 'The conference room setup was perfect. Thanks!',
+    time: 'Yesterday',
+    unread: 0,
+    isVIP: false,
+    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCgTuSmnG8XUMwHl4RAv0Mfvg71Vz3YJnww7AHAXFKVX2njlrQ0mfoMX6vB6iMuHFUvOzyGVE92sRsNnZDh8gyM5G8CrPR7rrKNl9R1sgv2dAGfG-PJB8Ap86f95zStmTSAn0I2sS0_2V-2cvQynfSVqJLsUi1ma94lPmGlWeCBcdu4fWH2cFDa1a2HlBXGLUKTJ3xYtLG3ntHrxYSapxC0TzF6ibJf3PkPN9quq3u2TKe-_CVPIH5cCwcJM55ZxM8Dylz7R_mWUsQ',
   },
   {
-    id: 'esther',
+    id: '4',
     name: 'Esther Howard',
-    badge: 'VIP',
+    message: "I'll be arriving late for check-in around 11 PM.",
     time: 'Yesterday',
-    message: 'I’ll be arriving late for check-in around 11 PM.',
+    unread: 0,
+    isVIP: true,
+    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDF9X9UcD0HfC2sQO1hlGa588_DhDh6PhJFBrpu73NsTph6y2qyYVbc5z6vN9lmUUQbucbYEIeVTZ4P2hbYFk_TSX2BO2WTzqkccbJejVoWbER7xoPq9fyK8Rp18kBORAbfelKu0ud8IoQzNyg0dcqWvQrLNIlFZJItCMwFenJx_sYnS90rf3CCXDHRvpm9pk5yu7Md-R879cLAUjbZoX8X6DSvqH9Q6iCrrdShEYAbVylm4uXouffkI4MA_Z7AWxrSTK0DvLXg1KA',
+  },
+  {
+    id: '5',
+    name: 'Guy Hawkins',
+    message: 'Could you send extra towels to room 402?',
+    time: 'May 28',
+    unread: 0,
+    isVIP: false,
+    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDh8EaXSfDDnd_miZaXrJ0qBb7sh9mxDou4Fz6qK423o0VMKaCzREQkRcAuLL2kKzOIYI1ubOCCJDJHyNMZLiz1L2H8cQx6KJomDp5_0RduGgFl0rMJuSBYq_Xye-_glQX3CAD2jnMXLXDlTeOu-qJjIVxWBg376HQSrGb68Pg6T38de9UUYzQT2BlJxnL8MCFgOj3yh5d7WYwxwCO0Mx4Qos-ahW4wfkmeMP0BL3lVIKPg37r0X7__8-ICDZBqIrKCsSEThNltMdI',
   },
 ];
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const CONTENT_X_PADDING = 20;
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
-
 export function MessagesScreen() {
-  const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>('All');
-
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-  const conversations = useMemo(() => {
-    if (activeFilter === 'All') return baseConversations;
-    if (activeFilter === 'Unread') return baseConversations.filter((c) => (c.unread ?? 0) > 0);
-    if (activeFilter === 'VIP') return baseConversations.filter((c) => c.badge === 'VIP');
-    if (activeFilter === 'Archive') return baseConversations; // placeholder for now
-    return baseConversations;
-  }, [activeFilter]);
-
-  const headerTranslateY = scrollY.interpolate({
-    inputRange: [0, 120],
-    outputRange: [0, -12],
-    extrapolate: 'clamp',
-  });
-
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [0, 80],
-    outputRange: [1, 0.92],
-    extrapolate: 'clamp',
-  });
-
-  const revenueParallax = scrollY.interpolate({
-    inputRange: [0, 160],
-    outputRange: [0, -12],
-    extrapolate: 'clamp',
-  });
-
-  const revenueScale = scrollY.interpolate({
-    inputRange: [0, 160],
-    outputRange: [1, 0.985],
-    extrapolate: 'clamp',
-  });
+  const [activeFilter, setActiveFilter] = useState('All');
 
   return (
-    <View style={styles.page}>
-      <Animated.View
-        style={[
-          styles.topBar,
-          {
-            transform: [{ translateY: headerTranslateY }],
-            opacity: headerOpacity,
-          },
-        ]}
-      >
-        <Text style={styles.topTitle}>Messages</Text>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => {}}
-          style={({ pressed }) => [styles.iconButton, pressed && styles.iconButtonPressed]}
-        >
-          <MaterialIcons name="search" size={22} color="#94A3B8" />
-        </Pressable>
-      </Animated.View>
+    <SafeAreaView className="flex-1 bg-[#0b1326]">
+      <StatusBar barStyle="light-content" />
 
-      <Animated.ScrollView
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-          useNativeDriver: false,
-        })}
-        contentContainerStyle={styles.content}
-      >
-        <Animated.View style={[styles.revenueCardWrap, { transform: [{ translateY: revenueParallax }, { scale: revenueScale }] }]}>
-          <View style={styles.revenueCard}>
-            <View style={styles.revenueHeader}>
-              <View>
-                <Text style={styles.metaText}>Monthly Revenue</Text>
-                <Text style={styles.revenueValue}>$24,850</Text>
-                <Text style={styles.deltaText}>24.5% vs last month</Text>
-              </View>
+      {/* Header */}
+      <View className="flex-row justify-between items-center px-4 py-3">
+        <TouchableOpacity className="p-2 rounded-full">
+          <MaterialIcons name="menu" size={24} color="#c0c1ff" />
+        </TouchableOpacity>
+        <Text className="text-xl font-bold text-[#dae2fd]">Messages</Text>
+        <TouchableOpacity className="p-2 rounded-full">
+          <MaterialIcons name="search" size={24} color="#c0c1ff" />
+        </TouchableOpacity>
+      </View>
 
-              <View style={styles.revenuePill}>
-                <MaterialIcons name="trending-up" size={14} color="#A5B4FC" />
-                <Text style={styles.revenuePillText}>+18.6%</Text>
-              </View>
-            </View>
-
-            <View style={styles.breakdownRow}>
-              {[
-                { id: 'room', label: 'Room Revenue', value: '$18,250', color: '#818CF8' },
-                { id: 'restaurant', label: 'Restaurant', value: '$4,850', color: '#F97316' },
-                { id: 'services', label: 'Other Services', value: '$1,750', color: '#14B8A6' },
-              ].map((item) => (
-                <View key={item.id} style={styles.breakdownItem}>
-                  <View style={[styles.breakdownDot, { backgroundColor: item.color }]} />
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.breakdownLabel}>{item.label}</Text>
-                    <Text style={[styles.breakdownValue, { color: item.color }]}>{item.value}</Text>
-                  </View>
-                </View>
-              ))}
-            </View>
+      <ScrollView className="flex-1 px-4 pt-2">
+        {/* Search Bar */}
+        <View className="relative mb-6">
+          <View className="absolute left-4 top-1/2 -mt-2.5 z-10">
+            <MaterialIcons name="search" size={20} color="#908fa0" />
           </View>
-        </Animated.View>
-
-        {/* Search */}
-        <View style={styles.searchWrap}>
-          <MaterialIcons name="search" size={20} color="#94A3B8" />
-          <TextInput placeholder="Search messages..." placeholderTextColor="#94A3B8" style={styles.searchInput} />
-          <MaterialIcons name="tune" size={20} color="#6B7280" />
+          <TextInput
+            className="w-full bg-[#131b2e] border border-[#464554] rounded-xl py-3 pl-12 pr-4 text-[#dae2fd]"
+            placeholder="Search messages..."
+            placeholderTextColor="#908fa0"
+          />
         </View>
 
-        {/* Chips */}
-        <View style={styles.chipRow}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipRowInner}>
-            {filters.map((filter) => {
-              const isActive = filter === activeFilter;
-              return (
-                <Pressable
-                  key={filter}
-                  onPress={() => setActiveFilter(filter)}
-                  style={({ pressed }) => [
-                    styles.chip,
-                    isActive && styles.chipActive,
-                    pressed && styles.chipPressed,
-                  ]}
+        {/* Filter Chips */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row mb-6">
+          {['All', 'Unread', 'VIP', 'Archive'].map((filter) => (
+            <TouchableOpacity
+              key={filter}
+              onPress={() => setActiveFilter(filter)}
+              className={`mr-2 px-6 py-2 rounded-full border ${
+                activeFilter === filter
+                  ? 'bg-[#c0c1ff] border-[#c0c1ff]'
+                  : 'bg-[#222a3d] border-[#464554]/30'
+              }`}
+            >
+              <Text
+                className={`font-medium ${
+                  activeFilter === filter ? 'text-[#1000a9]' : 'text-[#c7c4d7]'
+                }`}
+              >
+                {filter}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {/* Messages List */}
+        <View className="space-y-3 pb-24">
+          {conversations.map((item) => (
+            <TouchableOpacity
+              key={item.id}
+              className="bg-[#1e293b]/40 border border-white/10 rounded-2xl p-4 flex-row items-center relative overflow-hidden"
+              style={{ elevation: 2 }}
+            >
+              {item.unread > 0 && (
+                <View className="absolute left-0 top-0 bottom-0 w-1 bg-[#c0c1ff]" />
+              )}
+
+              <View className="relative">
+                <Image
+                  source={{ uri: item.avatar }}
+                  className={`w-14 h-14 rounded-full border-2 ${
+                    item.unread > 0 ? 'border-[#c0c1ff]/20' : 'border-[#908fa0]/10'
+                  }`}
+                />
+                {item.unread > 0 && (
+                  <View className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#c0c1ff] rounded-full flex items-center justify-center border-2 border-[#0b1326]">
+                    <Text className="text-[10px] font-bold text-[#1000a9]">{item.unread}</Text>
+                  </View>
+                )}
+              </View>
+
+              <View className="flex-1 ml-4">
+                <View className="flex-row justify-between items-center mb-1">
+                  <View className="flex-row items-center">
+                    <Text className="text-base font-semibold text-[#dae2fd] mr-2">
+                      {item.name}
+                    </Text>
+                    {item.isVIP && (
+                      <View className="bg-[#ca8100]/20 border border-[#ffb95f]/30 px-1.5 py-0.5 rounded">
+                        <Text className="text-[10px] font-bold text-[#ffb95f]">VIP</Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text className={`text-xs ${item.unread > 0 ? 'text-[#c0c1ff]' : 'text-[#908fa0]'}`}>
+                    {item.time}
+                  </Text>
+                </View>
+                <Text
+                  className={`text-sm truncate ${
+                    item.unread > 0 ? 'text-[#dae2fd] font-semibold' : 'text-[#c7c4d7]'
+                  }`}
+                  numberOfLines={1}
                 >
-                  <Text style={[styles.chipText, isActive && styles.chipTextActive]}>{filter}</Text>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* List */}
-        <View style={styles.list}>
-          {conversations.map((c, index) => (
-            <AnimatedConversationCard key={c.id} conversation={c} index={index} scrollY={scrollY} />
+                  {item.message}
+                </Text>
+              </View>
+            </TouchableOpacity>
           ))}
         </View>
+      </ScrollView>
 
-        <View style={{ height: 90 }} />
-      </Animated.ScrollView>
-    </View>
-  );
-}
-
-function AnimatedConversationCard({
-  conversation,
-  index,
-  scrollY,
-}: {
-  conversation: Conversation;
-  index: number;
-  scrollY: Animated.Value;
-}) {
-  const revealStart = 220 + index * 44;
-  const revealProgress = scrollY.interpolate({
-    inputRange: [revealStart - 120, revealStart + 120],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
-
-  const translateY = revealProgress.interpolate({ inputRange: [0, 1], outputRange: [14, 0] });
-  const opacity = revealProgress;
-
-  const avatarInitial = conversation.name.trim().charAt(0).toUpperCase();
-
-  return (
-    <Animated.View style={[styles.cardWrap, { opacity, transform: [{ translateY }] }]}>
-      <Pressable
-        onPress={() => {}}
-        style={({ pressed }) => [styles.conversationCard, pressed && styles.conversationCardPressed]}
+      {/* FAB */}
+      <TouchableOpacity
+        className="absolute bottom-24 right-6 w-14 h-14 bg-[#c0c1ff] rounded-full shadow-lg items-center justify-center"
+        style={{ elevation: 5 }}
       >
-        <View style={styles.leftGlow} />
-
-        <View style={styles.avatarWrap}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{avatarInitial}</Text>
-          </View>
-
-          {typeof conversation.unread === 'number' ? (
-            <View style={styles.unreadDot}>
-              <Text style={styles.unreadText}>{conversation.unread}</Text>
-            </View>
-          ) : null}
-        </View>
-
-        <View style={styles.body}>
-          <View style={styles.rowBetween}>
-            <View style={styles.nameRow}>
-              <Text style={styles.nameText} numberOfLines={1}>
-                {conversation.name}
-              </Text>
-              {conversation.badge ? (
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{conversation.badge}</Text>
-                </View>
-              ) : null}
-            </View>
-            <Text style={styles.timeText}>{conversation.time}</Text>
-          </View>
-
-          <Text style={styles.messageText} numberOfLines={1}>
-            {conversation.message}
-          </Text>
-        </View>
-
-        <MaterialIcons name="chevron-right" size={20} color="#6B7280" />
-      </Pressable>
-    </Animated.View>
+        <MaterialCommunityIcons name="square-edit-outline" size={28} color="#1000a9" />
+      </TouchableOpacity>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: '#0b1326',
-  },
-  content: {
-    paddingTop: 92,
-    paddingHorizontal: CONTENT_X_PADDING,
-    paddingBottom: 140,
-  },
-
-  topBar: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 72,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: CONTENT_X_PADDING,
-    paddingTop: 10,
-    backgroundColor: 'rgba(11, 19, 38, 0.72)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.06)',
-  },
-  topTitle: {
-    color: '#dae2fd',
-    fontSize: 22,
-    fontWeight: '800',
-  },
-  iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: '#111827',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconButtonPressed: {
-    transform: [{ scale: 0.98 }],
-    backgroundColor: '#0f172a',
-  },
-
-  revenueCardWrap: {
-    marginTop: 8,
-    marginBottom: 18,
-  },
-  revenueCard: {
-    borderRadius: 26,
-    padding: 16,
-    backgroundColor: 'rgba(17, 24, 39, 0.85)',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-    shadowColor: '#000',
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-  },
-  revenueHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 14,
-  },
-  metaText: {
-    color: '#94A3B8',
-    fontSize: 12,
-    fontWeight: '700',
-    marginBottom: 6,
-  },
-  revenueValue: {
-    color: '#fff',
-    fontSize: 30,
-    fontWeight: '900',
-    letterSpacing: -0.3,
-  },
-  deltaText: {
-    color: '#22C55E',
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 6,
-  },
-  revenuePill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 999,
-    backgroundColor: 'rgba(129, 140, 248, 0.

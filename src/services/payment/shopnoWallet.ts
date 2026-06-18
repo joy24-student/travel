@@ -1,3 +1,8 @@
+/**
+ * Shopno Wallet Payment Provider
+ * Internal wallet system for the app
+ */
+
 import { supabase } from "../../utils/supabase";
 import type {
   IPaymentProvider,
@@ -8,160 +13,131 @@ import type {
 } from "./types";
 
 export class ShopnoWalletProvider implements IPaymentProvider {
-  readonly name = "wallet" as const;
-
   async initiate(request: PaymentRequest): Promise<PaymentResult> {
     try {
-      const { data: wallet, error } = await supabase
-        .from("shopno_wallets")
-        .select("id, balance, currency")
-        .eq("user_id", request.userId)
+      // Check wallet balance
+      const balance = await this.getBalance(request.userId);
+
+      if (balance < request.amount) {
+        return {
+          success: false,
+          status: "failed",
+          gateway: "shopno_wallet",
+          errorMessage: "Insufficient wallet balance",
+        };
+      }
+
+      // Deduct from wallet
+      const { data, error } = await supabase
+        .from("wallet_transactions")
+        .insert([
+          {
+            user_id: request.userId,
+            amount: -request.amount,
+            type: "payment",
+            status: "completed",
+            reference: request.reference,
+            booking_id: request.bookingId,
+          },
+        ])
+        .select()
         .single();
 
-      if (error || !wallet) {
-        return {
-          success: false,
-          transactionId: "",
-          gateway: "shopno_wallet",
-          status: "failed",
-          error: "Wallet not found. Please top up your Shopno Wallet.",
-        };
-      }
-
-      if (wallet.balance < request.amount) {
-        return {
-          success: false,
-          transactionId: "",
-          gateway: "shopno_wallet",
-          status: "failed",
-          error: `Insufficient balance. Available: ${wallet.currency} ${wallet.balance}`,
-        };
-      }
-
-      const transactionId = `SWL-${Date.now().toString(36).toUpperCase()}`;
-
-      // Deduct balance
-      await supabase
-        .from("shopno_wallets")
-        .update({
-          balance: wallet.balance - request.amount,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", wallet.id);
-
-      // Record transaction
-      await supabase.from("shopno_wallet_transactions").insert([
-        {
-          wallet_id: wallet.id,
-          user_id: request.userId,
-          transaction_id: transactionId,
-          booking_id: request.bookingId,
-          type: "debit",
-          amount: request.amount,
-          currency: request.currency,
-          description: `Payment for booking ${request.bookingId}`,
-          status: "completed",
-        },
-      ]);
+      if (error) throw error;
 
       return {
         success: true,
-        transactionId,
-        gateway: "shopno_wallet",
         status: "completed",
-        gatewayResponse: {
-          walletId: wallet.id,
-          remainingBalance: wallet.balance - request.amount,
-        },
+        transactionId: data.id,
+        gateway: "shopno_wallet",
+        gatewayResponse: data,
+        paymentId: data.id,
       };
-    } catch (err: any) {
+    } catch (error: any) {
       return {
         success: false,
-        transactionId: "",
-        gateway: "shopno_wallet",
         status: "failed",
-        error: err.message,
+        gateway: "shopno_wallet",
+        errorMessage: error.message || "Wallet payment failed",
       };
     }
   }
 
   async verify(transactionId: string): Promise<PaymentStatus> {
-    const { data } = await supabase
-      .from("shopno_wallet_transactions")
-      .select("status")
-      .eq("transaction_id", transactionId)
-      .single();
-    return (data?.status as PaymentStatus) ?? "failed";
+    try {
+      const { data, error } = await supabase
+        .from("wallet_transactions")
+        .select("status")
+        .eq("id", transactionId)
+        .single();
+
+      if (error) return "failed";
+      return data.status as PaymentStatus;
+    } catch {
+      return "failed";
+    }
   }
 
   async refund(request: RefundRequest): Promise<boolean> {
-    const { data: tx } = await supabase
-      .from("shopno_wallet_transactions")
-      .select("wallet_id, user_id")
-      .eq("transaction_id", request.transactionId)
-      .single();
+    try {
+      const { data: transaction } = await supabase
+        .from("wallet_transactions")
+        .select("user_id")
+        .eq("id", request.transactionId)
+        .single();
 
-    if (!tx) return false;
+      if (!transaction) return false;
 
-    const { data: wallet } = await supabase
-      .from("shopno_wallets")
-      .select("balance")
-      .eq("id", tx.wallet_id)
-      .single();
+      const { error } = await supabase.from("wallet_transactions").insert([
+        {
+          user_id: transaction.user_id,
+          amount: request.amount,
+          type: "refund",
+          status: "completed",
+          reference: `Refund for ${request.transactionId}`,
+        },
+      ]);
 
-    await supabase
-      .from("shopno_wallets")
-      .update({
-        balance: (wallet?.balance ?? 0) + request.amount,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", tx.wallet_id);
-
-    await supabase.from("shopno_wallet_transactions").insert([
-      {
-        wallet_id: tx.wallet_id,
-        user_id: tx.user_id,
-        transaction_id: `REF-${request.transactionId}`,
-        type: "credit",
-        amount: request.amount,
-        description: `Refund: ${request.reason}`,
-        status: "completed",
-      },
-    ]);
-
-    return true;
+      return !error;
+    } catch {
+      return false;
+    }
   }
 
-  // Extra: get wallet balance
-  static async getBalance(userId: string) {
-    const { data } = await supabase
-      .from("shopno_wallets")
-      .select("balance, currency")
-      .eq("user_id", userId)
-      .single();
-    return data ?? { balance: 0, currency: "BDT" };
+  static async getBalance(userId: string): Promise<number> {
+    try {
+      const { data, error } = await supabase
+        .from("wallet_transactions")
+        .select("amount")
+        .eq("user_id", userId);
+
+      if (error) throw error;
+
+      const balance = data.reduce((sum, t) => sum + t.amount, 0);
+      return Math.max(0, balance);
+    } catch {
+      return 0;
+    }
   }
 
-  // Extra: top up wallet
-  static async topUp(userId: string, amount: number) {
-    const { data: wallet } = await supabase
-      .from("shopno_wallets")
-      .select("id, balance")
-      .eq("user_id", userId)
-      .single();
+  async getBalance(userId: string): Promise<number> {
+    return ShopnoWalletProvider.getBalance(userId);
+  }
 
-    if (wallet) {
-      await supabase
-        .from("shopno_wallets")
-        .update({
-          balance: wallet.balance + amount,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", wallet.id);
-    } else {
-      await supabase
-        .from("shopno_wallets")
-        .insert([{ user_id: userId, balance: amount, currency: "BDT" }]);
+  static async topUp(userId: string, amount: number): Promise<boolean> {
+    try {
+      const { error } = await supabase.from("wallet_transactions").insert([
+        {
+          user_id: userId,
+          amount: amount,
+          type: "topup",
+          status: "completed",
+        },
+      ]);
+
+      return !error;
+    } catch {
+      return false;
     }
   }
 }

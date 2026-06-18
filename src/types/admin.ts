@@ -151,6 +151,7 @@ export interface RealTimeAnalytics {
 export interface AdminUser {
   id: string;
   user_id: string;
+  name?: string;
   role: AdminRole;
   status: "active" | "suspended" | "deactivated";
   permissions: Record<string, boolean>;
@@ -250,6 +251,10 @@ export interface KYCDocument {
 export interface AgencyAdminDetails {
   id: string;
   agency_id: string;
+  agency_name?: string;
+  registration_email?: string;
+  registration_phone?: string;
+  registration_country?: string;
   verification_status: AgencyVerificationStatus;
   is_certified: boolean;
   is_suspended: boolean;
@@ -386,6 +391,8 @@ export interface RefundRequest {
   refund_amount: number;
   refund_reason: string;
   status: RefundStatus;
+  refund_status?: string;
+  refund_notes?: string;
   approval_notes?: string;
   approved_by?: string;
   approved_at?: string;
@@ -508,6 +515,10 @@ export interface FinancialReport {
   report_period_start: string;
   report_period_end: string;
   total_amount: number;
+  total_revenue?: number;
+  total_expenses?: number;
+  report_date?: string;
+  report_status?: string;
   breakdown?: Record<string, any>;
   generated_by?: string;
   generated_at: string;

@@ -1,46 +1,82 @@
+/**
+ * Payment Service Types
+ * Complete type definitions for all payment methods
+ */
+
 export type PaymentMethod =
+  | "google_pay"
   | "bkash"
   | "nagad"
-  | "rocket"
   | "card"
-  | "paypal"
+  | "wallet"
   | "bank_transfer"
-  | "wallet";
+  | "rocket"
+  | "paypal";
 
 export type PaymentStatus =
   | "pending"
   | "processing"
   | "completed"
   | "failed"
-  | "refunded";
+  | "refunded"
+  | "cancelled";
 
 export interface PaymentRequest {
-  bookingId: string;
+  bookingId?: string;
   userId: string;
   amount: number;
   currency: string;
   method: PaymentMethod;
-  metadata?: Record<string, unknown>;
+  phone?: string;
+  email?: string;
+  reference?: string;
+  metadata?: Record<string, any>;
 }
 
 export interface PaymentResult {
   success: boolean;
-  transactionId: string;
-  gateway: string;
   status: PaymentStatus;
-  gatewayResponse?: Record<string, unknown>;
-  error?: string;
+  transactionId?: string;
+  gateway: string;
+  gatewayResponse?: any;
+  redirectUrl?: string;
+  errorMessage?: string;
+  paymentId?: string;
 }
 
 export interface RefundRequest {
   transactionId: string;
   amount: number;
-  reason: string;
+  reason?: string;
 }
 
 export interface IPaymentProvider {
-  readonly name: PaymentMethod;
   initiate(request: PaymentRequest): Promise<PaymentResult>;
   verify(transactionId: string): Promise<PaymentStatus>;
   refund(request: RefundRequest): Promise<boolean>;
+}
+
+export interface GooglePayConfig {
+  merchantId: string;
+  merchantName: string;
+  gatewayId: string;
+  gatewayMerchantId: string;
+}
+
+export interface BkashConfig {
+  appKey: string;
+  appSecret: string;
+  username: string;
+  password: string;
+  baseUrl: string;
+  sandboxMode: boolean;
+}
+
+export interface NagadConfig {
+  merchantId: string;
+  merchantNumber: string;
+  publicKey: string;
+  privateKey: string;
+  baseUrl: string;
+  sandboxMode: boolean;
 }

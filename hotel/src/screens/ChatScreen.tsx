@@ -1,264 +1,156 @@
-import React from "react";
+import React, { useState } from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
-} from "react-native";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export function ChatScreen() {
+  const [message, setMessage] = useState('');
+
   return (
-    <View style={styles.page}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.iconButton} activeOpacity={0.8}>
-          <MaterialIcons name="arrow-back" size={22} color="#fff" />
-        </TouchableOpacity>
-        <View style={styles.profileRow}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>R</Text>
-          </View>
-          <View>
-            <Text style={styles.chatTitle}>Robert Fox</Text>
-            <Text style={styles.chatSubtitle}>Room 302 • VIP Guest</Text>
+    <SafeAreaView className="flex-1 bg-[#0b1326]">
+      <StatusBar barStyle="light-content" />
+
+      {/* Header */}
+      <View className="bg-[#0b1326] flex-row justify-between items-center px-4 py-2 border-b border-white/5 shadow-lg">
+        <View className="flex-row items-center space-x-3">
+          <TouchableOpacity className="p-2">
+            <MaterialIcons name="arrow-back" size={24} color="#c0c1ff" />
+          </TouchableOpacity>
+          <View className="flex-row items-center space-x-2">
+            <View className="relative">
+              <Image
+                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDsWGUZ3CbsOqq45cVvXtyw-CjZX919pZ1Re8daDhrUVJABLtcLIca99VL5plpFw3vLU2d8JGT8UNs1cRPEKQxeQeWzJ6y3XQtntEz2T957pchLaRGMr4XDOb9QiCe-gMbDlZ_ZbM0xALZO0v09xsyOtVG1SSRS7agRqgj_COZ8RNP0t1-tD6F54S7KwSlLBgN1bi3GiKRaW9mWbFvXG7yuBcXr-xK9BRZ4uWTqiRVqs_29u_jqNyOs4ee_QgahOCGwhdwc1AqI298' }}
+                className="w-10 h-10 rounded-full border-2 border-[#4edea3]/30"
+              />
+              <View className="absolute bottom-0 right-0 w-3 h-3 bg-[#4edea3] rounded-full border-2 border-[#0b1326]" />
+            </View>
+            <View>
+              <View className="flex-row items-center space-x-1">
+                <Text className="text-white font-semibold">Robert Fox</Text>
+                <View className="bg-[#ca8100]/20 border border-[#ffb95f]/30 px-1.5 py-0.5 rounded">
+                  <Text className="text-[#ffb95f] text-[8px] font-bold">VIP</Text>
+                </View>
+              </View>
+              <Text className="text-[#908fa0] text-[10px]">Room 302 • Check-out May 31</Text>
+            </View>
           </View>
         </View>
-        <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.iconButton} activeOpacity={0.8}>
-            <MaterialIcons name="search" size={22} color="#94A3B8" />
+        <View className="flex-row items-center space-x-2">
+          <TouchableOpacity className="p-2">
+            <MaterialIcons name="search" size={24} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.iconButton, styles.callButton]}
-            activeOpacity={0.8}
-          >
-            <MaterialIcons name="call" size={22} color="#fff" />
+          <TouchableOpacity className="bg-[#8083ff] p-2 rounded-full">
+            <MaterialIcons name="call" size={20} color="#0d0096" />
           </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView
-        contentContainerStyle={styles.messages}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        className="flex-1"
       >
-        <View style={styles.dateBadge}>
-          <Text style={styles.dateText}>Today, 30 May 2024</Text>
-        </View>
-
-        <View style={styles.messageRowLeft}>
-          <View style={styles.messageBubbleLeft}>
-            <Text style={styles.messageText}>
-              Thank you for the quick check-in! Is it possible to get extra
-              towels sent to room 302?
-            </Text>
+        <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
+          {/* Date Separator */}
+          <View className="flex-row items-center space-x-4 mb-6">
+            <View className="flex-1 h-[1px] bg-white/10" />
+            <View className="bg-slate-800/70 border border-white/10 px-4 py-1 rounded-full">
+              <Text className="text-[#908fa0] text-[10px] font-bold tracking-widest uppercase">Today, 30 May 2024</Text>
+            </View>
+            <View className="flex-1 h-[1px] bg-white/10" />
           </View>
-          <Text style={styles.messageMeta}>10:24 AM • Sent</Text>
-        </View>
 
-        <View style={styles.messageRowRight}>
-          <View style={styles.messageBubbleRight}>
-            <Text style={styles.messageTextRight}>
-              You're very welcome, Mr. Fox! I've sent a request to housekeeping.
-              They'll be at your door in 5 minutes.
-            </Text>
+          {/* Guest Message */}
+          <View className="flex-col items-start max-w-[85%] mb-6">
+            <View className="bg-slate-800/70 border border-white/5 p-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl">
+              <Text className="text-[#dae2fd] text-sm">
+                Thank you for the quick check-in! Is it possible to get extra towels sent to room 302?
+              </Text>
+            </View>
+            <Text className="text-[#908fa0] text-[10px] mt-1 ml-1">10:24 AM • Sent</Text>
           </View>
-          <View style={styles.statusRow}>
-            <Text style={styles.messageMetaRight}>10:26 AM • Read</Text>
-            <MaterialIcons name="done-all" size={16} color="#22C55E" />
+
+          {/* Staff Reply */}
+          <View className="flex-col items-end self-end max-w-[85%] mb-6">
+            <View className="bg-[#8083ff] p-4 rounded-tl-2xl rounded-bl-2xl rounded-br-2xl shadow-lg shadow-[#8083ff]/20">
+              <Text className="text-[#0d0096] text-sm font-medium">
+                You're very welcome, Mr. Fox! I've sent a request to housekeeping. They'll be at your door in 5 minutes.
+              </Text>
+            </View>
+            <View className="flex-row items-center space-x-1 mt-1 mr-1">
+              <Text className="text-[#908fa0] text-[10px]">10:26 AM • Read</Text>
+              <MaterialIcons name="done-all" size={14} color="#4edea3" />
+            </View>
+          </View>
+
+          {/* Guest Message Short */}
+          <View className="flex-col items-start max-w-[85%] mb-6">
+            <View className="bg-slate-800/70 border border-white/5 p-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl">
+              <Text className="text-[#dae2fd] text-sm">Perfect, thanks!</Text>
+            </View>
+            <Text className="text-[#908fa0] text-[10px] mt-1 ml-1">10:27 AM</Text>
+          </View>
+
+          {/* Typing Indicator */}
+          <View className="flex-row items-center space-x-3 opacity-80 mb-6">
+            <View className="flex-row space-x-1 bg-[#222a3d] px-3 py-2 rounded-full">
+              <View className="w-1.5 h-1.5 bg-[#908fa0] rounded-full" />
+              <View className="w-1.5 h-1.5 bg-[#908fa0] rounded-full" />
+              <View className="w-1.5 h-1.5 bg-[#908fa0] rounded-full" />
+            </View>
+            <Text className="text-[#908fa0] text-xs italic">Robert Fox is typing...</Text>
+          </View>
+        </ScrollView>
+
+        {/* Input Area */}
+        <View className="p-4 bg-[#171f33]/80 backdrop-blur-xl border-t border-white/5">
+          {/* Action Chips */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row mb-4">
+            <TouchableOpacity className="bg-slate-800/70 border border-[#8083ff]/20 px-4 py-2 rounded-full flex-row items-center space-x-2 mr-2">
+              <MaterialIcons name="dry-cleaning" size={16} color="#c0c1ff" />
+              <Text className="text-[#c0c1ff] text-xs font-medium">Send Towels</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="bg-slate-800/70 border border-[#4edea3]/20 px-4 py-2 rounded-full flex-row items-center space-x-2 mr-2">
+              <MaterialIcons name="restaurant" size={16} color="#4edea3" />
+              <Text className="text-[#4edea3] text-xs font-medium">Room Service</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="bg-slate-800/70 border border-white/20 px-4 py-2 rounded-full flex-row items-center space-x-2 mr-2">
+              <MaterialIcons name="cleaning-services" size={16} color="#dae2fd" />
+              <Text className="text-[#dae2fd] text-xs font-medium">Housekeeping</Text>
+            </TouchableOpacity>
+          </ScrollView>
+
+          <View className="flex-row items-end space-x-2">
+            <TouchableOpacity className="p-2 mb-1">
+              <MaterialIcons name="add" size={24} color="#908fa0" />
+            </TouchableOpacity>
+            <View className="flex-1">
+              <TextInput
+                value={message}
+                onChangeText={setMessage}
+                placeholder="Type a message..."
+                placeholderTextColor="#908fa0"
+                multiline
+                className="bg-[#0b1326] border border-white/10 rounded-2xl py-3 px-4 text-white text-sm min-h-[44]"
+              />
+            </View>
+            <TouchableOpacity
+              className={`p-3 rounded-full shadow-lg ${message ? 'bg-[#8083ff]' : 'bg-[#8083ff]'}`}
+            >
+              <MaterialIcons name={message ? 'send' : 'mic'} size={24} color="#0d0096" />
+            </TouchableOpacity>
           </View>
         </View>
-
-        <View style={styles.messageRowLeft}>
-          <View style={styles.messageBubbleLeft}>
-            <Text style={styles.messageText}>Perfect, thanks!</Text>
-          </View>
-          <Text style={styles.messageMeta}>10:27 AM</Text>
-        </View>
-      </ScrollView>
-
-      <View style={styles.quickActions}>
-        {[
-          { id: "towels", label: "Send Towels", icon: "dry-cleaning" },
-          { id: "roomService", label: "Room Service", icon: "restaurant" },
-          {
-            id: "housekeeping",
-            label: "Housekeeping",
-            icon: "cleaning-services",
-          },
-          { id: "extend", label: "Extend Stay", icon: "event-repeat" },
-        ].map((action) => (
-          <TouchableOpacity
-            key={action.id}
-            style={styles.actionChip}
-            activeOpacity={0.8}
-          >
-            <MaterialCommunityIcons
-              name={action.icon as any}
-              size={18}
-              color="#fff"
-            />
-            <Text style={styles.actionText}>{action.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: "#0b1326",
-  },
-  header: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    backgroundColor: "#0b1326",
-    paddingTop: 48,
-    paddingHorizontal: 20,
-    paddingBottom: 18,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: "#111827",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  callButton: {
-    backgroundColor: "#6366F1",
-    marginLeft: 10,
-  },
-  profileRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-    marginLeft: 14,
-  },
-  avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 16,
-    backgroundColor: "#1f2937",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  avatarText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "800",
-  },
-  chatTitle: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "800",
-  },
-  chatSubtitle: {
-    color: "#94A3B8",
-    fontSize: 12,
-  },
-  headerActions: {
-    flexDirection: "row",
-  },
-  messages: {
-    paddingTop: 140,
-    paddingHorizontal: 20,
-    paddingBottom: 180,
-  },
-  dateBadge: {
-    alignSelf: "center",
-    backgroundColor: "#111827",
-    borderRadius: 999,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 20,
-  },
-  dateText: {
-    color: "#94A3B8",
-    fontSize: 12,
-  },
-  messageRowLeft: {
-    alignSelf: "flex-start",
-    marginBottom: 20,
-    maxWidth: "85%",
-  },
-  messageBubbleLeft: {
-    backgroundColor: "#111827",
-    borderTopRightRadius: 24,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 24,
-    padding: 16,
-  },
-  messageRowRight: {
-    alignSelf: "flex-end",
-    marginBottom: 20,
-    maxWidth: "85%",
-    alignItems: "flex-end",
-  },
-  messageBubbleRight: {
-    backgroundColor: "#6366F1",
-    borderTopLeftRadius: 24,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 20,
-    padding: 16,
-  },
-  messageText: {
-    color: "#E5E7EB",
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  messageTextRight: {
-    color: "#fff",
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  messageMeta: {
-    color: "#94A3B8",
-    fontSize: 11,
-    marginTop: 8,
-  },
-  statusRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 8,
-  },
-  messageMetaRight: {
-    color: "#E5E7EB",
-    fontSize: 11,
-  },
-  quickActions: {
-    position: "absolute",
-    bottom: 40,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  actionChip: {
-    backgroundColor: "#111827",
-    borderRadius: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    minWidth: "47%",
-  },
-  actionText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-});

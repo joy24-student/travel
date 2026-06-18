@@ -1,22 +1,49 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState, useRef, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Alert, Text, View, Pressable, KeyboardAvoidingView, Platform, StatusBar, StyleSheet, ScrollView, Image, Modal, TextInput, Animated, NativeSyntheticEvent, TextInputKeyPressEventData, PanResponder } from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { 
+  Alert, 
+  Text, 
+  View, 
+  Pressable, 
+  KeyboardAvoidingView, 
+  Platform, 
+  StatusBar, 
+  StyleSheet, 
+  ScrollView, 
+  Image, 
+  Modal, 
+  TextInput, 
+  NativeSyntheticEvent, 
+  TextInputKeyPressEventData, 
+  PanResponder, 
+  Animated 
+} from "react-native";
+import Svg, { Path } from "react-native-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri } from "expo-auth-session";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { supabase } from "../../src/utils/supabase";
+import { supabase } from "../../src/utils/supabase"; // Keeping the supabase import
+import { useAuth } from "../../src/hooks/useAuth"; // Using the auth hook instead of direct service
 import { loginSchema, LoginFormValues } from "../../src/auth/schemas";
-import { AuthTextField } from "../../src/components/AuthTextField";
-import { authService } from "../../src/services/auth";
+
+// Safe import for Google Sign-in to prevent crash in Expo Go
+let GoogleSignin: any;
+try {
+  const GoogleSigninModule = require("@react-native-google-signin/google-signin");
+  GoogleSignin = GoogleSigninModule.GoogleSignin;
+} catch (e) {
+  // Silent catch, handled in component
+}
 
 WebBrowser.maybeCompleteAuthSession();
 
 const TRIP_BLUE = "#3166ee";
 
 export default function LoginScreen() {
+  const { signIn, signInWithOAuth, sendOtp, verifyOtp, updatePassword } = useAuth(); // Using auth context
   const [loading, setLoading] = useState(false);
   const [emailModalVisible, setEmailModalVisible] = useState(false);
   const [couponModalVisible, setCouponModalVisible] = useState(false);
@@ -31,45 +58,66 @@ export default function LoginScreen() {
   const [canResend, setCanResend] = useState(false);
   const [userExists, setUserExists] = useState<boolean | null>(null);
   const [checkingUser, setCheckingUser] = useState(false);
+  const [isNewUserFlow, setIsNewUserFlow] = useState(false);
+  const [passwordCreateModalVisible, setPasswordCreateModalVisible] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  useEffect(() => {
+    if (GoogleSignin) {
+      GoogleSignin.configure({
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+        offlineAccess: true,
+      });
+    }
+  }, []);
 
   // Modal Pan/Drag logic
   const pan = useRef(new Animated.ValueXY()).current;
-  const otpFadeAnim = useRef(new Animated.Value(0)).current;
-  const otpSlideAnim = useRef(new Animated.Value(500)).current;
   const iconPulseAnim = useRef(new Animated.Value(1)).current;
   const emailIconPulseAnim = useRef(new Animated.Value(1)).current;
   const referralIconPulseAnim = useRef(new Animated.Value(1)).current;
   const successScaleAnim = useRef(new Animated.Value(0)).current;
   const resendRotateAnim = useRef(new Animated.Value(0)).current;
+  const modalFadeAnim = useRef(new Animated.Value(0)).current;
+  const modalSlideAnim = useRef(new Animated.Value(500)).current;
 
-  const createPanResponder = (closeHandler: () => void) => PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: (_, gestureState) => {
-      if (gestureState.dy > 0) {
-        pan.y.setValue(gestureState.dy);
-      }
-    },
-    onPanResponderRelease: (_, gestureState) => {
-      if (gestureState.dy > 120) {
-        Animated.timing(pan.y, {
-          toValue: 1000,
-          duration: 300,
-          useNativeDriver: true,
-        }).start(closeHandler);
-      } else {
-        Animated.spring(pan.y, {
-          toValue: 0,
-          useNativeDriver: true,
-        }).start();
-      }
-    }
-  });
+  const createPanResponder = (closeHandler: () => void) =>
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          pan.y.setValue(gestureState.dy);
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 120) {
+          Animated.timing(pan.y, {
+            toValue: 1000,
+            duration: 300,
+            useNativeDriver: true,
+          }).start(closeHandler);
+        } else {
+          Animated.spring(pan.y, {
+            toValue: 0,
+            friction: 8,
+            tension: 40,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    });
 
   const emailPan = useRef(createPanResponder(() => setEmailModalVisible(false))).current;
   const otpPan = useRef(createPanResponder(() => setOtpModalVisible(false))).current;
   const couponPan = useRef(createPanResponder(() => setCouponModalVisible(false))).current;
+  const passwordCreatePan = useRef(createPanResponder(() => setPasswordCreateModalVisible(false))).current;
 
-  useEffect(() => { pan.setValue({ x: 0, y: 0 }); }, [emailModalVisible, otpModalVisible, couponModalVisible]);
+  useEffect(() => { 
+    pan.setValue({ x: 0, y: 0 }); 
+  }, [emailModalVisible, otpModalVisible, couponModalVisible, passwordCreateModalVisible]);
 
   useEffect(() => {
     if (!emailModalVisible) {
@@ -80,18 +128,29 @@ export default function LoginScreen() {
 
   const otpRefs = useRef<TextInput[]>([]);
 
+  // Unified animation trigger for all modals
   useEffect(() => {
+    const isVisible = emailModalVisible || otpModalVisible || couponModalVisible || passwordCreateModalVisible;
+    if (isVisible) {
+      pan.setValue({ x: 0, y: 0 }); // Reset manual drag position
+      Animated.parallel([
+        Animated.timing(modalFadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+        Animated.spring(modalSlideAnim, { toValue: 0, friction: 8, tension: 40, useNativeDriver: true }),
+      ]).start();
+    } else {
+      modalSlideAnim.setValue(500);
+      modalFadeAnim.setValue(0);
+    }
+  }, [emailModalVisible, otpModalVisible, couponModalVisible, passwordCreateModalVisible]);
+
+useEffect(() => {
     if (otpModalVisible) {
-      const anim = Animated.parallel([
-        Animated.timing(otpFadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }),
-        Animated.spring(otpSlideAnim, { toValue: 0, friction: 8, tension: 40, useNativeDriver: true }),
-        Animated.loop(
-          Animated.sequence([
-            Animated.timing(iconPulseAnim, { toValue: 1.1, duration: 1000, useNativeDriver: true }),
-            Animated.timing(iconPulseAnim, { toValue: 1, duration: 1000, useNativeDriver: true })
-          ])
-        )
-      ]);
+      const anim = Animated.loop(
+        Animated.sequence([
+          Animated.timing(iconPulseAnim, { toValue: 1.1, duration: 1000, useNativeDriver: true }),
+          Animated.timing(iconPulseAnim, { toValue: 1, duration: 1000, useNativeDriver: true })
+        ])
+      );
       anim.start();
 
       const interval = setInterval(() => {
@@ -108,11 +167,6 @@ export default function LoginScreen() {
         clearInterval(interval);
         anim.stop();
       };
-    } else {
-      otpFadeAnim.setValue(0);
-      otpSlideAnim.setValue(500);
-      setResendTimer(30);
-      setCanResend(false);
     }
   }, [otpModalVisible]);
 
@@ -171,7 +225,7 @@ export default function LoginScreen() {
     if (!canResend) return;
     setResendTimer(30);
     setCanResend(false);
-    setOtpValue(['', '', '', '']);
+    setOtpValue(['', '', '', '', '', '']);
     Animated.timing(resendRotateAnim, {
       toValue: 1,
       duration: 500,
@@ -223,13 +277,19 @@ export default function LoginScreen() {
       return;
     }
     try {
-      await authService.verifyOtp(otpEmail || "", token, "email");
+      await verifyOtp(otpEmail || "", token, "email"); // Using auth context
       setOtpSuccess(true);
       animateSuccess();
       setTimeout(() => {
-        router.replace("/(tabs)");
-        setOtpModalVisible(false);
-        setOtpSuccess(false);
+        if (isNewUserFlow) {
+          setOtpModalVisible(false);
+          setOtpSuccess(false);
+          setPasswordCreateModalVisible(true);
+        } else {
+          router.replace("/(tabs)" as any);
+          setOtpModalVisible(false);
+          setOtpSuccess(false);
+        }
       }, 1500);
     } catch (error) {
       Alert.alert("Verification failed", error instanceof Error ? error.message : "Invalid code.");
@@ -239,33 +299,57 @@ export default function LoginScreen() {
   // Check if user exists when email is entered
   const handleEmailCheck = async (email: string) => {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
       return;
     }
 
     setCheckingUser(true);
     try {
-      const exists = await authService.checkUserExists(email);
-      setUserExists(exists);
+      // Try to sign in with a fake password to determine if user exists
+      // This is the fallback approach from the authService.checkUserExists method
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password: '__check__' + Math.random().toString(36),
+      });
+
+      let exists = false;
+      if (signInError) {
+        // Check error message to determine if user exists
+        const msg = signInError.message.toLowerCase();
+        if (msg.includes('invalid') || msg.includes('password') || msg.includes('credentials')) {
+          exists = true; // User exists, wrong password
+        }
+        // If the error is about unconfirmed email or other non-credential issues, 
+        // we still consider the user as existing
+      } else {
+        // If no error, then somehow the fake password worked (highly unlikely)
+        exists = true;
+      }
       
+      setUserExists(exists);
+
       if (!exists) {
-        // User doesn't exist, send OTP for signup
         setOtpEmail(email);
-        await authService.sendOtp(email);
+        setIsNewUserFlow(true);
+        // Using the auth context's sendOtp method
+        await sendOtp(email); // Using auth context
         setEmailModalVisible(false);
-        setOtpModalVisible(true);
-        Alert.alert(
-          "New User Detected",
-          "We've sent a verification code to your email. Please verify to create your account."
-        );
+        // Wait a small bit for modal transition
+        setTimeout(() => {
+          setOtpModalVisible(true);
+        }, 300);
+      } else {
+        setIsNewUserFlow(false);
       }
     } catch (error) {
       console.error("Error checking user:", error);
+      Alert.alert("Error", "Could not verify email. Please try again.");
     } finally {
       setCheckingUser(false);
     }
   };
 
-  const { control, handleSubmit } = useForm<LoginFormValues>({
+  const { control, handleSubmit, getValues } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
@@ -273,8 +357,8 @@ export default function LoginScreen() {
   const onSubmit = handleSubmit(async ({ email, password }) => {
     setLoading(true);
     try {
-      await authService.signIn(email, password);
-      router.replace("/(tabs)");
+      await signIn({ email, password }); // Using auth context
+      router.replace("/(tabs)" as any);
     } catch (error) {
       Alert.alert(
         "Login failed",
@@ -288,23 +372,57 @@ export default function LoginScreen() {
   const onSocialSignIn = async (provider: "google" | "facebook") => {
     setLoading(true);
     try {
-      const redirectTo = makeRedirectUri({ scheme: "converted-travel-ui", path: "auth/callback" });
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: { redirectTo, skipBrowserRedirect: true },
-      });
-      if (error || !data.url) throw error ?? new Error("No OAuth URL");
-      const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
-      if (result.type === "success" && result.url) {
-        const code = new URL(result.url).searchParams.get("code");
-        if (code) {
-          const { error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
-          if (sessionError) throw sessionError;
-          router.replace("/(tabs)");
+      if (provider === 'google') {
+        if (!GoogleSignin) {
+          Alert.alert("Error", "Google Sign-in is not available in this environment. Please use a development build.");
+          return;
+        }
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        if (userInfo.idToken) {
+          // Use the auth context method for Google sign-in
+          await signInWithOAuth(provider); // Using auth context
+          router.replace("/(tabs)" as any);
+          return;
+        } else {
+          throw new Error("No ID token present from Google");
         }
       }
+
+      // Use the auth context method for social sign-in
+      await signInWithOAuth(provider); // Using auth context
+      router.push("/(auth)/callback");
     } catch (error) {
       Alert.alert("Login failed", error instanceof Error ? error.message : "Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreatePassword = async () => {
+    // Clear previous errors
+    setPasswordError("");
+    
+    if (!newPassword || newPassword.length < 6) {
+      setPasswordError("Password must be at least 6 characters.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await updatePassword(newPassword); // Using auth context
+      Alert.alert("Success", "Account created successfully!");
+      setPasswordCreateModalVisible(false);
+      // Clear password fields
+      setNewPassword("");
+      setConfirmPassword("");
+      router.replace("/(tabs)" as any);
+    } catch (error) {
+      Alert.alert("Error", error instanceof Error ? error.message : "Failed to set password.");
     } finally {
       setLoading(false);
     }
@@ -325,7 +443,7 @@ export default function LoginScreen() {
         {/* Hero Illustration */}
         <View style={styles.heroSection}>
           <Image 
-            source={{ uri: "https://lh3.googleusercontent.com/aida/AP1WRLseZq6k8ayvAbicOBNrK6VocxD7OE2D5R6xDwc0jkE2HKbPoJqvEyuJiLIihX2TEyeX_pXZUYGVxHqTphSa_jZ93PUWEJamgtBwULNWJVLtqInIqFs5oMnl-zHYUGWZkyFjbBvDnfp8x1JkrILsjXdykJOS3NUBzno3T5s1mFRW8xfTtyW05GSGtYbsQdAGIP_9cUPlns_0rD1KrtBR2pYzfhU2CV9kssCaQ43ERgFTXBbjaMa7AiBNxRg" }}
+            source={{ uri: "https://lh3.googleusercontent.com/aida-public/AB6AXuBYXXSGwkHAwAgx2VS2n6p36E09qxeRLWzKJMVoF7cJ1NqKbckZuHaEA0cL-GZ8VkOQCl5LK3RP1prOQPyH9YpTWWwSSUSCP8P8Pno6fvvjqe4nrDwifkbdxyPhMDR-Hlm-is9CBKMg5iLAfCqYAwUN4Rdehr_a70jrHuKQ99PKhUh6sqJcWPuRsWvri3zpj_ZfpSmASsoNoypxAYZPdGNhi2m8bLc38u5tuVPHPAEWsO5D2KSKVO5PgjHzPNbQlc4CRPZU1-1j3qE" }}
             style={styles.heroImage}
             resizeMode="contain"
           />
@@ -333,9 +451,28 @@ export default function LoginScreen() {
 
         {/* Title Content */}
         <View style={styles.textContainer}>
+          <View style={styles.topIconWrapper}>
+            <View style={styles.topIconCircle}>
+              <Svg width={16} height={16} viewBox="0 0 20 20" fill="#fff">
+                <Path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M11.3 1.047a1 1 0 01.897.95l.003.053v1.547l.004.053a1 1 0 01-.897.95l-.003.053H9.7l-.003-.053a1 1 0 01-.897-.95l-.004-.053V2.05a1 1 0 011.003-1.003h1.5zm3.037 2.155l.044.032 1.094 1.094.044.032a1 1 0 010 1.414l-.044.032-1.094 1.094-.044.032a1 1 0 01-1.414 0l-.044-.032-1.094-1.094-.044-.032a1 1 0 010-1.414l.044-.032 1.094-1.094.044-.032a1 1 0 011.414 0zM5.663 3.202l.044.032 1.094 1.094.044.032a1 1 0 01-1.414 1.414l-.044-.032-1.094-1.094-.044-.032a1 1 0 011.414-1.414zM10 7a3 3 0 100 6 3 3 0 000-6z"
+                />
+              </Svg>
+            </View>
+          </View>
           <Text style={styles.mainTitle}>Sign in for member rewards</Text>
           <View style={styles.benefitRow}>
-            <Ionicons name="pricetag" size={16} color="#fb923c" />
+            <View style={[styles.topIconCircle, { padding: 2, marginRight: 6, borderRadius: 3 }]}>
+              <Svg width={12} height={12} viewBox="0 0 20 20" fill="#fff">
+                <Path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M11.3 1.047a1 1 0 01.897.95l.003.053v1.547l.004.053a1 1 0 01-.897.95l-.003.053H9.7l-.003-.053a1 1 0 01-.897-.95l-.004-.053V2.05a1 1 0 011.003-1.003h1.5zm3.037 2.155l.044.032 1.094 1.094.044.032a1 1 0 010 1.414l-.044.032-1.094 1.094-.044.032a1 1 0 01-1.414 0l-.044-.032-1.094-1.094-.044-.032a1 1 0 010-1.414l.044-.032 1.094-1.094.044-.032a1 1 0 011.414 0zM5.663 3.202l.044.032 1.094 1.094.044.032a1 1 0 01-1.414 1.414l-.044-.032-1.094-1.094-.044-.032a1 1 0 011.414-1.414zM10 7a3 3 0 100 6 3 3 0 000-6z"
+                />
+              </Svg>
+            </View>
             <Text style={styles.benefitText}>Get Member Benefits</Text>
           </View>
         </View>
@@ -388,19 +525,21 @@ export default function LoginScreen() {
 
       {/* Email Login Modal */}
       <Modal
-        animationType="slide"
+        animationType="none"
         transparent={true}
         visible={emailModalVisible}
         onRequestClose={() => setEmailModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <Animated.View style={[styles.modalOverlay, { opacity: modalFadeAnim }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setEmailModalVisible(false)} />
           <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.keyboardView}
           >
-            <Animated.View style={[styles.modalContent, { transform: [{ translateY: pan.y }] }]} onStartShouldSetResponder={() => true}>
-              <View style={styles.modalHandle} />
+            <Animated.View
+              style={[styles.modalContent, { transform: [{ translateY: Animated.add(modalSlideAnim, pan.y) }] }]}
+            >
+              <View style={styles.modalHandle} {...emailPan.panHandlers} />
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Sign In</Text>
                 <Pressable onPress={() => setEmailModalVisible(false)} style={styles.modalCloseBtn}>
@@ -415,42 +554,91 @@ export default function LoginScreen() {
                     </View>
                   </Animated.View>
                 </View>
-                <AuthTextField
+                <Controller
                   control={control}
-                  keyboardType="email-address"
-                  label="Email"
                   name="email"
-                  placeholder="Enter your email"
-                  leftIcon={<MaterialCommunityIcons name="email-outline" size={20} color="#9ca3af" />}
-                  onBlur={(e: any) => {
-                    const email = e.nativeEvent.text;
-                    handleEmailCheck(email);
-                  }}
+                  render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                    <View style={{ marginBottom: 16 }}>
+                      <Text style={styles.label}>Email</Text>
+                      <View style={styles.inputWrapper}>
+                        <View style={styles.leftIconContainer}>
+                          <MaterialCommunityIcons name="email-outline" size={20} color="#9ca3af" />
+                        </View>
+                        <TextInput
+                          style={[styles.modalInput, error && styles.modalInputError, { paddingLeft: 44 }]}
+                          placeholder="Enter your email"
+                          keyboardType="email-address"
+                          autoCapitalize="none"
+                          placeholderTextColor="#9ca3af"
+                          value={value}
+                          onChangeText={onChange}
+                          onBlur={() => {
+                            onBlur(); // Call react-hook-form's onBlur
+                            handleEmailCheck(value); // Pass the current value
+                          }}
+                        />
+                      </View>
+                      {error?.message && (
+                        <Text style={styles.errorText}>{error.message}</Text>
+                      )}
+                    </View>
+                  )}
                 />
+
+                {userExists === null && (
+                  <Pressable 
+                    style={[styles.actionButton, checkingUser && styles.buttonDisabled]}
+                    onPress={() => handleEmailCheck(getValues('email'))}
+                    disabled={checkingUser}
+                  >
+                    <Text style={styles.actionButtonText}>
+                      {checkingUser ? "Checking..." : "Continue"}
+                    </Text>
+                    {!checkingUser && <Ionicons name="arrow-forward" size={18} color="#fff" />}
+                  </Pressable>
+                )}
 
                 {userExists !== null && (
                   <>
                     {userExists ? (
                       <>
-                        <AuthTextField
+                        <Controller
                           control={control}
-                          label="Password"
                           name="password"
-                          secureTextEntry={!showPassword}
-                          placeholder="Enter your password"
-                          leftIcon={<MaterialCommunityIcons name="lock-outline" size={20} color="#9ca3af" />}
-                          rightIcon={
-                            <Pressable
-                              onPress={() => setShowPassword(!showPassword)}
-                              hitSlop={8}
-                            >
-                              <Ionicons
-                                name={showPassword ? "eye-outline" : "eye-off-outline"}
-                                size={20}
-                                color="#9ca3af"
-                              />
-                            </Pressable>
-                          }
+                          render={({ field: { onBlur, onChange, value }, fieldState: { error } }) => (
+                            <View style={{ marginBottom: 16 }}>
+                              <Text style={styles.label}>Password</Text>
+                              <View style={styles.inputWrapper}>
+                                <View style={styles.leftIconContainer}>
+                                  <MaterialCommunityIcons name="lock-outline" size={20} color="#9ca3af" />
+                                </View>
+                                <TextInput
+                                  style={[styles.modalInput, error && styles.modalInputError, { paddingLeft: 44, paddingRight: 44 }]}
+                                  placeholder="Enter your password"
+                                  secureTextEntry={!showPassword}
+                                  autoCapitalize="none"
+                                  placeholderTextColor="#9ca3af"
+                                  value={value}
+                                  onChangeText={onChange}
+                                  onBlur={onBlur}
+                                />
+                                <Pressable
+                                  onPress={() => setShowPassword(!showPassword)}
+                                  hitSlop={8}
+                                  style={styles.rightIconContainer}
+                                >
+                                  <Ionicons
+                                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                                    size={20}
+                                    color="#9ca3af"
+                                  />
+                                </Pressable>
+                              </View>
+                              {error?.message && (
+                                <Text style={styles.errorText}>{error.message}</Text>
+                              )}
+                            </View>
+                          )}
                         />
                         <Pressable 
                           onPress={() => {
@@ -489,7 +677,7 @@ export default function LoginScreen() {
               </ScrollView>
             </Animated.View>
           </KeyboardAvoidingView>
-        </View>
+        </Animated.View>
       </Modal>
 
       {/* OTP Verification Modal */}
@@ -499,11 +687,11 @@ export default function LoginScreen() {
         visible={otpModalVisible}
         onRequestClose={() => setOtpModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <Animated.View style={[styles.modalOverlay, { opacity: modalFadeAnim }]}>
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setOtpModalVisible(false)} />
           <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.keyboardView}>
-            <Animated.View 
-              style={[styles.modalContent, { opacity: otpFadeAnim, transform: [{ translateY: Animated.add(otpSlideAnim, pan.y) }] }]}
+            <Animated.View
+              style={[styles.modalContent, { transform: [{ translateY: Animated.add(modalSlideAnim, pan.y) }] }]}
             >
               <View style={styles.modalHandle} {...otpPan.panHandlers} />
               <View style={styles.modalHeader}>
@@ -514,7 +702,7 @@ export default function LoginScreen() {
                   <Text style={styles.modalTitle}>Verify Email</Text>
                 </View>
                 <Pressable onPress={() => setOtpModalVisible(false)} style={styles.modalCloseBtn}>
-                  <Ionicons name="close" size={24} color="#111" />
+                  <Ionicons name="close" size={22} color="#111" />
                 </Pressable>
               </View>
               <View style={styles.modalBodyContent}>
@@ -579,11 +767,12 @@ export default function LoginScreen() {
                 >
                   <Text style={styles.actionButtonText}>Verify & Continue</Text>
                 </Pressable>
-                  </>)}
+                  </>
+                )}
               </View>
             </Animated.View>
           </KeyboardAvoidingView>
-        </View>
+        </Animated.View>
       </Modal>
 
       {/* Coupon / Referral Modal */}
@@ -593,15 +782,15 @@ export default function LoginScreen() {
         visible={couponModalVisible}
         onRequestClose={() => setCouponModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <Animated.View style={[styles.modalOverlay, { opacity: modalFadeAnim }]} onStartShouldSetResponder={() => true}>
           <Pressable style={StyleSheet.absoluteFill} onPress={() => setCouponModalVisible(false)} />
           <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.keyboardView}>
-            <Animated.View style={[styles.modalContent, { transform: [{ translateY: pan.y }] }]}>
+            <Animated.View style={[styles.modalContent, { transform: [{ translateY: Animated.add(modalSlideAnim, pan.y) }] }]}>
               <View style={styles.modalHandle} {...couponPan.panHandlers} />
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Referral Code</Text>
                 <Pressable onPress={() => setCouponModalVisible(false)} style={styles.modalCloseBtn}>
-                  <Ionicons name="close" size={24} color="#111" />
+                  <Ionicons name="close" size={22} color="#111" />
                 </Pressable>
               </View>
               <View style={styles.modalBodyContent}>
@@ -642,9 +831,111 @@ export default function LoginScreen() {
               </View>
             </Animated.View>
           </KeyboardAvoidingView>
-        </View>
+        </Animated.View>
       </Modal>
 
+      {/* Password Creation Modal */}
+      <Modal
+        animationType="none"
+        transparent={true}
+        visible={passwordCreateModalVisible}
+        onRequestClose={() => setPasswordCreateModalVisible(false)}
+      >
+        <Animated.View style={[styles.modalOverlay, { opacity: modalFadeAnim }]}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setPasswordCreateModalVisible(false)} />
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.keyboardView}
+          >
+            <Animated.View
+              style={[styles.modalContent, { transform: [{ translateY: Animated.add(modalSlideAnim, pan.y) }] }]}
+            >
+              <View style={styles.modalHandle} {...passwordCreatePan.panHandlers} />
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Set Your Password</Text>
+                <Pressable onPress={() => setPasswordCreateModalVisible(false)} style={styles.modalCloseBtn}>
+                  <Ionicons name="close" size={22} color="#111" />
+                </Pressable>
+              </View>
+              <ScrollView style={styles.modalScrollView} bounces={false}>
+                <View style={styles.modalIllustrationContainer}>
+                  <View style={[styles.modalIconCircle, { backgroundColor: '#fdf2f8', borderColor: '#fce7f3' }]}>
+                    <MaterialCommunityIcons name="lock-plus" size={42} color="#db2777" />
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: 16 }}>
+                  <Text style={styles.label}>New Password</Text>
+                  <View style={styles.inputWrapper}>
+                    <View style={styles.leftIconContainer}>
+                      <MaterialCommunityIcons name="lock-outline" size={20} color="#9ca3af" />
+                    </View>
+                    <TextInput
+                      style={[styles.modalInput, { paddingLeft: 44, paddingRight: 44 }]}
+                      placeholder="At least 6 characters"
+                      secureTextEntry={!showPassword}
+                      autoCapitalize="none"
+                      placeholderTextColor="#9ca3af"
+                      value={newPassword}
+                      onChangeText={(text) => {
+                        setNewPassword(text);
+                        if (passwordError) setPasswordError("");
+                      }}
+                    />
+                    <Pressable
+                      onPress={() => setShowPassword(!showPassword)}
+                      hitSlop={8}
+                      style={styles.rightIconContainer}
+                    >
+                      <Ionicons
+                        name={showPassword ? "eye-outline" : "eye-off-outline"}
+                        size={20}
+                        color="#9ca3af"
+                      />
+                    </Pressable>
+                  </View>
+                </View>
+
+                <View style={{ marginBottom: 24 }}>
+                  <Text style={styles.label}>Confirm Password</Text>
+                  <View style={styles.inputWrapper}>
+                    <View style={styles.leftIconContainer}>
+                      <MaterialCommunityIcons name="lock-check-outline" size={20} color="#9ca3af" />
+                    </View>
+                    <TextInput
+                      style={[styles.modalInput, { paddingLeft: 44 }]}
+                      placeholder="Repeat your password"
+                      secureTextEntry={!showPassword}
+                      autoCapitalize="none"
+                      placeholderTextColor="#9ca3af"
+                      value={confirmPassword}
+                      onChangeText={(text) => {
+                        setConfirmPassword(text);
+                        if (passwordError) setPasswordError("");
+                      }}
+                    />
+                  </View>
+                </View>
+                
+                {passwordError ? (
+                  <Text style={styles.errorText}>{passwordError}</Text>
+                ) : null}
+
+                <Pressable
+                  style={[styles.actionButton, loading && styles.buttonDisabled]}
+                  onPress={handleCreatePassword}
+                  disabled={loading}
+                >
+                  <Text style={styles.actionButtonText}>
+                    {loading ? "Creating Account..." : "Complete Sign Up"}
+                  </Text>
+                </Pressable>
+              </ScrollView>
+            </Animated.View>
+          </KeyboardAvoidingView>
+        </Animated.View>
+      </Modal>
+      
       {/* Home Indicator Spacer */}
       <View style={styles.homeIndicator} />
     </SafeAreaView>
@@ -659,7 +950,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 24,
-    paddingTop: 40,
+    paddingTop: 0,
   },
   header: {
     flexDirection: "row",
@@ -678,7 +969,7 @@ const styles = StyleSheet.create({
   },
   heroSection: {
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 0,
     marginBottom: 30,
   },
   heroImage: {
@@ -777,7 +1068,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingHorizontal: 24,
-    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 24,
     maxHeight: "80%",
     width: '100%',
   },
@@ -831,7 +1122,6 @@ const styles = StyleSheet.create({
     backgroundColor: TRIP_BLUE,
     paddingVertical: 16,
     borderRadius: 8,
-    alignItems: "center",
   },
   submitButtonText: {
     color: "#fff",
@@ -1015,6 +1305,22 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 16,
     backgroundColor: "#f9fafb",
+    width: '100%',
+  },
+  inputWrapper: {
+    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  leftIconContainer: {
+    position: 'absolute',
+    left: 12,
+    zIndex: 10,
+  },
+  rightIconContainer: {
+    position: 'absolute',
+    right: 12,
+    zIndex: 10,
   },
   modalInputError: {
     borderColor: "#ef4444",
@@ -1025,6 +1331,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   modalBodyContent: {
+    paddingTop: 10,
     paddingBottom: 24,
   },
   newUserMessage: {
@@ -1050,5 +1357,14 @@ const styles = StyleSheet.create({
   checkingText: {
     fontSize: 14,
     color: '#6b7280',
+  },
+  topIconWrapper: {
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  topIconCircle: {
+    backgroundColor: '#ff9d00',
+    padding: 2,
+    borderRadius: 4,
   },
 });

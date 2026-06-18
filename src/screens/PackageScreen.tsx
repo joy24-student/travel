@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { supabase } from "../../utils/supabase";
 import { tripPlannerService, reviewAnalyzerService } from "../services/ai";
 import { BottomNav, AiPill } from "./Navigation";
 import { TopBar } from "./TopBar";
@@ -21,7 +22,7 @@ import type { UIScreen } from "../data/screens";
 
 const PRIMARY = "#287dfa";
 
-const PACKAGES = [
+const PACKAGES_DEFAULT = [
   {
     id: "pkg-1",
     name: "Cox's Bazar Premium 4D/3N",
@@ -129,22 +130,94 @@ const PACKAGES = [
 const TABS = ["Overview", "Itinerary", "Hotel", "Reviews", "Policy"] as const;
 type Tab = (typeof TABS)[number];
 
+interface Package {
+  id: string;
+  name: string;
+  destination: string;
+  duration: string;
+  price: string;
+  originalPrice?: string;
+  rating: number;
+  reviewCount: number;
+  image: string;
+  includes: string[];
+  excludes: string[];
+  hotel: { name: string; stars: number; amenities: string[] };
+  transport: { type: string; from: string; to: string; duration: string };
+  meals: string[];
+  addons: { name: string; price: string }[];
+  cancellation: string;
+  availability: number;
+  reviews: string[];
+}
+
 export function PackageScreen({ screen }: { screen: UIScreen }) {
-  const [selected, setSelected] = useState<(typeof PACKAGES)[0] | null>(null);
-  const [tab, setTab] = useState<Tab>("Overview");
+   const [packages, setPackages] = useState<Package[]>(PACKAGES_DEFAULT);
+   const [loadingPackages, setLoadingPackages] = useState(true);
+   const [selected, setSelected] = useState<Package | null>(null);
+   const [tab, setTab] = useState<Tab>("Overview");
   const [itinerary, setItinerary] = useState<any>(null);
   const [reviewAnalysis, setReviewAnalysis] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [wishlisted, setWishlisted] = useState<string[]>([]);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
 
-  const openPackage = (pkg: (typeof PACKAGES)[0]) => {
-    setSelected(pkg);
-    setTab("Overview");
-    setItinerary(null);
-    setReviewAnalysis(null);
-    setSelectedAddons([]);
-  };
+  // Load tours from Supabase
+  useEffect(() => {
+    const loadTours = async () => {
+      try {
+        setLoadingPackages(true);
+        const { data, error } = await supabase
+          .from("tours")
+          .select("*")
+          .limit(20);
+        
+        if (error) throw error;
+        
+        if (data && data.length > 0) {
+          const mappedPackages = data.map((tour: any) => ({
+            id: tour.id,
+            name: tour.title,
+            destination: `${tour.destination_city}, ${tour.destination_country}`,
+            duration: `${tour.duration_days} Days`,
+            price: `$${tour.price}`,
+            originalPrice: `$${Math.round(tour.price * 1.3)}`,
+            rating: tour.rating || 4.5,
+            reviewCount: tour.reviews_count || 0,
+            image: (Array.isArray(tour.image_urls) && tour.image_urls[0]) || 
+                   "https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?w=800",
+            includes: Array.isArray(tour.included_services) ? tour.included_services : ["Tour guide", "Meals"],
+            excludes: Array.isArray(tour.not_included) ? tour.not_included : ["Flights", "Personal expenses"],
+            hotel: { name: "Partner Hotel", stars: 4, amenities: ["WiFi", "Restaurant"] },
+            transport: { type: "Coach", from: "Main office", to: tour.destination_city, duration: "TBD" },
+            meals: ["Breakfast", "Lunch", "Dinner"],
+            addons: [{ name: "Travel Insurance", price: "$25" }],
+            cancellation: "Free cancellation up to 7 days before departure.",
+            availability: 5,
+            reviews: [tour.description || "Great tour experience!"],
+          }));
+          setPackages(mappedPackages);
+        } else {
+          setPackages(PACKAGES_DEFAULT);
+        }
+      } catch (err) {
+        console.error("Error loading tours:", err);
+        setPackages(PACKAGES_DEFAULT);
+      } finally {
+        setLoadingPackages(false);
+      }
+    };
+
+    loadTours();
+  }, []);
+
+const openPackage = (pkg: (typeof packages)[0]) => {
+     setSelected(pkg);
+     setTab("Overview");
+     setItinerary(null);
+     setReviewAnalysis(null);
+     setSelectedAddons([]);
+   };
 
   const handleTabChange = async (t: Tab) => {
     setTab(t);
@@ -536,43 +609,46 @@ export function PackageScreen({ screen }: { screen: UIScreen }) {
       <TopBar screen={screen} />
       <ScrollView contentContainerStyle={s.scroll}>
         <Text style={s.pageTitle}>Travel Packages</Text>
-        {PACKAGES.map((pkg) => (
-          <Pressable
-            key={pkg.id}
-            onPress={() => openPackage(pkg)}
-            style={s.pkgCard}
-          >
-            <Image source={{ uri: pkg.image }} style={s.pkgCardImg} />
-            <LinearGradient
-              colors={["transparent", "rgba(0,0,0,0.82)"]}
-              style={s.pkgCardOverlay}
+        {loadingPackages ? (
+          <ActivityIndicator color={PRIMARY} size="large" style={{ marginTop: 40 }} />
+        ) : (
+          packages.map((pkg) => (
+            <Pressable
+              key={pkg.id}
+              onPress={() => openPackage(pkg)}
+              style={s.pkgCard}
             >
-              <View style={s.pkgCardBadge}>
-                <Text style={s.pkgCardBadgeText}>
-                  {Math.round(
-                    (1 -
-                      parseInt(pkg.price.replace(/[^\d]/g, "")) /
-                        parseInt(pkg.originalPrice.replace(/[^\d]/g, ""))) *
-                      100,
-                  )}
-                  % OFF
-                </Text>
-              </View>
-              <Text style={s.pkgCardName}>{pkg.name}</Text>
-              <View style={s.pkgCardRow}>
-                <Ionicons name="star" size={13} color="#f59e0b" />
-                <Text style={s.pkgCardRating}>
-                  {pkg.rating} · {pkg.duration}
-                </Text>
-              </View>
-              <View style={s.pkgCardFooter}>
-                <Text style={s.pkgCardOriginal}>{pkg.originalPrice}</Text>
-                <Text style={s.pkgCardPrice}>{pkg.price}</Text>
-                <Pressable
-                  onPress={() => toggleWishlist(pkg.id)}
-                  style={s.wishBtn}
-                >
-                  <Ionicons
+              <Image source={{ uri: pkg.image }} style={s.pkgCardImg} />
+              <LinearGradient
+                colors={["transparent", "rgba(0,0,0,0.82)"]}
+                style={s.pkgCardOverlay}
+              >
+                <View style={s.pkgCardBadge}>
+                  <Text style={s.pkgCardBadgeText}>
+                    {Math.round(
+                      (1 -
+                        parseInt(pkg.price.replace(/[^\d]/g, "")) /
+                          parseInt(pkg.originalPrice?.replace(/[^\d]/g, "") || "100")) *
+                        100,
+                    )}
+                    % OFF
+                  </Text>
+                </View>
+                <Text style={s.pkgCardName}>{pkg.name}</Text>
+                <View style={s.pkgCardRow}>
+                  <Ionicons name="star" size={13} color="#f59e0b" />
+                  <Text style={s.pkgCardRating}>
+                    {pkg.rating} · {pkg.duration}
+                  </Text>
+                </View>
+                <View style={s.pkgCardFooter}>
+                  <Text style={s.pkgCardOriginal}>{pkg.originalPrice}</Text>
+                  <Text style={s.pkgCardPrice}>{pkg.price}</Text>
+                  <Pressable
+                    onPress={() => toggleWishlist(pkg.id)}
+                    style={s.wishBtn}
+                  >
+                    <Ionicons
                     name={
                       wishlisted.includes(pkg.id) ? "heart" : "heart-outline"
                     }
@@ -583,7 +659,8 @@ export function PackageScreen({ screen }: { screen: UIScreen }) {
               </View>
             </LinearGradient>
           </Pressable>
-        ))}
+          ))
+        )}
         <View style={{ height: 100 }} />
       </ScrollView>
       <AiPill color={PRIMARY} />

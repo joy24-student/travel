@@ -1,13 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
 
+import { supportRepository } from "../../src/services/repositories/support";
 import { BottomNav, AiPill } from "../../src/screens/Navigation";
 
 const PRIMARY = "#287dfa";
 
-const HELP_ITEMS = [
+const STATIC_HELP_ITEMS = [
   { icon: "help-circle-outline", label: "FAQs", desc: "Frequently asked questions" },
   { icon: "chatbubble-outline", label: "Contact Support", desc: "Chat with our team" },
   { icon: "document-text-outline", label: "Terms & Conditions", desc: "Legal information" },
@@ -17,6 +19,32 @@ const HELP_ITEMS = [
 ];
 
 export default function HelpScreen() {
+  const [faqItems, setFaqItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadFAQ = async () => {
+      try {
+        setLoading(true);
+        const faq = await supportRepository.getFAQ();
+        setFaqItems(faq);
+      } catch (err) {
+        console.error("Error loading FAQ:", err);
+        setFaqItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFAQ();
+  }, []);
+
+  const helpItems = faqItems.length > 0 ? faqItems.slice(0, 6).map((item: any, idx: number) => ({
+    ...STATIC_HELP_ITEMS[idx],
+    label: item.question || STATIC_HELP_ITEMS[idx].label,
+    desc: item.category || STATIC_HELP_ITEMS[idx].desc,
+  })) : STATIC_HELP_ITEMS;
+
   return (
     <SafeAreaView style={styles.shell}>
       <View style={styles.header}>
@@ -27,34 +55,40 @@ export default function HelpScreen() {
         <View style={styles.spacer} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {HELP_ITEMS.map((item) => (
-          <Pressable key={item.label} style={styles.helpItem}>
-            <View style={styles.helpIcon}>
-              <Ionicons name={item.icon as any} size={22} color={PRIMARY} />
-            </View>
-            <View style={styles.helpContent}>
-              <Text style={styles.helpLabel}>{item.label}</Text>
-              <Text style={styles.helpDesc}>{item.desc}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
-          </Pressable>
-        ))}
-
-        <View style={styles.contactSection}>
-          <Text style={styles.contactTitle}>Contact Us</Text>
-          <Pressable style={styles.contactBtn}>
-            <Ionicons name="call-outline" size={20} color={PRIMARY} />
-            <Text style={styles.contactBtnText}>Call Support</Text>
-          </Pressable>
-          <Pressable style={styles.contactBtn}>
-            <Ionicons name="mail-outline" size={20} color={PRIMARY} />
-            <Text style={styles.contactBtnText}>Email Support</Text>
-          </Pressable>
+      {loading ? (
+        <View style={[styles.scroll, { justifyContent: "center", alignItems: "center" }]}>
+          <ActivityIndicator size="large" color={PRIMARY} />
         </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+          {helpItems.map((item) => (
+            <Pressable key={item.label} style={styles.helpItem}>
+              <View style={styles.helpIcon}>
+                <Ionicons name={item.icon as any} size={22} color={PRIMARY} />
+              </View>
+              <View style={styles.helpContent}>
+                <Text style={styles.helpLabel}>{item.label}</Text>
+                <Text style={styles.helpDesc}>{item.desc}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+            </Pressable>
+          ))}
 
-        <View style={{ height: 100 }} />
-      </ScrollView>
+          <View style={styles.contactSection}>
+            <Text style={styles.contactTitle}>Contact Us</Text>
+            <Pressable style={styles.contactBtn}>
+              <Ionicons name="call-outline" size={20} color={PRIMARY} />
+              <Text style={styles.contactBtnText}>Call Support</Text>
+            </Pressable>
+            <Pressable style={styles.contactBtn}>
+              <Ionicons name="mail-outline" size={20} color={PRIMARY} />
+              <Text style={styles.contactBtnText}>Email Support</Text>
+            </Pressable>
+          </View>
+
+          <View style={{ height: 100 }} />
+        </ScrollView>
+      )}
 
       <AiPill color={PRIMARY} />
       <BottomNav active="Account" color={PRIMARY} />

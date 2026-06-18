@@ -309,9 +309,8 @@ export const DestinationManagementScreen: React.FC<{
   const loadDestinations = async () => {
     setLoading(true);
     try {
-      // TODO: Implement getAllDestinations in destinationService
-      // For now, use empty array
-      setDestinations([]);
+      const allDestinations = await destinationService.getAllDestinations(100, 0);
+      setDestinations(allDestinations);
     } catch (error) {
       console.error("Error loading destinations:", error);
     } finally {
@@ -337,16 +336,13 @@ export const DestinationManagementScreen: React.FC<{
       let success = false;
       switch (action) {
         case "publish":
-          // TODO: Implement publish in destinationService
-          success = true;
+          success = await destinationService.publishDestination(selectedDestination.id, admin.id);
           break;
         case "unpublish":
-          // TODO: Implement unpublish in destinationService
-          success = true;
+          success = await destinationService.unpublishDestination(selectedDestination.id, admin.id);
           break;
         case "feature":
-          // TODO: Implement feature in destinationService
-          success = true;
+          success = await destinationService.featureDestination(selectedDestination.id, admin.id);
           break;
       }
 

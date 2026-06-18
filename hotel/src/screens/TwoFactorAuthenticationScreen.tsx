@@ -1,148 +1,96 @@
-import React, { useState } from "react";
-import { StyleSheet, Switch, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+  Switch,
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export function TwoFactorAuthenticationScreen() {
-  const [smsEnabled, setSmsEnabled] = useState(true);
-  const [authAppEnabled, setAuthAppEnabled] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(true);
 
   return (
-    <View style={styles.page}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Two-Factor Authentication</Text>
-        <Text style={styles.subtitle}>
-          Protect your hotel admin account with an extra layer of security.
-        </Text>
+    <SafeAreaView className="flex-1 bg-[#0b1326]">
+      <StatusBar barStyle="light-content" />
 
-        <View style={styles.optionRow}>
-          <View>
-            <Text style={styles.optionLabel}>SMS Verification</Text>
-            <Text style={styles.optionDescription}>
-              Receive codes on your phone.
-            </Text>
-          </View>
-          <Switch
-            value={smsEnabled}
-            onValueChange={setSmsEnabled}
-            trackColor={{ true: "#6366F1", false: "#374151" }}
-            thumbColor="#fff"
-          />
-        </View>
-
-        <View style={styles.optionRow}>
-          <View>
-            <Text style={styles.optionLabel}>Authenticator App</Text>
-            <Text style={styles.optionDescription}>
-              Use Google Authenticator or similar.
-            </Text>
-          </View>
-          <Switch
-            value={authAppEnabled}
-            onValueChange={setAuthAppEnabled}
-            trackColor={{ true: "#6366F1", false: "#374151" }}
-            thumbColor="#fff"
-          />
-        </View>
-
-        <View style={styles.detailsCard}>
-          <Text style={styles.detailsTitle}>Recovery Codes</Text>
-          <Text style={styles.detailsText}>
-            Keep these codes safe in case you lose access to your phone.
-          </Text>
-          <TouchableOpacity style={styles.secondaryButton} activeOpacity={0.8}>
-            <Text style={styles.secondaryText}>Show Recovery Codes</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity style={styles.primaryButton} activeOpacity={0.8}>
-          <Text style={styles.primaryText}>Save Settings</Text>
+      {/* Header */}
+      <View className="px-6 py-4 flex-row items-center space-x-4 border-b border-white/5">
+        <TouchableOpacity className="p-1">
+          <MaterialIcons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
+        <Text className="text-xl font-bold text-white">2FA</Text>
       </View>
-    </View>
+
+      <ScrollView className="flex-1 px-6 pt-8" showsVerticalScrollIndicator={false}>
+        <View className="items-center mb-10">
+          <View className="w-20 h-20 rounded-3xl bg-[#8083ff]/10 items-center justify-center mb-6 border border-[#8083ff]/20 shadow-lg shadow-[#8083ff]/20">
+            <MaterialIcons name="security" size={44} color="#c0c1ff" />
+          </View>
+          <Text className="text-2xl font-bold text-white text-center mb-3">Two-Factor Authentication</Text>
+          <Text className="text-[#94a3b8] text-center px-4 leading-relaxed">
+            Add an extra layer of security to your account by requiring a verification code when you sign in.
+          </Text>
+        </View>
+
+        <View className="bg-slate-800/40 border border-white/10 rounded-[32px] p-6 mb-8 shadow-xl">
+           <View className="flex-row items-center justify-between">
+              <View>
+                 <Text className="text-white font-bold text-base">Authentication App</Text>
+                 <Text className="text-[#94a3b8] text-xs mt-1">Recommended</Text>
+              </View>
+              <Switch
+                value={isEnabled}
+                onValueChange={setIsEnabled}
+                trackColor={{ true: '#8083ff', false: '#334155' }}
+                thumbColor="white"
+              />
+           </View>
+
+           {isEnabled && (
+             <View className="mt-8 pt-8 border-t border-white/5">
+                <Text className="text-[#c7c4d7] text-xs font-bold uppercase tracking-widest mb-4">Setup details</Text>
+                <View className="bg-[#060e20] p-4 rounded-2xl flex-row items-center justify-between mb-4">
+                   <Text className="text-white font-mono text-sm">H56K - 99LK - P012 - QQX8</Text>
+                   <TouchableOpacity>
+                      <MaterialIcons name="content-copy" size={20} color="#c0c1ff" />
+                   </TouchableOpacity>
+                </View>
+                <Text className="text-[#94a3b8] text-[10px] text-center leading-relaxed">
+                   Copy this secret key to your authentication app (like Google Authenticator or Authy) to link your account.
+                </Text>
+             </View>
+           )}
+        </View>
+
+        <View className="space-y-4 mb-24">
+           <TouchableOpacity className="bg-white/5 border border-white/10 p-4 rounded-2xl flex-row items-center space-x-4">
+              <View className="w-10 h-10 bg-emerald-500/10 rounded-xl items-center justify-center">
+                 <MaterialIcons name="backup" size={20} color="#4edea3" />
+              </View>
+              <View className="flex-1">
+                 <Text className="text-white font-bold text-sm">Recovery Codes</Text>
+                 <Text className="text-[#94a3b8] text-[10px]">Generate emergency access codes</Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={24} color="#94a3b8" />
+           </TouchableOpacity>
+
+           <TouchableOpacity className="bg-white/5 border border-white/10 p-4 rounded-2xl flex-row items-center space-x-4">
+              <View className="w-10 h-10 bg-orange-500/10 rounded-xl items-center justify-center">
+                 <MaterialIcons name="phone-android" size={20} color="#fb923c" />
+              </View>
+              <View className="flex-1">
+                 <Text className="text-white font-bold text-sm">SMS Verification</Text>
+                 <Text className="text-[#94a3b8] text-[10px]">Use your phone number as a backup</Text>
+              </View>
+              <MaterialIcons name="chevron-right" size={24} color="#94a3b8" />
+           </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: "#0b1326",
-    justifyContent: "center",
-    padding: 20,
-  },
-  card: {
-    backgroundColor: "#111827",
-    borderRadius: 28,
-    padding: 24,
-  },
-  title: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "800",
-    marginBottom: 10,
-  },
-  subtitle: {
-    color: "#94A3B8",
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 24,
-  },
-  optionRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#0f172a",
-    borderRadius: 20,
-    padding: 18,
-    marginBottom: 16,
-  },
-  optionLabel: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  optionDescription: {
-    color: "#94A3B8",
-    fontSize: 12,
-  },
-  detailsCard: {
-    backgroundColor: "#0f172a",
-    borderRadius: 22,
-    padding: 18,
-    marginBottom: 24,
-  },
-  detailsTitle: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "700",
-    marginBottom: 8,
-  },
-  detailsText: {
-    color: "#94A3B8",
-    fontSize: 12,
-    lineHeight: 18,
-    marginBottom: 14,
-  },
-  secondaryButton: {
-    borderWidth: 1,
-    borderColor: "#374151",
-    borderRadius: 16,
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  secondaryText: {
-    color: "#fff",
-    fontSize: 13,
-    fontWeight: "700",
-  },
-  primaryButton: {
-    backgroundColor: "#6366F1",
-    borderRadius: 18,
-    paddingVertical: 16,
-    alignItems: "center",
-  },
-  primaryText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-});

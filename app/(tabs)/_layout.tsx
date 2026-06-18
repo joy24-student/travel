@@ -9,9 +9,8 @@ export default function TabLayout() {
   let activeTab = "Home";
   if (pathname.includes("/messages")) activeTab = "Messages";
   else if (pathname.includes("/post")) activeTab = "Post";
-  else if (pathname.includes("/trips")) activeTab = "My Trips";
   else if (pathname.includes("/account")) activeTab = "Account";
-  else if (pathname.includes("/agency")) activeTab = "Agencies";
+  else if (pathname.includes("/explore")) activeTab = "Explore";
 
   return (
     <View style={styles.container}>
@@ -22,9 +21,9 @@ export default function TabLayout() {
         }}
       >
         <Tabs.Screen name="index" />
+        <Tabs.Screen name="agency" />
         <Tabs.Screen name="messages" />
         <Tabs.Screen name="post" />
-        <Tabs.Screen name="trips" />
         <Tabs.Screen name="account" />
       </Tabs>
 

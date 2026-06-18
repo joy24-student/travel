@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ActivityIndicator,
   Pressable,
@@ -16,12 +16,14 @@ import {
   useSearchFlights,
   useSearchTours,
 } from "../hooks/useSearch";
+import { supabase } from "../utils/supabase";
 import { BottomNav, AiPill } from "./Navigation";
 import { TopBar } from "./TopBar";
 import type { UIScreen } from "../data/screens";
 
 const PRIMARY = "#287dfa";
-const SUGGESTIONS = [
+
+const SUGGESTIONS_DEFAULT = [
   "Cox's Bazar",
   "Bangkok",
   "Maldives",
@@ -29,8 +31,8 @@ const SUGGESTIONS = [
   "Dubai",
   "Singapore",
 ];
-const HISTORY = ["Bangkok 3D", "Hotels in Dhaka", "Cox's Bazar package"];
-const TRAVEL_TYPES = [
+const HISTORY_DEFAULT = ["Bangkok 3D", "Hotels in Dhaka", "Cox's Bazar package"];
+const TRAVEL_TYPES_DEFAULT = [
   "Beach",
   "Mountain",
   "City",
@@ -60,8 +62,46 @@ export function SearchScreen({ screen }: { screen: UIScreen }) {
   const [showFilters, setShowFilters] = useState(false);
   const [compareList, setCompareList] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
+  
+  // Supabase data states
+  const [suggestions, setSuggestions] = useState(SUGGESTIONS_DEFAULT);
+  const [history, setHistory] = useState(HISTORY_DEFAULT);
+  const [travelTypes, setTravelTypes] = useState(TRAVEL_TYPES_DEFAULT);
 
-  const suggestions = SUGGESTIONS.filter(
+  // Load suggestions and travel types from Supabase
+  useEffect(() => {
+    const loadSearchData = async () => {
+      try {
+        // Load popular destinations
+        const { data: dests } = await supabase
+          .from("destinations")
+          .select("name")
+          .eq("is_popular", true)
+          .limit(6);
+        
+        if (dests && dests.length > 0) {
+          setSuggestions(dests.map((d: any) => d.name));
+        }
+
+        // Load travel categories/tags
+        const { data: categories } = await supabase
+          .from("travel_categories")
+          .select("name")
+          .eq("is_active", true)
+          .limit(6);
+        
+        if (categories && categories.length > 0) {
+          setTravelTypes(categories.map((c: any) => c.name));
+        }
+      } catch (err) {
+        console.error("Error loading search data:", err);
+      }
+    };
+
+    loadSearchData();
+  }, []);
+
+  const filteredSuggestions = suggestions.filter(
     (s) => query.length > 1 && s.toLowerCase().includes(query.toLowerCase()),
   );
 
@@ -199,7 +239,7 @@ export function SearchScreen({ screen }: { screen: UIScreen }) {
             </View>
             <Text style={s.filterLabel}>Travel Type</Text>
             <View style={s.chipRow}>
-              {TRAVEL_TYPES.map((type) => (
+              {travelTypes.map((type) => (
                 <Pressable
                   key={type}
                   onPress={() =>
@@ -269,9 +309,9 @@ export function SearchScreen({ screen }: { screen: UIScreen }) {
         )}
 
         {/* Autocomplete suggestions */}
-        {suggestions.length > 0 && (
+        {filteredSuggestions.length > 0 && (
           <View style={s.suggestBox}>
-            {suggestions.map((sg) => (
+            {filteredSuggestions.map((sg) => (
               <Pressable
                 key={sg}
                 onPress={() => setQuery(sg)}
@@ -288,7 +328,7 @@ export function SearchScreen({ screen }: { screen: UIScreen }) {
         {!query && (
           <>
             <Text style={s.sectionTitle}>Recent Searches</Text>
-            {HISTORY.map((h) => (
+            {history.map((h) => (
               <Pressable
                 key={h}
                 onPress={() => setQuery(h)}
@@ -301,7 +341,7 @@ export function SearchScreen({ screen }: { screen: UIScreen }) {
             ))}
             <Text style={s.sectionTitle}>Popular</Text>
             <View style={s.chipRow}>
-              {SUGGESTIONS.map((sg) => (
+              {suggestions.map((sg) => (
                 <Pressable key={sg} onPress={() => setQuery(sg)} style={s.chip}>
                   <Text style={s.chipText}>{sg}</Text>
                 </Pressable>

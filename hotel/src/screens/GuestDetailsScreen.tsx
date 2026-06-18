@@ -1,392 +1,165 @@
-import React from "react";
+import React from 'react';
 import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
-} from "react-native";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-
-const guestStats = [
-  { id: "bookings", label: "Total Bookings", value: "12" },
-  { id: "spent", label: "Total Spent", value: "$4,850" },
-  { id: "points", label: "Loyalty Points", value: "2,450" },
-];
-
-const actionCards = [
-  {
-    id: "message",
-    label: "Message Guest",
-    icon: "message-text-outline",
-    color: "#6366F1",
-  },
-  {
-    id: "edit",
-    label: "Modify Booking",
-    icon: "pencil-outline",
-    color: "#34D399",
-  },
-  {
-    id: "cancel",
-    label: "Cancel Booking",
-    icon: "close-circle-outline",
-    color: "#F87171",
-  },
-];
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export function GuestDetailsScreen() {
-  return (
-    <View style={styles.page}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.topNav}>
-          <TouchableOpacity style={styles.circleButton} activeOpacity={0.8}>
-            <MaterialIcons name="arrow-back" size={22} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.circleButton} activeOpacity={0.8}>
-            <MaterialCommunityIcons
-              name="share-outline"
-              size={22}
-              color="#94A3B8"
-            />
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.sectionTitle}>Guest Details</Text>
-
-        <View style={styles.profileCard}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: "https://images.unsplash.com/photo-1502767089025-6572583495b3?auto=format&fit=crop&w=100&q=80",
-            }}
-          />
-          <View style={styles.profileInfo}>
-            <View style={styles.profileRow}>
-              <Text style={styles.profileName}>Robert Fox</Text>
-              <View style={styles.vipTag}>
-                <Text style={styles.vipText}>VIP Guest</Text>
-              </View>
-            </View>
-            <View style={styles.profileMeta}>
-              <MaterialIcons name="phone" size={16} color="#6366F1" />
-              <Text style={styles.profileMetaText}>+1 202 555 0175</Text>
-            </View>
-            <View style={styles.profileMeta}>
-              <MaterialCommunityIcons
-                name="email-outline"
-                size={16}
-                color="#6366F1"
-              />
-              <Text style={styles.profileMetaText}>robertfox@email.com</Text>
-            </View>
-            <View style={styles.profileMeta}>
-              <MaterialCommunityIcons
-                name="map-marker-outline"
-                size={16}
-                color="#6366F1"
-              />
-              <Text style={styles.profileMetaText}>United States</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.statRow}>
-          {guestStats.map((item) => (
-            <View key={item.id} style={styles.statCard}>
-              <Text style={styles.statLabel}>{item.label}</Text>
-              <Text style={styles.statValue}>{item.value}</Text>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.tabRow}>
-          {["Booking Details", "Profile", "History", "Notes"].map(
-            (tab, index) => (
-              <TouchableOpacity
-                key={tab}
-                style={[
-                  styles.tabButton,
-                  index === 0 && styles.tabButtonActive,
-                ]}
-                activeOpacity={0.8}
-              >
-                <Text
-                  style={[styles.tabText, index === 0 && styles.tabTextActive]}
-                >
-                  {tab}
-                </Text>
-              </TouchableOpacity>
-            ),
+  const InfoRow = ({ label, value, icon, isCopyable, isPaid }: any) => (
+    <View className={`flex-row justify-between items-center py-4 ${!isPaid && 'border-b border-gray-800'}`}>
+      <Text className="text-gray-400 text-sm">{label}</Text>
+      <View className="flex-row items-center space-x-2">
+        <View className="items-end">
+          {typeof value === 'string' ? (
+            <Text className={`font-semibold text-sm ${isPaid ? 'text-green-400' : 'text-white'}`}>{value}</Text>
+          ) : (
+            value
           )}
         </View>
-
-        <View style={styles.detailCard}>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Booking ID</Text>
-            <Text style={styles.detailValue}>#R-88211</Text>
-          </View>
-          <View style={styles.detailSplit}>
-            <View>
-              <Text style={styles.detailLabel}>Check-in</Text>
-              <Text style={styles.detailValue}>26 May 2024</Text>
-              <Text style={styles.detailMeta}>10:00 AM</Text>
-            </View>
-            <View style={styles.textRight}>
-              <Text style={styles.detailLabel}>Check-out</Text>
-              <Text style={styles.detailValue}>28 May 2024</Text>
-              <Text style={styles.detailMeta}>12:00 PM</Text>
-            </View>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Room Type</Text>
-            <Text style={styles.detailValue}>Deluxe Room</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Guests</Text>
-            <Text style={styles.detailValue}>2 Adults • 1 Child</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Payment Status</Text>
-            <Text style={[styles.detailValue, { color: "#22C55E" }]}>Paid</Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Total Amount</Text>
-            <Text style={styles.totalAmount}>$240.00</Text>
-          </View>
-        </View>
-
-        <View style={styles.actionGrid}>
-          {actionCards.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={[styles.actionCard, { borderColor: item.color + "26" }]}
-              activeOpacity={0.8}
-            >
-              <View
-                style={[
-                  styles.actionIcon,
-                  { backgroundColor: item.color + "20" },
-                ]}
-              >
-                <MaterialCommunityIcons
-                  name={item.icon as any}
-                  size={20}
-                  color={item.color}
-                />
-              </View>
-              <Text style={styles.actionLabel}>{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
+        {icon && <MaterialIcons name={icon} size={16} color="#818cf8" />}
+        {isPaid && <MaterialIcons name="check-circle" size={16} color="#4ade80" />}
+      </View>
     </View>
   );
-}
 
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: "#0f111a",
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 100,
-  },
-  topNav: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 24,
-  },
-  circleButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: "#111827",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  sectionTitle: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "800",
-    marginBottom: 20,
-  },
-  profileCard: {
-    backgroundColor: "#1f2937",
-    borderRadius: 28,
-    padding: 20,
-    flexDirection: "row",
-    gap: 16,
-    marginBottom: 20,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 16,
-  },
-  profileInfo: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  profileRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  profileName: {
-    color: "#fff",
-    fontSize: 22,
-    fontWeight: "800",
-  },
-  vipTag: {
-    backgroundColor: "rgba(248, 209, 139, 0.18)",
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  vipText: {
-    fontSize: 10,
-    color: "#FBBF24",
-    fontWeight: "700",
-  },
-  profileMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 6,
-  },
-  profileMetaText: {
-    color: "#94A3B8",
-    fontSize: 12,
-  },
-  statRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    marginBottom: 22,
-  },
-  statCard: {
-    backgroundColor: "#111827",
-    borderRadius: 24,
-    padding: 18,
-    width: "32%",
-    minWidth: 90,
-    marginBottom: 12,
-  },
-  statLabel: {
-    color: "#94A3B8",
-    fontSize: 10,
-    textTransform: "uppercase",
-    marginBottom: 8,
-  },
-  statValue: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "800",
-  },
-  tabRow: {
-    flexDirection: "row",
-    gap: 10,
-    marginBottom: 20,
-  },
-  tabButton: {
-    borderRadius: 999,
-    backgroundColor: "#111827",
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-  },
-  tabButtonActive: {
-    backgroundColor: "#4F46E5",
-  },
-  tabText: {
-    color: "#94A3B8",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  tabTextActive: {
-    color: "#fff",
-  },
-  detailCard: {
-    backgroundColor: "#111827",
-    borderRadius: 28,
-    padding: 20,
-    marginBottom: 24,
-  },
-  detailRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  detailLabel: {
-    color: "#94A3B8",
-    fontSize: 12,
-  },
-  detailValue: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  detailMeta: {
-    color: "#6B7280",
-    fontSize: 11,
-    marginTop: 4,
-  },
-  detailSplit: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    marginBottom: 16,
-  },
-  textRight: {
-    alignItems: "flex-end",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#1F2937",
-    marginVertical: 10,
-  },
-  totalAmount: {
-    color: "#22C55E",
-    fontSize: 16,
-    fontWeight: "800",
-  },
-  actionGrid: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  actionCard: {
-    width: "32%",
-    minWidth: 100,
-    backgroundColor: "#111827",
-    borderWidth: 1,
-    borderRadius: 22,
-    padding: 16,
-    alignItems: "center",
-  },
-  actionIcon: {
-    width: 42,
-    height: 42,
-    borderRadius: 16,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  actionLabel: {
-    color: "#fff",
-    fontSize: 11,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-});
+  return (
+    <SafeAreaView className="flex-1 bg-[#0f111a]">
+      <StatusBar barStyle="light-content" />
+
+      {/* Header */}
+      <View className="flex-row items-center justify-between px-6 py-4">
+        <TouchableOpacity className="p-2 bg-gray-800/40 rounded-full">
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text className="text-lg font-bold text-white">Guest Details</Text>
+        <TouchableOpacity className="p-2 bg-gray-800/40 rounded-full">
+          <MaterialIcons name="share" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView className="flex-1 px-5" showsVerticalScrollIndicator={false}>
+        {/* Guest Profile Card */}
+        <LinearGradient
+          colors={['#1e2540', '#2a3461']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          className="rounded-[32px] p-6 mt-2 overflow-hidden"
+        >
+          <View className="flex-row items-center space-x-4">
+            <View className="w-20 h-20 rounded-full overflow-hidden border-2 border-indigo-400">
+              <Image
+                source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDsWGUZ3CbsOqq45cVvXtyw-CjZX919pZ1Re8daDhrUVJABLtcLIca99VL5plpFw3vLU2d8JGT8UNs1cRPEKQxeQeWzJ6y3XQtntEz2T957pchLaRGMr4XDOb9QiCe-gMbDlZ_ZbM0xALZO0v09xsyOtVG1SSRS7agRqgj_COZ8RNP0t1-tD6F54S7KwSlLBgN1bi3GiKRaW9mWbFvXG7yuBcXr-xK9BRZ4uWTqiRVqs_29u_jqNyOs4ee_QgahOCGwhdwc1AqI298' }}
+                className="w-full h-full"
+              />
+            </View>
+            <View className="flex-1">
+              <View className="flex-row items-center space-x-2">
+                <Text className="text-2xl font-bold text-white">Robert Fox</Text>
+                <View className="bg-yellow-500/20 px-2 py-0.5 rounded-full flex-row items-center">
+                  <MaterialIcons name="star" size={10} color="#fbbf24" />
+                  <Text className="text-yellow-400 text-[10px] font-bold ml-1">VIP</Text>
+                </View>
+              </View>
+              <View className="mt-2 space-y-1">
+                <View className="flex-row items-center space-x-2">
+                  <MaterialIcons name="phone" size={14} color="#818cf8" />
+                  <Text className="text-gray-300 text-xs">+1 202 555 0175</Text>
+                </View>
+                <View className="flex-row items-center space-x-2">
+                  <MaterialIcons name="email" size={14} color="#818cf8" />
+                  <Text className="text-gray-300 text-xs">robertfox@email.com</Text>
+                </View>
+                <View className="flex-row items-center space-x-2">
+                  <MaterialIcons name="public" size={14} color="#818cf8" />
+                  <Text className="text-gray-300 text-xs">United States</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </LinearGradient>
+
+        {/* Quick Stats */}
+        <View className="flex-row space-x-3 mt-6">
+          <View className="flex-1 bg-gray-800/40 border border-gray-700/50 rounded-2xl p-3 items-center">
+            <Text className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Bookings</Text>
+            <Text className="text-xl font-bold text-white">12</Text>
+          </View>
+          <View className="flex-1 bg-gray-800/40 border border-gray-700/50 rounded-2xl p-3 items-center">
+            <Text className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Spent</Text>
+            <Text className="text-xl font-bold text-white">$4,850</Text>
+          </View>
+          <View className="flex-1 bg-gray-800/40 border border-gray-700/50 rounded-2xl p-3 items-center">
+            <Text className="text-[10px] text-gray-400 uppercase tracking-wider mb-1">Points</Text>
+            <Text className="text-xl font-bold text-white">2,450</Text>
+          </View>
+        </View>
+
+        {/* Section Tabs */}
+        <View className="mt-8 flex-row border-b border-gray-800">
+          <TouchableOpacity className="border-b-2 border-indigo-400 pb-2 mr-6">
+            <Text className="text-indigo-400 font-bold">Booking Details</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="pb-2 mr-6">
+            <Text className="text-gray-400 font-medium">Profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity className="pb-2 mr-6">
+            <Text className="text-gray-400 font-medium">History</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Booking Info List */}
+        <View className="mt-6">
+          <InfoRow label="Booking ID" value="#R-88211" icon="content-copy" />
+          <InfoRow label="Check-in" value={
+            <View className="items-end">
+              <Text className="font-semibold text-white">26 May 2024</Text>
+              <Text className="text-xs text-gray-500">10:00 AM</Text>
+            </View>
+          } />
+          <InfoRow label="Check-out" value={
+            <View className="items-end">
+              <Text className="font-semibold text-white">28 May 2024</Text>
+              <Text className="text-xs text-gray-500">12:00 PM</Text>
+            </View>
+          } />
+          <InfoRow label="Room Type" value="Deluxe Room" icon="apartment" />
+          <InfoRow label="Guests" value="2 Adults • 1 Child" />
+          <InfoRow label="Payment Status" value="Paid" isPaid />
+
+          <View className="flex-row justify-between items-center pt-4 mt-2 border-t border-gray-800">
+            <Text className="text-base text-gray-300">Total Amount</Text>
+            <Text className="text-xl font-bold text-green-400">$240.00</Text>
+          </View>
+        </View>
+
+        {/* Action Buttons */}
+        <View className="mt-8 space-y-4 mb-24">
+          <TouchableOpacity className="w-full bg-indigo-600 py-4 rounded-2xl items-center shadow-lg shadow-indigo-600/20">
+            <Text className="text-white font-bold text-base">Message Guest</Text>
+          </TouchableOpacity>
+          <View className="flex-row space-x-3">
+            <TouchableOpacity className="flex-1 py-4 bg-gray-800/40 border border-gray-700/50 rounded-2xl items-center">
+              <MaterialIcons name="phone" size={24} color="#4ade80" />
+              <Text className="text-[10px] font-medium text-white mt-1">Call Guest</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="flex-1 py-4 bg-gray-800/40 border border-gray-700/50 rounded-2xl items-center">
+              <MaterialIcons name="edit" size={24} color="#818cf8" />
+              <Text className="text-[10px] font-medium text-white mt-1">Modify</Text>
+            </TouchableOpacity>
+            <TouchableOpacity className="flex-1 py-4 bg-gray-800/40 border border-gray-700/50 rounded-2xl items-center">
+              <MaterialIcons name="cancel" size={24} color="#f87171" />
+              <Text className="text-[10px] font-medium text-white mt-1">Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

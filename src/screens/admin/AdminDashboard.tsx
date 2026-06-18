@@ -23,14 +23,14 @@ import {
   FontAwesome5,
 } from "@expo/vector-icons";
 import { dashboardService, adminService } from "@/services/adminService";
-import { DashboardMetrics, AdminUser } from "@/types/admin";
+import { DashboardMetrics } from "@/types/admin";
 
 const { width, height } = Dimensions.get("window");
 
 /**
  * Dashboard Header with Admin Info and Gradient
  */
-const DashboardHeader: React.FC<{ admin: AdminUser | null }> = ({ admin }) => {
+const DashboardHeader: React.FC<{ admin: Record<string, any> | null }> = ({ admin }) => {
   const animatedValue = React.useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const DashboardHeader: React.FC<{ admin: AdminUser | null }> = ({ admin }) => {
             style={styles.headerIcon}
           >
             <MaterialCommunityIcons
-              name="shield-admin"
+              name="shield-account" as any
               size={32}
               color="#fff"
             />
@@ -153,7 +153,7 @@ const StatCard: React.FC<{
               )}
             </View>
             <View style={styles.statCardIcon}>
-              <MaterialCommunityIcons name={icon} size={40} color="#fff" />
+              <MaterialCommunityIcons name={icon as any} size={40} color="#fff" />
             </View>
           </View>
         </LinearGradient>
@@ -165,7 +165,7 @@ const StatCard: React.FC<{
 /**
  * Revenue Chart Component with SVG
  */
-const RevenueChart: React.FC<{ metrics: DashboardMetrics | null }> = ({
+const RevenueChart: React.FC<{ metrics: Record<string, any> | null }> = ({
   metrics,
 }) => {
   const data = [
@@ -316,7 +316,6 @@ const PerformanceGauge: React.FC<{ value: number; title: string }> = ({
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
-            style={{ transform: [{ rotate: "-90deg" }] }}
           />
           <SvgText
             x="100"
@@ -376,8 +375,8 @@ const ActivityFeed: React.FC<{ activities: any[] }> = ({ activities = [] }) => {
  * Main Admin Dashboard Component
  */
 export const AdminDashboard: React.FC = () => {
-  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
-  const [admin, setAdmin] = useState<AdminUser | null>(null);
+  const [metrics, setMetrics] = useState<Record<string, any> | null>(null);
+  const [admin, setAdmin] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 

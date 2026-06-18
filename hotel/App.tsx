@@ -1,169 +1,120 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { View, ActivityIndicator } from "react-native";
+import { supabase } from "./src/lib/supabase";
+import { Session } from "@supabase/supabase-js";
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import {
-  ChatScreen,
-  ContactSupportScreen,
+  SplashScreen,
+  OnboardingScreen,
+  LoginScreen,
+  SignUpScreen,
+  ForgotPasswordScreen,
   DashboardScreen,
-  EarningsOverviewScreen,
-  GuestDetailsScreen,
-  HousekeepingScreen,
-  CustomerProfileScreen,
-  LoginDevicesScreen,
-  MaintenanceScreen,
-  MessagesScreen,
-  OTPVerificationScreen,
-  ReportsAnalyticsScreen,
-  ResetPasswordScreen,
   ReservationsScreen,
   RoomManagementScreen,
+  GuestDetailsScreen,
+  EarningsOverviewScreen,
+  MessagesScreen,
+  ChatScreen,
+  HousekeepingScreen,
+  MaintenanceScreen,
+  ReportsAnalyticsScreen,
   SettingsScreen,
-  StaffManagementScreen,
+  ContactSupportScreen,
+  LoginDevicesScreen,
+  OTPVerificationScreen,
+  ResetPasswordScreen,
   TwoFactorAuthenticationScreen,
+  StaffManagementScreen,
 } from "./src/screens";
 
-const routeItems = [
-  { id: "dashboard", label: "Dashboard", component: DashboardScreen },
-  { id: "reservations", label: "Reservations", component: ReservationsScreen },
-  {
-    id: "roomManagement",
-    label: "Room Management",
-    component: RoomManagementScreen,
-  },
-  { id: "guestDetails", label: "Guest Details", component: GuestDetailsScreen },
-  { id: "earnings", label: "Earnings", component: EarningsOverviewScreen },
-  { id: "messages", label: "Messages", component: MessagesScreen },
-  { id: "chat", label: "Chat", component: ChatScreen },
-  { id: "housekeeping", label: "Housekeeping", component: HousekeepingScreen },
-  { id: "maintenance", label: "Maintenance", component: MaintenanceScreen },
-  { id: "analytics", label: "Reports", component: ReportsAnalyticsScreen },
-  { id: "settings", label: "Settings", component: SettingsScreen },
-  { id: "support", label: "Support", component: ContactSupportScreen },
-  { id: "devices", label: "Devices", component: LoginDevicesScreen },
-  { id: "otp", label: "OTP", component: OTPVerificationScreen },
-  {
-    id: "resetPassword",
-    label: "Reset Password",
-    component: ResetPasswordScreen,
-  },
-  {
-    id: "twoFactor",
-    label: "Two-Factor",
-    component: TwoFactorAuthenticationScreen,
-  },
-  { id: "staff", label: "Staff Management", component: StaffManagementScreen },
-  {
-    id: "customerProfile",
-    label: "Customer Profile",
-    component: CustomerProfileScreen,
-  },
-];
+// Minimal Route System
+type RouteId =
+  | 'splash' | 'onboarding' | 'login' | 'signUp' | 'forgotPassword'
+  | 'dashboard' | 'reservations' | 'rooms' | 'guest' | 'earnings'
+  | 'messages' | 'chat' | 'housekeeping' | 'maintenance' | 'reports'
+  | 'settings' | 'support' | 'devices' | 'otp' | 'resetPass' | '2fa' | 'staff';
 
 export default function App() {
-  const [active, setActive] = useState(routeItems[0]);
-  const ActiveScreen = active.component;
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [activeRoute, setActiveRoute] = useState<RouteId>('splash');
 
-  // Mock navigation object to work with your custom state logic
-  const customNavigation = {
-    navigate: (routeId: string, params: any) => {
-      const target = routeItems.find((r) => r.id === routeId);
-      if (target) {
-        setActive({ ...target, params }); // Set active screen and store params
+  useEffect(() => {
+    // Initial Session Check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+      if (session) {
+        setActiveRoute('dashboard');
       }
-    },
-    goBack: () => setActive(routeItems[5]), // Example: return to Messages
+    });
+
+    // Listen for Auth Changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        setActiveRoute('dashboard');
+      } else {
+        // Only redirect to login if we are in the main app
+        if (!['splash', 'onboarding', 'signUp', 'forgotPassword'].includes(activeRoute)) {
+           setActiveRoute('login');
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const navigation = {
+    navigate: (route: RouteId) => setActiveRoute(route),
+    goBack: () => setActiveRoute('login'), // Simplified
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#020617', alignItems: 'center', justify: 'center' }}>
+        <ActivityIndicator size="large" color="#8083ff" />
+      </View>
+    );
+  }
+
+  // Render Logic
+  const renderScreen = () => {
+    switch (activeRoute) {
+      case 'splash': return <SplashScreen navigation={navigation} />;
+      case 'onboarding': return <OnboardingScreen navigation={navigation} />;
+      case 'login': return <LoginScreen navigation={navigation} />;
+      case 'signUp': return <SignUpScreen navigation={navigation} />;
+      case 'forgotPassword': return <ForgotPasswordScreen navigation={navigation} />;
+
+      // Protected Routes
+      case 'dashboard': return <DashboardScreen />;
+      case 'reservations': return <ReservationsScreen />;
+      case 'rooms': return <RoomManagementScreen />;
+      case 'guest': return <GuestDetailsScreen />;
+      case 'earnings': return <EarningsOverviewScreen />;
+      case 'messages': return <MessagesScreen />;
+      case 'chat': return <ChatScreen />;
+      case 'housekeeping': return <HousekeepingScreen />;
+      case 'maintenance': return <MaintenanceScreen />;
+      case 'reports': return <ReportsAnalyticsScreen />;
+      case 'settings': return <SettingsScreen />;
+      case 'support': return <ContactSupportScreen />;
+      case 'devices': return <LoginDevicesScreen />;
+      case 'otp': return <OTPVerificationScreen />;
+      case 'resetPass': return <ResetPasswordScreen />;
+      case '2fa': return <TwoFactorAuthenticationScreen />;
+      case 'staff': return <StaffManagementScreen />;
+
+      default: return <LoginScreen navigation={navigation} />;
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.navigationPanel}>
-        <Text style={styles.navTitle}>Hotel UI</Text>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.navList}
-        >
-          {routeItems.map((route) => (
-            <TouchableOpacity
-              key={route.id}
-              style={[
-                styles.navButton,
-                active.id === route.id && styles.navButtonActive,
-              ]}
-              onPress={() => setActive(route)}
-              activeOpacity={0.8}
-            >
-              <Text
-                style={[
-                  styles.navLabel,
-                  active.id === route.id && styles.navLabelActive,
-                ]}
-              >
-                {route.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
-
-      <View style={styles.screenContainer}>
-        <ActiveScreen
-          navigation={customNavigation}
-          route={{ params: (active as any).params }}
-        />
-        <StatusBar style="light" />
-      </View>
+    <View style={{ flex: 1, backgroundColor: "#0b1326" }}>
+      {renderScreen()}
+      <StatusBar style="light" />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-  },
-  navigationPanel: {
-    width: 220,
-    backgroundColor: "#070B18",
-    paddingTop: 48,
-    paddingHorizontal: 14,
-    borderRightWidth: 1,
-    borderRightColor: "#111827",
-  },
-  navTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "800",
-    marginBottom: 20,
-  },
-  navList: {
-    paddingBottom: 40,
-  },
-  navButton: {
-    paddingVertical: 14,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    marginBottom: 10,
-    backgroundColor: "#111827",
-  },
-  navButtonActive: {
-    backgroundColor: "#4F46E5",
-  },
-  navLabel: {
-    color: "#94A3B8",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  navLabelActive: {
-    color: "#fff",
-  },
-  screenContainer: {
-    flex: 1,
-    backgroundColor: "#0b1326",
-  },
-});

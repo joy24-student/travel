@@ -28,6 +28,8 @@ export type {
   RouteSegment,
   AssistantMessage,
   AssistantSession,
+} from "./types";
+export type {
   DestinationFinderRequest,
   DestinationSuggestion,
   PackageRecommendationRequest,

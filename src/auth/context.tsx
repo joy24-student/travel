@@ -7,6 +7,7 @@ import React, {
 } from "react";
 
 import { supabase } from "../utils/supabase";
+import { makeRedirectUri } from "expo-auth-session";
 import { signInWithFacebook, signInWithGoogle } from "../services/oauth";
 import { clearTokens, storeTokens } from "./tokenStorage";
 import type {
@@ -148,7 +149,10 @@ export function AuthProvider({
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: process.env.EXPO_PUBLIC_AUTH_REDIRECT_URL,
+        redirectTo: makeRedirectUri({
+          scheme: "converted-travel-ui",
+          path: "auth/callback",
+        }),
         skipBrowserRedirect: true,
       },
     });
@@ -286,4 +290,3 @@ export function AuthProvider({
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-

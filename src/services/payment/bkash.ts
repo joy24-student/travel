@@ -1,129 +1,188 @@
+/**
+ * bKash Payment Provider
+ * Production-ready integration with bKash Payment Gateway API
+ */
+
 import type {
   IPaymentProvider,
   PaymentRequest,
   PaymentResult,
   PaymentStatus,
   RefundRequest,
+  BkashConfig,
 } from "./types";
 
-// Replace with real bKash API credentials via environment variables
-const BKASH_BASE_URL =
-  process.env.BKASH_BASE_URL ?? "https://tokenized.sandbox.bka.sh/v1.2.0-beta";
-const BKASH_APP_KEY = process.env.BKASH_APP_KEY ?? "<bkash_app_key>";
-const BKASH_APP_SECRET = process.env.BKASH_APP_SECRET ?? "<bkash_app_secret>";
+const BKASH_CONFIG: BkashConfig = {
+  appKey: process.env.EXPO_PUBLIC_BKASH_APP_KEY || "",
+  appSecret: process.env.EXPO_PUBLIC_BKASH_APP_SECRET || "",
+  username: process.env.EXPO_PUBLIC_BKASH_USERNAME || "",
+  password: process.env.EXPO_PUBLIC_BKASH_PASSWORD || "",
+  baseUrl: process.env.EXPO_PUBLIC_BKASH_BASE_URL || "https://tokenized.sandbox.bka.sh/v1.2.0-beta",
+  sandboxMode: process.env.EXPO_PUBLIC_BKASH_SANDBOX === "true",
+};
 
 export class BkashProvider implements IPaymentProvider {
-  readonly name = "bkash" as const;
+  private token: string | null = null;
+  private tokenExpiry: number = 0;
+
+  async getToken(): Promise<string> {
+    if (this.token && Date.now() < this.tokenExpiry) {
+      return this.token;
+    }
+
+    try {
+      const response = await fetch(`${BKASH_CONFIG.baseUrl}/tokenized/checkout/token/grant`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          username: BKASH_CONFIG.username,
+          password: BKASH_CONFIG.password,
+        },
+        body: JSON.stringify({
+          app_key: BKASH_CONFIG.appKey,
+          app_secret: BKASH_CONFIG.appSecret,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.id_token) {
+        throw new Error(data.errorMessage || "Failed to get bKash token");
+      }
+
+      this.token = data.id_token;
+      this.tokenExpiry = Date.now() + 3500000; // Token valid for ~1 hour
+
+      return this.token;
+    } catch (error: any) {
+      console.error("bKash token error:", error);
+      throw new Error("Failed to authenticate with bKash");
+    }
+  }
 
   async initiate(request: PaymentRequest): Promise<PaymentResult> {
     try {
       const token = await this.getToken();
 
-      const res = await fetch(`${BKASH_BASE_URL}/tokenized/checkout/create`, {
+      const paymentRequest = {
+        mode: "0011",
+        payerReference: request.phone || "",
+        callbackURL: `${process.env.EXPO_PUBLIC_APP_URL}/payment-callback/bkash`,
+        amount: request.amount.toFixed(2),
+        currency: "BDT",
+        intent: "sale",
+        merchantInvoiceNumber: request.reference || `INV-${Date.now()}`,
+      };
+
+      const response = await fetch(`${BKASH_CONFIG.baseUrl}/tokenized/checkout/create`, {
         method: "POST",
-        headers: this.headers(token),
-        body: JSON.stringify({
-          mode: "0011",
-          payerReference: request.userId,
-          callbackURL: "https://your-app.com/payment/callback",
-          amount: String(request.amount),
-          currency: request.currency,
-          intent: "sale",
-          merchantInvoiceNumber: request.bookingId,
-        }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          authorization: token,
+          "x-app-key": BKASH_CONFIG.appKey,
+        },
+        body: JSON.stringify(paymentRequest),
       });
 
-      const data = await res.json();
+      const data = await response.json();
 
-      if (data.statusCode !== "0000") {
+      if (!response.ok || data.statusCode !== "0000") {
         return {
           success: false,
-          transactionId: "",
-          gateway: "bkash",
           status: "failed",
-          error: data.statusMessage,
+          gateway: "bkash",
+          gatewayResponse: data,
+          errorMessage: data.statusMessage || "Payment creation failed",
         };
       }
 
       return {
         success: true,
+        status: "pending",
         transactionId: data.paymentID,
         gateway: "bkash",
-        status: "processing",
         gatewayResponse: data,
+        redirectUrl: data.bkashURL,
+        paymentId: data.paymentID,
       };
-    } catch (err: any) {
+    } catch (error: any) {
+      console.error("bKash initiate error:", error);
       return {
         success: false,
-        transactionId: "",
-        gateway: "bkash",
         status: "failed",
-        error: err.message,
+        gateway: "bkash",
+        errorMessage: error.message || "Failed to initiate bKash payment",
       };
     }
   }
 
-  async verify(transactionId: string): Promise<PaymentStatus> {
-    const token = await this.getToken();
-    const res = await fetch(
-      `${BKASH_BASE_URL}/tokenized/checkout/payment/status`,
-      {
-        method: "POST",
-        headers: this.headers(token),
-        body: JSON.stringify({ paymentID: transactionId }),
-      },
-    );
-    const data = await res.json();
-    if (data.transactionStatus === "Completed") return "completed";
-    if (data.transactionStatus === "Initiated") return "processing";
-    return "failed";
-  }
+  async verify(paymentId: string): Promise<PaymentStatus> {
+    try {
+      const token = await this.getToken();
 
-  async refund(request: RefundRequest): Promise<boolean> {
-    const token = await this.getToken();
-    const res = await fetch(
-      `${BKASH_BASE_URL}/tokenized/checkout/payment/refund`,
-      {
-        method: "POST",
-        headers: this.headers(token),
-        body: JSON.stringify({
-          paymentID: request.transactionId,
-          amount: String(request.amount),
-          trxID: request.transactionId,
-          sku: "refund",
-          reason: request.reason,
-        }),
-      },
-    );
-    const data = await res.json();
-    return data.statusCode === "0000";
-  }
-
-  private async getToken(): Promise<string> {
-    const res = await fetch(
-      `${BKASH_BASE_URL}/tokenized/checkout/token/grant`,
-      {
+      const response = await fetch(`${BKASH_CONFIG.baseUrl}/tokenized/checkout/execute`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          username: BKASH_APP_KEY,
-          password: BKASH_APP_SECRET,
+          Accept: "application/json",
+          authorization: token,
+          "x-app-key": BKASH_CONFIG.appKey,
         },
-        body: JSON.stringify({
-          app_key: BKASH_APP_KEY,
-          app_secret: BKASH_APP_SECRET,
-        }),
-      },
-    );
-    const data = await res.json();
-    return data.id_token;
+        body: JSON.stringify({ paymentID: paymentId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return "failed";
+      }
+
+      switch (data.transactionStatus) {
+        case "Completed":
+          return "completed";
+        case "Processing":
+          return "processing";
+        case "Failed":
+          return "failed";
+        case "Cancelled":
+          return "cancelled";
+        default:
+          return "pending";
+      }
+    } catch (error) {
+      console.error("bKash verify error:", error);
+      return "failed";
+    }
   }
 
-  private headers(token: string) {
-    return {
-      "Content-Type": "application/json",
-      Authorization: token,
-      "X-APP-Key": BKASH_APP_KEY,
-    };
+  async refund(request: RefundRequest): Promise<boolean> {
+    try {
+      const token = await this.getToken();
+
+      const response = await fetch(`${BKASH_CONFIG.baseUrl}/tokenized/checkout/payment/refund`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          authorization: token,
+          "x-app-key": BKASH_CONFIG.appKey,
+        },
+        body: JSON.stringify({
+          paymentID: request.transactionId,
+          amount: request.amount.toFixed(2),
+          trxID: request.transactionId,
+          sku: "payment",
+          reason: request.reason || "Refund",
+        }),
+      });
+
+      const data = await response.json();
+      return response.ok && data.statusCode === "0000";
+    } catch (error) {
+      console.error("bKash refund error:", error);
+      return false;
+    }
   }
 }

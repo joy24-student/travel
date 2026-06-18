@@ -13,26 +13,25 @@ export type {
 } from "./payment/types";
 export { ShopnoWalletProvider } from "./payment/shopnoWallet";
 
-// AI — core
+// AI — all from ai/index.ts which itself re-exports from aiExtensions
 export {
   tripPlannerService,
   budgetPlannerService,
   conciergeService,
   routePlannerService,
   travelAssistantService,
-} from "./ai";
-
-// AI — extensions
-export {
   destinationFinderService,
   packageRecommendationService,
   weatherAssistantService,
   scamDetectionService,
   reviewAnalyzerService,
   groupMatcherService,
-} from "./ai/aiExtensions";
+} from "./ai";
 
 export type {
+  AIProvider,
+  AIResponse,
+  ChatMessage,
   TripPlanRequest,
   TripPlan,
   TripDay,
@@ -58,4 +57,4 @@ export type {
   ReviewAnalysis,
   GroupMatchRequest,
   GroupMatch,
-} from "./ai/aiExtensions";
+} from "./ai";

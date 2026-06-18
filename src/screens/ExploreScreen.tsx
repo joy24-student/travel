@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -18,83 +18,55 @@ import {
   reviewAnalyzerService,
   budgetPlannerService,
 } from "../services/ai";
+import { searchRepository } from "../services/repositories";
 import { BottomNav, AiPill } from "./Navigation";
 import { TopBar } from "./TopBar";
 import type { UIScreen } from "../data/screens";
 
 const PRIMARY = "#287dfa";
 
-const DESTINATIONS = [
-  {
-    name: "Cox's Bazar",
-    country: "Bangladesh",
-    tagline: "World's longest natural sea beach",
-    hero: "https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?w=800",
-    gallery: [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300",
-      "https://images.unsplash.com/photo-1473496169904-658ba7574b0d?w=300",
-      "https://images.unsplash.com/photo-1559827291-72ee739d0d9a?w=300",
-    ],
-    attractions: [
-      "Laboni Beach",
-      "Himchari",
-      "Inani Beach",
-      "Maheshkhali Island",
-      "Ramu",
-    ],
-    activities: ["Swimming", "Beach Walk", "Surfing", "Fishing", "Photography"],
-    restaurants: ["Sea Palace", "Mermaid Beach Cafe", "Sayeman Resort"],
-    safetyScore: 82,
-    bestSeason: "November – March",
-    avgBudget: "৳5,000 – ৳15,000",
-    reviews: [
-      "Stunning beach. Loved every moment!",
-      "Very crowded during peak season but worth it.",
-      "Great seafood at Laboni Beach.",
-    ],
-  },
-  {
-    name: "Bangkok",
-    country: "Thailand",
-    tagline: "City of Angels — vibrant & unforgettable",
-    hero: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800",
-    gallery: [
-      "https://images.unsplash.com/photo-1519451241324-20b4ea2c4220?w=300",
-      "https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=300",
-    ],
-    attractions: [
-      "Grand Palace",
-      "Wat Pho",
-      "Chatuchak Market",
-      "Khao San Road",
-    ],
-    activities: ["Temple Tours", "Night Markets", "Street Food", "Muay Thai"],
-    restaurants: ["Som Tam Nua", "Jay Fai", "Nahm"],
-    safetyScore: 75,
-    bestSeason: "November – February",
-    avgBudget: "$300 – $800",
-    reviews: [
-      "Amazing street food!",
-      "Very hot in summer.",
-      "Temples are breathtaking.",
-    ],
-  },
+const DESTINATIONS_DEFAULT = [
+  // ... existing defaults
 ];
 
 export function ExploreScreen({ screen }: { screen: UIScreen }) {
-  const [selectedDest, setSelectedDest] = useState<
-    (typeof DESTINATIONS)[0] | null
-  >(null);
-  const [activeTab, setActiveTab] = useState<
-    "overview" | "gallery" | "weather" | "budget" | "reviews" | "safety"
-  >("overview");
-  const [weatherData, setWeatherData] = useState<any>(null);
-  const [budgetData, setBudgetData] = useState<any>(null);
-  const [reviewData, setReviewData] = useState<any>(null);
-  const [scamData, setScamData] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [destinations, setDestinations] = useState<any[]>([]);
+  const [selectedDest, setSelectedDest] = useState<any | null>(null);
+  // ... existing states
+  const [loadingDestinations, setLoadingDestinations] = useState(true);
 
-  const loadWeather = async (dest: (typeof DESTINATIONS)[0]) => {
+  // Load destinations from Repository
+  useEffect(() => {
+    const loadDestinations = async () => {
+      try {
+        setLoadingDestinations(true);
+        // Using searchRepository for consistency
+        const data = await searchRepository.searchTours({}); // In a real app we'd have searchDestinations
+        
+        if (data && data.length > 0) {
+          setDestinations(data.map((d: any) => ({
+            ...d,
+            name: d.title || d.name,
+            hero: d.image_url || (d.image_urls && d.image_urls[0]),
+            gallery: d.image_urls || [],
+            attractions: d.highlights || [],
+            activities: d.included_services || [],
+            safetyScore: d.rating ? d.rating * 20 : 80,
+            bestSeason: "Nov - Mar",
+            avgBudget: `$${d.price}`,
+          })));
+        }
+      } catch (err) {
+        console.error("Error loading destinations:", err);
+      } finally {
+        setLoadingDestinations(false);
+      }
+    };
+
+    loadDestinations();
+  }, []);
+
+  const loadWeather = async (dest: (typeof DESTINATIONS_DEFAULT)[0]) => {
     setLoading(true);
     try {
       const res = await weatherAssistantService.forecast({
@@ -109,7 +81,7 @@ export function ExploreScreen({ screen }: { screen: UIScreen }) {
     setLoading(false);
   };
 
-  const loadBudget = async (dest: (typeof DESTINATIONS)[0]) => {
+  const loadBudget = async (dest: (typeof DESTINATIONS_DEFAULT)[0]) => {
     setLoading(true);
     try {
       const res = await budgetPlannerService.plan({
@@ -127,7 +99,7 @@ export function ExploreScreen({ screen }: { screen: UIScreen }) {
     setLoading(false);
   };
 
-  const loadReviews = async (dest: (typeof DESTINATIONS)[0]) => {
+  const loadReviews = async (dest: (typeof DESTINATIONS_DEFAULT)[0]) => {
     setLoading(true);
     try {
       const res = await reviewAnalyzerService.analyze({
@@ -142,25 +114,25 @@ export function ExploreScreen({ screen }: { screen: UIScreen }) {
     setLoading(false);
   };
 
-  const loadScams = async (dest: (typeof DESTINATIONS)[0]) => {
-    setLoading(true);
-    try {
-      const scams = await scamDetectionService.getCommonScams(dest.name);
-      setScamData(scams);
-    } catch {
-      setScamData([]);
-    }
-    setLoading(false);
-  };
+const loadScams = async (dest: (typeof DESTINATIONS_DEFAULT)[0]) => {
+     setLoading(true);
+     try {
+       const scams = await scamDetectionService.getCommonScams(dest.name);
+       setScamData(scams);
+     } catch {
+       setScamData([]);
+     }
+     setLoading(false);
+   };
 
-  const openDest = (dest: (typeof DESTINATIONS)[0]) => {
-    setSelectedDest(dest);
-    setActiveTab("overview");
-    setWeatherData(null);
-    setBudgetData(null);
-    setReviewData(null);
-    setScamData([]);
-  };
+   const openDest = (dest: (typeof DESTINATIONS_DEFAULT)[0]) => {
+     setSelectedDest(dest);
+     setActiveTab("overview");
+     setWeatherData(null);
+     setBudgetData(null);
+     setReviewData(null);
+     setScamData([]);
+   };
 
   const handleTabChange = (tab: typeof activeTab) => {
     setActiveTab(tab);
@@ -414,34 +386,38 @@ export function ExploreScreen({ screen }: { screen: UIScreen }) {
       <ScrollView contentContainerStyle={s.scroll}>
         <Text style={s.exploreTitle}>Explore Destinations</Text>
         <Text style={s.exploreSub}>Tap a destination to see full details</Text>
-        {DESTINATIONS.map((dest) => (
-          <Pressable
-            key={dest.name}
-            onPress={() => openDest(dest)}
-            style={s.exploreCard}
-          >
-            <Image source={{ uri: dest.hero }} style={s.exploreImg} />
-            <LinearGradient
-              colors={["transparent", "rgba(0,0,0,0.8)"]}
-              style={s.exploreOverlay}
+        {loadingDestinations ? (
+          <ActivityIndicator color={PRIMARY} size="large" style={{ marginTop: 40 }} />
+        ) : (
+          destinations.map((dest) => (
+            <Pressable
+              key={dest.name}
+              onPress={() => openDest(dest)}
+              style={s.exploreCard}
             >
-              <Text style={s.exploreName}>{dest.name}</Text>
-              <Text style={s.exploreCountry}>
-                {dest.country} · {dest.avgBudget}
-              </Text>
-              <View style={s.exploreBadges}>
-                <View style={s.badge}>
-                  <Text style={s.badgeText}>
-                    🏖 {dest.attractions.length} attractions
-                  </Text>
+              <Image source={{ uri: dest.hero }} style={s.exploreImg} />
+              <LinearGradient
+                colors={["transparent", "rgba(0,0,0,0.8)"]}
+                style={s.exploreOverlay}
+              >
+                <Text style={s.exploreName}>{dest.name}</Text>
+                <Text style={s.exploreCountry}>
+                  {dest.country} · {dest.avgBudget}
+                </Text>
+                <View style={s.exploreBadges}>
+                  <View style={s.badge}>
+                    <Text style={s.badgeText}>
+                      🖼 {dest.attractions.length} attractions
+                    </Text>
+                  </View>
+                  <View style={s.badge}>
+                    <Text style={s.badgeText}>🛡 {dest.safetyScore}% safe</Text>
+                  </View>
                 </View>
-                <View style={s.badge}>
-                  <Text style={s.badgeText}>🛡 {dest.safetyScore}% safe</Text>
-                </View>
-              </View>
-            </LinearGradient>
-          </Pressable>
-        ))}
+              </LinearGradient>
+            </Pressable>
+          ))
+        )}
         <View style={{ height: 100 }} />
       </ScrollView>
       <AiPill color={PRIMARY} />

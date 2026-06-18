@@ -27,6 +27,37 @@ export default function ForgotPasswordScreen() {
   const resendRotateAnim = useRef(new Animated.Value(0)).current;
   const otpRefs = useRef<TextInput[]>([]);
 
+  // Modal Animation and Pan Logic
+  const pan = useRef(new Animated.ValueXY()).current;
+  const modalFadeAnim = useRef(new Animated.Value(0)).current;
+  const modalSlideAnim = useRef(new Animated.Value(500)).current;
+
+  const otpPan = useRef(PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: (_, gestureState) => {
+      if (gestureState.dy > 0) pan.y.setValue(gestureState.dy);
+    },
+    onPanResponderRelease: (_, gestureState) => {
+      if (gestureState.dy > 120) {
+        Animated.timing(pan.y, { toValue: 1000, duration: 300, useNativeDriver: true }).start(() => setOtpModalVisible(false));
+      } else {
+        Animated.spring(pan.y, { toValue: 0, friction: 8, tension: 40, useNativeDriver: true }).start();
+      }
+    },
+  })).current;
+
+  useEffect(() => {
+    if (otpModalVisible) {
+      pan.setValue({ x: 0, y: 0 });
+      Animated.parallel([
+        Animated.timing(modalFadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }),
+        Animated.spring(modalSlideAnim, { toValue: 0, friction: 8, tension: 40, useNativeDriver: true }),
+      ]).start();
+    } else {
+      modalSlideAnim.setValue(500);
+    }
+  }, [otpModalVisible]);
+
   // Native iPhone edge-swipe back navigation logic
   const panResponder = useRef(
     PanResponder.create({
@@ -225,25 +256,25 @@ export default function ForgotPasswordScreen() {
 
       {/* OTP & Password Reset Modal */}
       <Modal
-        animationType="slide"
+        animationType="none"
         transparent={true}
         visible={otpModalVisible}
         onRequestClose={() => setOtpModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <Animated.View style={[styles.modalOverlay, { opacity: modalFadeAnim }]}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setOtpModalVisible(false)} />
           <KeyboardAvoidingView 
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={styles.modalContainer}
+            style={styles.keyboardView}
           >
-            <View style={styles.modalContent}>
-              <View style={styles.modalHandle} />
+            <Animated.View style={[styles.modalContent, { transform: [{ translateY: Animated.add(modalSlideAnim, pan.y) }] }]}>
+              <View style={styles.modalHandle} {...otpPan.panHandlers} />
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Reset Password</Text>
                 <Pressable onPress={() => setOtpModalVisible(false)} style={styles.modalCloseBtn}>
                   <Ionicons name="close" size={24} color="#111" />
                 </Pressable>
               </View>
-              
               <ScrollView contentContainerStyle={styles.modalForm} bounces={false}>
                 <Text style={styles.modalDescription}>
                   Enter the code sent to {userEmail}
@@ -342,9 +373,9 @@ export default function ForgotPasswordScreen() {
                   </Text>
                 </Pressable>
               </ScrollView>
-            </View>
+            </Animated.View>
           </KeyboardAvoidingView>
-        </View>
+        </Animated.View>
       </Modal>
     </SafeAreaView>
   );
@@ -444,18 +475,19 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "flex-end",
   },
-  modalContainer: {
+  keyboardView: {
     flex: 1,
     justifyContent: "flex-end",
   },
   modalContent: {
-    backgroundColor: "#fff",
+    backgroundColor: "#ffffff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 24,
-    maxHeight: "85%",
+    paddingHorizontal: 24,
+    paddingBottom: Platform.OS === 'ios' ? 34 : 24,
+    maxHeight: "80%",
+    width: '100%',
   },
   modalHandle: {
     width: 40,

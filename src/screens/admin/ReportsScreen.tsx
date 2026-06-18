@@ -20,13 +20,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import Svg, {
-  LineChart,
-  BarChart,
-  PieChart,
-  Path,
-  Circle,
-} from "react-native-svg";
+import Svg, { Path, Circle } from "react-native-svg";
 import { reportService, adminService } from "@/services/adminService";
 import { FinancialReport, AdminUser } from "@/types/admin";
 
@@ -275,8 +269,10 @@ export const ReportsScreen: React.FC<{ admin: AdminUser | null }> = ({
   const loadReports = async () => {
     setLoading(true);
     try {
-      // TODO: Implement getAllReports in reportService
-      setReports([]);
+      const endDate = new Date().toISOString();
+      const startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 days ago
+      const allReports = await reportService.getFinancialReports("all", startDate, endDate);
+      setReports(allReports);
     } catch (error) {
       console.error("Error loading reports:", error);
     } finally {

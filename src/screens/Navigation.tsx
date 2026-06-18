@@ -17,25 +17,20 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 const TABS = [
   { label: "Home", icon: "home-outline" as const, route: "/(tabs)/" },
   {
+    label: "Explore",
+    icon: "map-outline" as const,
+    route: "/screens/explore",
+  },
+  {
     label: "Messages",
     icon: "chatbubble-ellipses-outline" as const,
     route: "/(tabs)/messages",
   },
   { label: "Post", icon: "add-circle-outline" as const, route: "/(tabs)/post" },
   {
-    label: "My Trips",
-    icon: "receipt-outline" as const,
-    route: "/(tabs)/trips",
-  },
-  {
     label: "Account",
     icon: "person-outline" as const,
     route: "/(tabs)/account",
-  },
-  {
-    label: "Agencies",
-    icon: "business-outline" as const,
-    route: "/(tabs)/agency",
   },
 ] as const;
 
@@ -64,7 +59,7 @@ export function AiPill({ color }: { color: string }) {
 
   const aiPillBottom = useMemo(
     () => insets.bottom + 80 + 6,
-    [insets.bottom]
+    [insets.bottom],
   );
 
   return (
@@ -94,13 +89,17 @@ export function AiPill({ color }: { color: string }) {
 export function BottomNav({
   active,
   color,
+  isScrolled,
+  onScrollToTop,
 }: {
   active: string;
   color: string;
+  isScrolled?: boolean;
+  onScrollToTop?: () => void;
 }) {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const tabWidth = (width - 60) / TABS.length;
+  const tabWidth = (width - 40) / TABS.length;
   const translateX = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.95)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
@@ -140,40 +139,32 @@ export function BottomNav({
     <Animated.View
       style={[
         styles.navContainer,
-        {
-          bottom: insets.bottom + 16,
-          transform: [{ scale: scaleAnim }],
-          opacity: opacityAnim,
-        },
+        { transform: [{ scale: scaleAnim }], opacity: opacityAnim },
       ]}
     >
-      <BlurView intensity={95} tint="light" style={styles.bottomNav}>
-        <LinearGradient
-          colors={["rgba(255,255,255,0.6)", "rgba(255,255,255,0.4)"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-
-        {/* Animated Indicator */}
-        <Animated.View
-          style={[
-            styles.indicator,
-            {
-              width: tabWidth,
-              transform: [{ translateX }],
-            },
-          ]}
-        >
-          <View
+      <View style={[styles.bottomNav, { paddingBottom: insets.bottom + 4 }]}>
+        <View style={styles.tabWrapper}>
+          {/* Animated Indicator (Simplified for full-width) */}
+          <Animated.View
             style={[
-              styles.indicatorInner,
-              { backgroundColor: color + "15", borderColor: color + "30" },
+              styles.indicator,
+              {
+                width: tabWidth,
+                transform: [{ translateX }],
+              },
             ]}
           >
-            <View style={[styles.activeBar, { backgroundColor: color }]} />
-          </View>
-        </Animated.View>
+            <View
+              style={[
+                styles.indicatorInner,
+                { backgroundColor: color + "12", borderColor: color + "20" },
+              ]}
+            >
+            {/* The sliding yellow active indicator dot */}
+            <View style={styles.notificationDot} />
+              <View style={[styles.activeBar, { backgroundColor: color }]} />
+            </View>
+          </Animated.View>
 
         {/* Tab Items */}
         {TABS.map((tab) => {
@@ -184,10 +175,15 @@ export function BottomNav({
               tab={tab}
               selected={selected}
               color={color}
+              isScrolled={isScrolled}
+              onScrollToTop={onScrollToTop}
             />
           );
         })}
-      </BlurView>
+        </View>
+        {/* Home Indicator Simulator extracted from code.html */}
+        <View style={styles.homeIndicator} />
+      </View>
     </Animated.View>
   );
 }
@@ -197,9 +193,11 @@ interface TabItemProps {
   tab: (typeof TABS)[number];
   selected: boolean;
   color: string;
+  isScrolled?: boolean;
+  onScrollToTop?: () => void;
 }
 
-function TabItem({ tab, selected, color }: TabItemProps) {
+function TabItem({ tab, selected, color, isScrolled, onScrollToTop }: TabItemProps) {
   const scaleAnim = useRef(new Animated.Value(selected ? 1.1 : 1)).current;
   const colorAnim = useRef(new Animated.Value(selected ? 1 : 0)).current;
 
@@ -224,10 +222,27 @@ function TabItem({ tab, selected, color }: TabItemProps) {
     outputRange: ["#9ca3af", color],
   });
 
+  // Morph logic for Home -> Top button
+  const isHomeTab = tab.label === "Home";
+  const displayLabel = (isHomeTab && isScrolled) ? "Top" : tab.label;
+  const displayIcon = (isHomeTab && isScrolled) ? "arrow-up-circle-outline" : tab.icon;
+
+  const handlePress = () => {
+    if (isHomeTab && isScrolled && onScrollToTop) {
+      onScrollToTop();
+    } else {
+      if (tab.route.startsWith("/screens")) {
+         router.push(tab.route as any);
+      } else {
+         router.replace(tab.route as any);
+      }
+    }
+  };
+
   return (
     <Pressable
       style={styles.bottomItem}
-      onPress={() => router.push(tab.route as any)}
+      onPress={handlePress}
       hitSlop={12}
     >
       <Animated.View
@@ -237,24 +252,26 @@ function TabItem({ tab, selected, color }: TabItemProps) {
           gap: 2,
         }}
       >
-        <Animated.Text style={{ color: animatedColor }}>
-          <Ionicons
-            name={tab.icon}
-            size={22}
-            color={selected ? color : "#9ca3af"}
-          />
-        </Animated.Text>
+        <View style={{ position: 'relative' }}>
+          <Animated.Text style={{ color: animatedColor }}>
+            <Ionicons
+              name={displayIcon as any}
+              size={22}
+              color={selected ? color : "#9ca3af"}
+            />
+          </Animated.Text>
+        </View>
         <Text
           style={[
             styles.bottomLabel,
             {
               color: selected ? color : "#6b7280",
               fontWeight: selected ? "700" : "600",
-              fontSize: selected ? 11 : 10,
+              fontSize: selected || (isHomeTab && isScrolled) ? 11 : 10,
             },
           ]}
         >
-          {tab.label}
+          {displayLabel}
         </Text>
       </Animated.View>
     </Pressable>
@@ -306,26 +323,21 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   navContainer: {
-    left: 20,
-    right: 20,
-    height: 68,
-    borderRadius: 36,
+    left: 0,
+    right: 0,
+    bottom: 0,
     position: "absolute",
     zIndex: 999,
-    elevation: 14,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 18,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0,0,0,0.05)",
   },
   bottomNav: {
     flex: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.75)",
-    borderRadius: 36,
-    flexDirection: "row",
+    backgroundColor: "#ffffff",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
     overflow: "hidden",
     borderWidth: 1.2,
     borderColor: "rgba(255, 255, 255, 0.6)",
@@ -338,6 +350,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     justifyContent: "center",
   },
+  tabWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 64,
+  },
   bottomLabel: {
     fontSize: 10,
     fontWeight: "700",
@@ -347,14 +365,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: "100%",
     paddingVertical: 10,
-    paddingHorizontal: 6,
-    left: 12,
+    paddingHorizontal: 4,
+    left: 8,
   },
   indicatorInner: {
     flex: 1,
-    borderRadius: 26,
+    borderRadius: 16,
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "center",
     borderWidth: 0.5,
     borderColor: "rgba(40, 125, 250, 0.2)",
   },
@@ -362,11 +380,38 @@ const styles = StyleSheet.create({
     height: 3,
     width: 22,
     borderRadius: 999,
-    marginBottom: 6,
+    position: 'absolute',
+    bottom: 6,
     shadowColor: "#287dfa",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 3,
+  },
+  notificationDot: {
+    position: "absolute",
+    top: 8,
+    left: "50%",
+    marginLeft: 8,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#FACC15", // Stylish Yellow-400
+    borderWidth: 1.5,
+    borderColor: "#FFFFFF",
+    zIndex: 10,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  homeIndicator: {
+    height: 4,
+    backgroundColor: "#E5E7EB",
+    width: "33%",
+    alignSelf: "center",
+    marginBottom: 8,
+    borderRadius: 2,
   },
 });

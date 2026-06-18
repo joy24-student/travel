@@ -1,9 +1,9 @@
 import type {
-  BudgetPlannerRequest,
+  BudgetPlanRequest,
   ConciergeRequest,
-  RoutePlannerRequest,
+  RoutePlanRequest,
   TravelAssistantRequest,
-  TripPlannerRequest,
+  TripPlanRequest,
 } from "./types";
 
 const stringify = (value: unknown) => JSON.stringify(value, null, 2);

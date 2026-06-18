@@ -1,19 +1,67 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
 
+import { useAuth } from "../../src/hooks/useAuth";
+import { bookingRepository } from "../../src/services/repositories/booking";
 import { BottomNav, AiPill } from "../../src/screens/Navigation";
 
 const PRIMARY = "#287dfa";
 
-const SAVED_ITEMS = [
-  { id: "1", type: "hotel", name: "Ocean View Resort", location: "Cox's Bazar", icon: "bed" },
-  { id: "2", type: "flight", name: "Dhaka → Bangkok", date: "Dec 15, 2025", icon: "airplane" },
-  { id: "3", type: "destination", name: "Bangkok Tour Package", price: "$480", icon: "map" },
-];
-
 export default function SavedScreen() {
+  const { user } = useAuth();
+  const [savedItems, setSavedItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+
+    const loadSavedItems = async () => {
+      try {
+        setLoading(true);
+        // Fetch draft bookings (saved items)
+        const bookings = await bookingRepository.getUserBookings(user.id, "draft");
+        setSavedItems(bookings);
+      } catch (err) {
+        console.error("Error loading saved items:", err);
+        setSavedItems([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSavedItems();
+  }, [user?.id]);
+
+  const getIcon = (type: string) => {
+    switch (type) {
+      case "hotel":
+        return "bed";
+      case "flight":
+        return "airplane";
+      case "tour":
+        return "map";
+      case "train":
+        return "train";
+      default:
+        return "bookmark";
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
   return (
     <SafeAreaView style={styles.shell}>
       <View style={styles.header}>
@@ -24,31 +72,37 @@ export default function SavedScreen() {
         <View style={styles.spacer} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {SAVED_ITEMS.length === 0 ? (
-          <View style={styles.empty}>
-            <Ionicons name="bookmark-outline" size={64} color="#d1d5db" />
-            <Text style={styles.emptyTitle}>No saved items</Text>
-            <Text style={styles.emptySubtitle}>Items you save will appear here</Text>
-          </View>
-        ) : (
-          SAVED_ITEMS.map((item) => (
-            <Pressable key={item.id} style={styles.card}>
-              <View style={styles.cardIcon}>
-                <Ionicons name={item.icon as any} size={24} color={PRIMARY} />
-              </View>
-              <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>{item.name}</Text>
-                <Text style={styles.cardSubtitle}>
-                  {item.location || item.date || item.price}
-                </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
-            </Pressable>
-          ))
-        )}
-        <View style={{ height: 100 }} />
-      </ScrollView>
+      {loading ? (
+        <View style={[styles.scroll, { justifyContent: "center", alignItems: "center" }]}>
+          <ActivityIndicator size="large" color={PRIMARY} />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+          {savedItems.length === 0 ? (
+            <View style={styles.empty}>
+              <Ionicons name="bookmark-outline" size={64} color="#d1d5db" />
+              <Text style={styles.emptyTitle}>No saved items</Text>
+              <Text style={styles.emptySubtitle}>Items you save will appear here</Text>
+            </View>
+          ) : (
+            savedItems.map((item) => (
+              <Pressable key={item.id} style={styles.card}>
+                <View style={styles.cardIcon}>
+                  <Ionicons name={getIcon(item.type) as any} size={24} color={PRIMARY} />
+                </View>
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>{item.title || item.name || "Untitled"}</Text>
+                  <Text style={styles.cardSubtitle}>
+                    {item.destination || (item.start_date ? formatDate(item.start_date) : item.reference)}
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+              </Pressable>
+            ))
+          )}
+          <View style={{ height: 100 }} />
+        </ScrollView>
+      )}
 
       <AiPill color={PRIMARY} />
       <BottomNav active="Account" color={PRIMARY} />

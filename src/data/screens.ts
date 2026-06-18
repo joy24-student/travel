@@ -17,7 +17,8 @@ export type ScreenKind =
   | "premium"
   | "explore"
   | "package"
-  | "live";
+  | "live"
+  | "agency";
 
 export type UIScreen = {
   slug: string;
@@ -26,18 +27,21 @@ export type UIScreen = {
   subtitle: string;
   kind: ScreenKind;
   theme: "trip" | "luxe";
+  icon?: keyof typeof import("@expo/vector-icons").Ionicons.glyphMap;
   hero?: string;
   image?: string;
   tabs?: string[];
   fields?: string[];
   chips?: string[];
-  actions?: string[];
+  actions?: Array<{ label: string; route?: string; icon?: string }>;
   benefits?: string[];
   cards?: Array<{
     title: string;
     subtitle?: string;
     meta?: string;
     price?: string;
+    route?: string;
+    icon?: string;
   }>;
   activeTab?: string;
 };

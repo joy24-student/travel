@@ -4,7 +4,7 @@
  * Production-ready with full Supabase integration
  */
 
-import React, { useEffect } from "react";
+import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -12,6 +12,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { ActivityIndicator, View } from "react-native";
+import { I18nextProvider } from 'react-i18next';
+import i18n from './src/locales/i18n';
+import { LanguageProvider } from './src/context/LanguageContext';
 
 // Screen Imports
 import DashboardScreen from "./src/screens/agency/DashboardScreen";
@@ -361,22 +364,26 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer>
-        <StatusBar style="light" backgroundColor={COLORS.background} />
-        {user ? (
-          <DashboardTabNavigator />
-        ) : (
-          <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-            <AuthStack.Screen name="Login" component={LoginScreen} />
-            <AuthStack.Screen name="SignUp" component={SignUpScreen} />
-            <AuthStack.Screen
-              name="ForgotPassword"
-              component={ForgotPasswordScreen}
-            />
-            <AuthStack.Screen name="OtpVerification" component={OtpScreen} />
-          </AuthStack.Navigator>
-        )}
-      </NavigationContainer>
+      <I18nextProvider i18n={i18n}>
+        <LanguageProvider>
+          <NavigationContainer>
+            <StatusBar style="light" backgroundColor={COLORS.background} />
+            {user ? (
+              <DashboardTabNavigator />
+            ) : (
+              <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+                <AuthStack.Screen name="Login" component={LoginScreen} />
+                <AuthStack.Screen name="SignUp" component={SignUpScreen} />
+                <AuthStack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPasswordScreen}
+                />
+                <AuthStack.Screen name="OtpVerification" component={OtpScreen} />
+              </AuthStack.Navigator>
+            )}
+          </NavigationContainer>
+        </LanguageProvider>
+      </I18nextProvider>
     </GestureHandlerRootView>
   );
 }

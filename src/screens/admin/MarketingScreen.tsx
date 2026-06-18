@@ -306,11 +306,12 @@ export const MarketingScreen: React.FC<{ admin: AdminUser | null }> = ({
   const loadMarketingData = async () => {
     setLoading(true);
     try {
-      // TODO: Implement getAllPromoCodes and getAllCampaigns
       if (activeTab === "promo") {
-        setPromoCodes([]);
+        const codes = await marketingService.getAllPromoCodes();
+        setPromoCodes(codes);
       } else {
-        setCampaigns([]);
+        const campaigns = await marketingService.getMarketingCampaigns();
+        setCampaigns(campaigns);
       }
     } catch (error) {
       console.error("Error loading marketing data:", error);

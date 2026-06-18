@@ -215,8 +215,8 @@ export const AdvertisementScreen: React.FC<{ admin: AdminUser | null }> = ({
   const loadAds = async () => {
     setLoading(true);
     try {
-      // TODO: Implement getAllAds in adService
-      setAds([]);
+      const allAds = await adService.getAllAds(filterStatus);
+      setAds(allAds);
     } catch (error) {
       console.error("Error loading ads:", error);
     } finally {

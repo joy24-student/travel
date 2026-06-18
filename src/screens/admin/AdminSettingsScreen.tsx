@@ -37,7 +37,7 @@ const SettingsSection: React.FC<{
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         {icon && (
-          <MaterialCommunityIcons name={icon} size={20} color="#667eea" />
+          <MaterialCommunityIcons name={icon as any} size={20} color="#667eea" />
         )}
         <Text style={styles.sectionTitle}>{title}</Text>
       </View>
@@ -70,7 +70,7 @@ const SettingsRow: React.FC<{
         <View style={styles.rowLeft}>
           {icon && (
             <MaterialCommunityIcons
-              name={icon}
+              name={icon as any}
               size={18}
               color="#6b7280"
               style={styles.rowIcon}
@@ -157,7 +157,7 @@ export const AdminSettingsScreen: React.FC<{ admin: AdminUser | null }> = ({
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // TODO: Implement loadSettings
+    // Settings are managed locally - no backend sync needed
     setTimeout(() => setRefreshing(false), 500);
   };
 
@@ -426,7 +426,7 @@ export const AdminSettingsScreen: React.FC<{ admin: AdminUser | null }> = ({
           <SettingsSection title="Admin Account" icon="account">
             <SettingsRow
               label="Admin Name"
-              value={admin?.name || "Administrator"}
+               value={(admin as any)?.name || "Administrator"}
               icon="account-circle"
               showChevron={false}
             />

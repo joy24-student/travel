@@ -1,354 +1,144 @@
-import React from "react";
+import React from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
-} from "react-native";
-import Svg, { Path, Circle, Rect } from "react-native-svg";
-
-const breakdown = [
-  {
-    id: "room",
-    label: "Room Revenue",
-    value: "$18,250",
-    trend: "+18.6%",
-    color: "#818CF8",
-  },
-  {
-    id: "restaurant",
-    label: "Restaurant Revenue",
-    value: "$4,850",
-    trend: "+12.4%",
-    color: "#F97316",
-  },
-  {
-    id: "services",
-    label: "Other Services",
-    value: "$1,750",
-    trend: "+8.7%",
-    color: "#14B8A6",
-  },
-];
-
-const transactions = [
-  {
-    id: "booking",
-    label: "Booking #R-88211",
-    date: "26 May 2024, 10:30 AM",
-    amount: "+ $240.00",
-    status: "Completed",
-  },
-  {
-    id: "restaurant",
-    label: "Restaurant Bill",
-    date: "26 May 2024, 01:15 PM",
-    amount: "+ $85.00",
-    status: "Completed",
-  },
-];
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export function EarningsOverviewScreen() {
   return (
-    <View style={styles.page}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.iconButton} activeOpacity={0.8}>
-            <Text style={styles.iconButtonText}>{"<"}</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Earnings Overview</Text>
-          <TouchableOpacity style={styles.iconButton} activeOpacity={0.8}>
-            <Text style={styles.iconButtonText}>⋮</Text>
-          </TouchableOpacity>
-        </View>
+    <SafeAreaView className="flex-1 bg-[#0f111a]">
+      <StatusBar barStyle="light-content" />
 
-        <View style={styles.timeframeButton}>
-          <Text style={styles.timeframeText}>This Month</Text>
-          <Text style={styles.timeframeIcon}>⌄</Text>
+      {/* Header */}
+      <View className="p-4 flex-row items-center justify-between">
+        <View className="flex-row items-center space-x-4">
+          <TouchableOpacity className="p-2 bg-white/5 rounded-full">
+            <MaterialIcons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text className="text-xl font-semibold text-white">Earnings Overview</Text>
         </View>
+        <TouchableOpacity className="p-2 bg-white/5 rounded-full">
+          <MaterialIcons name="calendar-today" size={22} color="#94a3b8" />
+        </TouchableOpacity>
+      </View>
 
-        <View style={styles.earningsCard}>
-          <View style={styles.earningsHeader}>
+      <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
+        {/* Time Selector */}
+        <TouchableOpacity className="mb-6 bg-[#1a1c2e] p-3 rounded-xl border border-white/5 flex-row justify-between items-center">
+          <Text className="text-sm font-medium text-white">This Month</Text>
+          <MaterialIcons name="keyboard-arrow-down" size={20} color="#94a3b8" />
+        </TouchableOpacity>
+
+        {/* Total Earnings Card */}
+        <View className="bg-[#1a1c2e] p-5 rounded-[32px] mb-6 border border-white/5">
+          <View className="flex-row justify-between items-start mb-4">
             <View>
-              <Text style={styles.cardMeta}>Total Earnings</Text>
-              <Text style={styles.earningsValue}>$24,850</Text>
-              <Text style={styles.earningsDelta}>24.5% vs last month</Text>
+              <Text className="text-sm text-[#94a3b8] mb-1">Total Earnings</Text>
+              <Text className="text-3xl font-bold text-white">$24,850</Text>
+              <View className="flex-row items-center mt-1">
+                <MaterialIcons name="trending-up" size={14} color="#22c55e" />
+                <Text className="text-xs text-[#22c55e] font-bold ml-1">24.5% </Text>
+                <Text className="text-[#94a3b8] text-[10px]">vs last month</Text>
+              </View>
             </View>
-            <TouchableOpacity style={styles.detailsButton} activeOpacity={0.8}>
-              <Text style={styles.detailsButtonText}>Details</Text>
+            <TouchableOpacity className="px-3 py-1 bg-white/10 rounded-lg">
+              <Text className="text-white text-xs font-medium">Details</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.chartBlock}>
-            <Svg width="100%" height="140" viewBox="0 0 400 140">
-              <Rect x="0" y="0" width="400" height="140" fill="transparent" />
-              <Path
-                d="M0,120 C50,90 100,110 150,80 C200,50 250,70 300,40 C350,10 400,20"
-                fill="none"
-                stroke="#7C3AED"
-                strokeWidth="3"
-              />
-              <Circle cx="400" cy="20" r="5" fill="#7C3AED" />
-            </Svg>
+          {/* Simple Chart Visualization */}
+          <View className="h-32 w-full mt-4 justify-end">
+             <View className="flex-row items-end justify-between h-24">
+                {[30, 45, 35, 60, 50, 80, 70, 90, 85].map((h, i) => (
+                   <View key={i} className="w-1.5 bg-[#7c3aed]/20 rounded-full h-full justify-end">
+                      <View className="w-full bg-[#7c3aed] rounded-full" style={{ height: `${h}%` }} />
+                   </View>
+                ))}
+             </View>
+             <View className="flex-row justify-between mt-2">
+                <Text className="text-[10px] text-gray-500 font-medium">1 May</Text>
+                <Text className="text-[10px] text-gray-500 font-medium">15 May</Text>
+                <Text className="text-[10px] text-gray-500 font-medium">29 May</Text>
+             </View>
           </View>
         </View>
 
-        <View style={styles.breakdownHeader}>
-          <Text style={styles.sectionTitle}>Earnings Breakdown</Text>
-          <TouchableOpacity activeOpacity={0.8}>
-            <Text style={styles.linkText}>View All</Text>
-          </TouchableOpacity>
+        {/* Earnings Breakdown */}
+        <View className="mb-8">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="font-semibold text-white">Earnings Breakdown</Text>
+            <TouchableOpacity>
+              <Text className="text-indigo-400 text-sm">View All</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View className="space-y-4">
+            <BreakdownItem icon="king-bed" label="Room Revenue" value="$18,250" trend="+18.6%" color="#818cf8" iconBg="bg-indigo-500/20" />
+            <BreakdownItem icon="restaurant" label="Restaurant Revenue" value="$4,850" trend="+12.4%" color="#fb923c" iconBg="bg-orange-500/20" />
+            <BreakdownItem icon="spa" label="Other Services" value="$1,750" trend="+8.7%" color="#2dd4bf" iconBg="bg-teal-500/20" />
+          </View>
         </View>
 
-        <View style={styles.breakdownList}>
-          {breakdown.map((item) => (
-            <View key={item.id} style={styles.breakdownItem}>
-              <View
-                style={[
-                  styles.breakdownBadge,
-                  { backgroundColor: item.color + "22" },
-                ]}
-              />
-              <View style={styles.breakdownContent}>
-                <Text style={styles.breakdownLabel}>{item.label}</Text>
-              </View>
-              <View style={styles.breakdownMeta}>
-                <Text style={styles.breakdownValue}>{item.value}</Text>
-                <Text style={[styles.breakdownTrend, { color: item.color }]}>
-                  {item.trend}
-                </Text>
-              </View>
-            </View>
-          ))}
-        </View>
+        {/* Recent Transactions */}
+        <View className="mb-24">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="font-semibold text-white">Recent Transactions</Text>
+            <TouchableOpacity>
+              <Text className="text-indigo-400 text-sm">View All</Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.breakdownHeader}>
-          <Text style={styles.sectionTitle}>Recent Transactions</Text>
-          <TouchableOpacity activeOpacity={0.8}>
-            <Text style={styles.linkText}>View All</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.transactionsList}>
-          {transactions.map((transaction) => (
-            <View key={transaction.id} style={styles.transactionCard}>
-              <View style={styles.transactionLeft}>
-                <Text style={styles.transactionLabel}>{transaction.label}</Text>
-                <Text style={styles.transactionDate}>{transaction.date}</Text>
-              </View>
-              <View style={styles.transactionRight}>
-                <Text style={styles.transactionAmount}>
-                  {transaction.amount}
-                </Text>
-                <View style={styles.transactionStatus}>
-                  <Text style={styles.transactionStatusText}>
-                    {transaction.status}
-                  </Text>
-                </View>
-              </View>
-            </View>
-          ))}
+          <View className="space-y-4">
+            <TransactionItem id="#R-88211" title="Booking #R-88211" date="26 May 2024, 10:30 AM" amount="+ $240.00" status="Completed" />
+            <TransactionItem id="Bill-12" title="Restaurant Bill" date="26 May 2024, 01:15 PM" amount="+ $85.00" status="Completed" />
+          </View>
         </View>
       </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+function BreakdownItem({ icon, label, value, trend, color, iconBg }: any) {
+  return (
+    <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center space-x-3">
+        <View className={`w-10 h-10 rounded-xl ${iconBg} items-center justify-center`}>
+          <MaterialIcons name={icon} size={20} color={color} />
+        </View>
+        <Text className="text-sm font-medium text-white">{label}</Text>
+      </View>
+      <View className="items-end">
+        <Text className="text-sm font-bold text-white">{value}</Text>
+        <Text className="text-[10px] text-green-500">↑ {trend}</Text>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: "#0f111a",
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 120,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 18,
-  },
-  iconButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    backgroundColor: "#111827",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "800",
-  },
-  title: {
-    color: "#fff",
-    fontSize: 22,
-    fontWeight: "800",
-  },
-  timeframeButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#111827",
-    borderRadius: 18,
-    padding: 14,
-    marginBottom: 18,
-  },
-  timeframeText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  timeframeIcon: {
-    color: "#94A3B8",
-    fontSize: 16,
-  },
-  earningsCard: {
-    backgroundColor: "#111827",
-    borderRadius: 28,
-    padding: 20,
-    marginBottom: 24,
-  },
-  earningsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 18,
-  },
-  cardMeta: {
-    color: "#94A3B8",
-    fontSize: 12,
-    marginBottom: 8,
-  },
-  earningsValue: {
-    color: "#fff",
-    fontSize: 32,
-    fontWeight: "800",
-    marginBottom: 6,
-  },
-  earningsDelta: {
-    color: "#22C55E",
-    fontSize: 12,
-  },
-  detailsButton: {
-    borderWidth: 1,
-    borderColor: "#374151",
-    borderRadius: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-  },
-  detailsButtonText: {
-    color: "#fff",
-    fontWeight: "700",
-  },
-  chartBlock: {
-    borderRadius: 24,
-    overflow: "hidden",
-    backgroundColor: "#0d1117",
-    paddingVertical: 10,
-  },
-  breakdownHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 14,
-  },
-  sectionTitle: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  linkText: {
-    color: "#818CF8",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  breakdownList: {
-    marginBottom: 22,
-  },
-  breakdownItem: {
-    backgroundColor: "#111827",
-    borderRadius: 24,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  breakdownBadge: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginRight: 14,
-  },
-  breakdownContent: {
-    flex: 1,
-  },
-  breakdownLabel: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  breakdownMeta: {
-    alignItems: "flex-end",
-  },
-  breakdownValue: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  breakdownTrend: {
-    fontSize: 12,
-    marginTop: 4,
-  },
-  transactionsList: {
-    marginBottom: 24,
-  },
-  transactionCard: {
-    backgroundColor: "#111827",
-    borderRadius: 24,
-    padding: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  transactionLeft: {
-    flex: 1,
-    marginRight: 14,
-  },
-  transactionLabel: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-    marginBottom: 6,
-  },
-  transactionDate: {
-    color: "#94A3B8",
-    fontSize: 11,
-  },
-  transactionRight: {
-    alignItems: "flex-end",
-  },
-  transactionAmount: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "800",
-    marginBottom: 6,
-  },
-  transactionStatus: {
-    backgroundColor: "rgba(34, 197, 94, 0.12)",
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  transactionStatusText: {
-    color: "#22C55E",
-    fontSize: 10,
-    fontWeight: "700",
-  },
-});
+function TransactionItem({ title, date, amount, status }: any) {
+  return (
+    <View className="flex-row items-center justify-between">
+      <View className="flex-row items-center space-x-3">
+        <View className="w-10 h-10 rounded-xl bg-indigo-500/20 items-center justify-center">
+          <MaterialIcons name="receipt-long" size={20} color="#818cf8" />
+        </View>
+        <View>
+          <Text className="text-sm font-medium text-white">{title}</Text>
+          <Text className="text-[10px] text-[#94a3b8]">{date}</Text>
+        </View>
+      </View>
+      <View className="items-end">
+        <Text className="text-sm font-bold text-white">{amount}</Text>
+        <View className="px-2 py-0.5 bg-green-500/20 rounded-full mt-1">
+          <Text className="text-[10px] text-green-400">{status}</Text>
+        </View>
+      </View>
+    </View>
+  );
+}

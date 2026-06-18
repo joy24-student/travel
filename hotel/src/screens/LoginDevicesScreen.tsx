@@ -1,200 +1,80 @@
-import React from "react";
+import React from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
-} from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-
-const devices = [
-  {
-    id: "1",
-    name: "iPhone 14",
-    location: "Front Desk",
-    status: "Active",
-    updated: "2 min ago",
-  },
-  {
-    id: "2",
-    name: "iPad Pro",
-    location: "Housekeeping",
-    status: "Active",
-    updated: "10 min ago",
-  },
-  {
-    id: "3",
-    name: "MacBook Air",
-    location: "Manager Office",
-    status: "Inactive",
-    updated: "2 hours ago",
-  },
-];
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export function LoginDevicesScreen() {
-  return (
-    <View style={styles.page}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.header}>
-          <Text style={styles.title}>Login Devices</Text>
-          <TouchableOpacity style={styles.iconButton} activeOpacity={0.8}>
-            <MaterialIcons name="refresh" size={22} color="#94A3B8" />
-          </TouchableOpacity>
+  const DeviceItem = ({ name, location, time, icon, isCurrent }: any) => (
+    <View className="bg-slate-800/40 border border-white/5 p-4 rounded-2xl mb-4 flex-row items-center justify-between">
+      <View className="flex-row items-center space-x-4">
+        <View className="w-12 h-12 bg-white/5 rounded-xl items-center justify-center">
+          <MaterialIcons name={icon} size={24} color={isCurrent ? "#c0c1ff" : "#94a3b8"} />
         </View>
-
-        <Text style={styles.subtitle}>
-          All devices currently connected to your account.
-        </Text>
-
-        <View style={styles.statsRow}>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>Active</Text>
-            <Text style={styles.statValue}>2</Text>
+        <View>
+          <View className="flex-row items-center space-x-2">
+            <Text className="text-white font-bold text-sm">{name}</Text>
+            {isCurrent && (
+              <View className="bg-emerald-500/20 px-2 py-0.5 rounded">
+                <Text className="text-emerald-400 text-[8px] font-bold uppercase">Current</Text>
+              </View>
+            )}
           </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statLabel}>Inactive</Text>
-            <Text style={styles.statValue}>1</Text>
-          </View>
+          <Text className="text-[#94a3b8] text-[10px]">{location} • {time}</Text>
         </View>
-
-        <View style={styles.deviceList}>
-          {devices.map((device) => (
-            <View key={device.id} style={styles.deviceCard}>
-              <View style={styles.deviceIcon}>
-                <MaterialIcons name="devices" size={24} color="#fff" />
-              </View>
-              <View style={styles.deviceInfo}>
-                <Text style={styles.deviceName}>{device.name}</Text>
-                <Text style={styles.deviceLocation}>{device.location}</Text>
-              </View>
-              <View style={styles.deviceStatusGroup}>
-                <Text
-                  style={[
-                    styles.deviceStatus,
-                    device.status === "Active"
-                      ? styles.activeStatus
-                      : styles.inactiveStatus,
-                  ]}
-                >
-                  {device.status}
-                </Text>
-                <Text style={styles.deviceUpdated}>{device.updated}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+      </View>
+      {!isCurrent && (
+        <TouchableOpacity className="p-2">
+          <MaterialIcons name="logout" size={20} color="#f87171" />
+        </TouchableOpacity>
+      )}
     </View>
   );
-}
 
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: "#0b1326",
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 80,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  title: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "800",
-  },
-  iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: "#111827",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  subtitle: {
-    color: "#94A3B8",
-    fontSize: 14,
-    marginBottom: 18,
-  },
-  statsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 22,
-  },
-  statCard: {
-    width: "48%",
-    backgroundColor: "#111827",
-    borderRadius: 24,
-    padding: 20,
-  },
-  statLabel: {
-    color: "#94A3B8",
-    fontSize: 12,
-    marginBottom: 8,
-    textTransform: "uppercase",
-  },
-  statValue: {
-    color: "#fff",
-    fontSize: 30,
-    fontWeight: "800",
-  },
-  deviceList: {
-    gap: 12,
-  },
-  deviceCard: {
-    backgroundColor: "#111827",
-    borderRadius: 24,
-    padding: 16,
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  deviceIcon: {
-    width: 52,
-    height: 52,
-    borderRadius: 18,
-    backgroundColor: "#1F2937",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 14,
-  },
-  deviceInfo: {
-    flex: 1,
-  },
-  deviceName: {
-    color: "#fff",
-    fontSize: 15,
-    fontWeight: "700",
-    marginBottom: 6,
-  },
-  deviceLocation: {
-    color: "#94A3B8",
-    fontSize: 12,
-  },
-  deviceStatusGroup: {
-    alignItems: "flex-end",
-  },
-  deviceStatus: {
-    fontSize: 12,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  activeStatus: {
-    color: "#22C55E",
-  },
-  inactiveStatus: {
-    color: "#94A3B8",
-  },
-  deviceUpdated: {
-    color: "#6B7280",
-    fontSize: 11,
-  },
-});
+  return (
+    <SafeAreaView className="flex-1 bg-[#0b1326]">
+      <StatusBar barStyle="light-content" />
+
+      {/* Header */}
+      <View className="px-6 py-4 flex-row items-center space-x-4">
+        <TouchableOpacity className="p-1">
+          <MaterialIcons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text className="text-xl font-bold text-white">Login Devices</Text>
+      </View>
+
+      <ScrollView className="flex-1 px-6 pt-4" showsVerticalScrollIndicator={false}>
+        <View className="mb-8">
+          <Text className="text-[#94a3b8] text-sm leading-relaxed">
+            Review and manage all devices currently logged into your account.
+          </Text>
+        </View>
+
+        <View className="mb-8">
+          <Text className="text-[#c7c4d7] text-xs font-bold uppercase tracking-widest mb-4">Active Devices</Text>
+          <DeviceItem
+            name="iPhone 13 Pro" location="Dhaka, Bangladesh" time="Active now"
+            icon="smartphone" isCurrent={true}
+          />
+          <DeviceItem
+            name="MacBook Pro 16" location="Dhaka, Bangladesh" time="Last active: 2h ago"
+            icon="laptop" isCurrent={false}
+          />
+          <DeviceItem
+            name="Chrome on Windows" location="London, UK" time="Last active: May 28"
+            icon="desktop-windows" isCurrent={false}
+          />
+        </View>
+
+        <TouchableOpacity className="bg-red-500/10 border border-red-500/20 py-4 rounded-2xl items-center mb-24">
+          <Text className="text-red-400 font-bold">Logout from all other devices</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

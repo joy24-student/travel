@@ -1,350 +1,145 @@
-import React from "react";
+import React from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
-} from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-
-const categories = [
-  { id: "standard", label: "Standard", rooms: "32", color: "#818CF8" },
-  { id: "deluxe", label: "Deluxe", rooms: "18", color: "#38BDF8" },
-  { id: "suite", label: "Suite", rooms: "12", color: "#F97316" },
-  { id: "executive", label: "Executive", rooms: "8", color: "#22C55E" },
-];
-
-const statuses = [
-  {
-    id: "available",
-    label: "Available",
-    value: "18",
-    progress: 26,
-    color: "#22C55E",
-  },
-  {
-    id: "occupied",
-    label: "Occupied",
-    value: "35",
-    progress: 50,
-    color: "#F97316",
-  },
-  {
-    id: "reserved",
-    label: "Reserved",
-    value: "10",
-    progress: 14,
-    color: "#FBBF24",
-  },
-  {
-    id: "maintenance",
-    label: "Maintenance",
-    value: "5",
-    progress: 7,
-    color: "#8B5CF6",
-  },
-];
-
-const floors = [
-  {
-    id: "1st",
-    label: "1st Floor",
-    value: "12 / 16",
-    percent: 75,
-    color: "#22C55E",
-  },
-  {
-    id: "2nd",
-    label: "2nd Floor",
-    value: "8 / 16",
-    percent: 50,
-    color: "#A855F7",
-  },
-  {
-    id: "3rd",
-    label: "3rd Floor",
-    value: "14 / 16",
-    percent: 88,
-    color: "#F97316",
-  },
-];
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+} from 'react-native';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export function RoomManagementScreen() {
+  const StatItem = ({ label, value, color }: any) => (
+    <View className="bg-[#1c2128] p-2 rounded-xl text-center border border-[#30363d] flex-1 mx-0.5">
+      <Text className="text-[10px] text-gray-400 mb-1" numberOfLines={1}>{label}</Text>
+      <Text className={`text-lg font-bold ${color}`}>{value}</Text>
+    </View>
+  );
+
+  const CategoryItem = ({ label, count, icon, bgColor, iconColor }: any) => (
+    <View className="flex-1 items-center">
+      <View className={`w-full aspect-square ${bgColor} border border-white/5 rounded-2xl items-center justify-center mb-2`}>
+        <MaterialIcons name={icon} size={24} color={iconColor} />
+      </View>
+      <Text className="text-[11px] font-medium text-white">{label}</Text>
+      <Text className="text-[10px] text-gray-500">{count} Rooms</Text>
+    </View>
+  );
+
+  const StatusProgress = ({ label, value, percentage, color, icon, iconBg }: any) => (
+    <View className="flex-row items-center space-x-3 mb-4">
+      <View className={`w-8 h-8 rounded-lg ${iconBg} items-center justify-center`}>
+        <MaterialIcons name={icon} size={18} color={color} />
+      </View>
+      <View className="flex-1">
+        <View className="flex-row justify-between mb-1">
+          <Text className="text-xs text-gray-300">{label}</Text>
+          <Text className="text-xs text-gray-400">
+            <Text className="text-white font-bold">{value}</Text> ({percentage}%)
+          </Text>
+        </View>
+        <View className="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
+          <View className="h-full" style={{ width: `${percentage}%`, backgroundColor: color }} />
+        </View>
+      </View>
+    </View>
+  );
+
   return (
-    <View style={styles.page}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity style={styles.iconButton} activeOpacity={0.8}>
-              <MaterialIcons name="menu" size={22} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.title}>Rooms</Text>
-          </View>
-          <View style={styles.actionGroup}>
-            <TouchableOpacity style={styles.smallButton} activeOpacity={0.8}>
-              <MaterialIcons name="search" size={20} color="#94A3B8" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.smallButton} activeOpacity={0.8}>
-              <MaterialIcons name="add" size={20} color="#94A3B8" />
-            </TouchableOpacity>
-          </View>
-        </View>
+    <SafeAreaView className="flex-1 bg-[#0d1117]">
+      <StatusBar barStyle="light-content" />
 
-        <View style={styles.statsGrid}>
-          {categories.map((item) => (
-            <View
-              key={item.id}
-              style={[styles.categoryCard, { borderColor: item.color + "26" }]}
-            >
-              <Text style={styles.categoryLabel}>{item.label}</Text>
-              <Text style={styles.categoryRooms}>{item.rooms}</Text>
-            </View>
-          ))}
+      {/* Header */}
+      <View className="flex-row justify-between items-center px-4 py-4">
+        <View className="flex-row items-center">
+          <TouchableOpacity className="p-1">
+            <MaterialIcons name="menu" size={24} color="white" />
+          </TouchableOpacity>
+          <Text className="text-xl font-bold text-white ml-4">Rooms</Text>
         </View>
-
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Room Status</Text>
-          <TouchableOpacity activeOpacity={0.8}>
-            <Text style={styles.sectionAction}>View All</Text>
+        <View className="flex-row items-center space-x-3">
+          <TouchableOpacity className="p-1">
+            <MaterialIcons name="search" size={24} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity className="p-1 bg-indigo-600 rounded-lg">
+            <MaterialIcons name="add" size={24} color="white" />
           </TouchableOpacity>
         </View>
+      </View>
 
-        <View style={styles.statusList}>
-          {statuses.map((status) => (
-            <View key={status.id} style={styles.statusCard}>
-              <View style={styles.statusLeft}>
-                <View
-                  style={[
-                    styles.statusPill,
-                    { backgroundColor: status.color + "20" },
-                  ]}
-                >
-                  <Text
-                    style={[styles.statusPillText, { color: status.color }]}
-                  >
-                    {status.label}
+      <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
+        {/* Stats Summary */}
+        <View className="flex-row justify-between mt-4">
+          <StatItem label="Total" value="70" color="text-white" />
+          <StatItem label="Avail" value="18" color="text-green-500" />
+          <StatItem label="Occu" value="35" color="text-orange-500" />
+          <StatItem label="Maint" value="5" color="text-yellow-500" />
+          <StatItem label="Out" value="2" color="text-gray-400" />
+        </View>
+
+        {/* Room Categories */}
+        <View className="mt-8">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-base font-semibold text-white">Room Categories</Text>
+            <TouchableOpacity>
+              <Text className="text-sm text-indigo-400">View All</Text>
+            </TouchableOpacity>
+          </View>
+          <View className="flex-row space-x-3">
+            <CategoryItem label="Standard" count="32" icon="king-bed" bgColor="bg-indigo-900/30" iconColor="#818cf8" />
+            <CategoryItem label="Deluxe" count="18" icon="apartment" bgColor="bg-blue-900/30" iconColor="#60a5fa" />
+            <CategoryItem label="Suite" count="12" icon="auto-awesome" bgColor="bg-orange-900/30" iconColor="#fb923c" />
+            <CategoryItem label="Executive" count="8" icon="verified" bgColor="bg-green-900/30" iconColor="#4ade80" />
+          </View>
+        </View>
+
+        {/* Room Status List */}
+        <View className="mt-8">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-base font-semibold text-white">Room Status</Text>
+            <TouchableOpacity>
+              <Text className="text-sm text-indigo-400">View All</Text>
+            </TouchableOpacity>
+          </View>
+          <StatusProgress label="Available" value="18" percentage={26} color="#22c55e" icon="check-circle" iconBg="bg-green-500/20" />
+          <StatusProgress label="Occupied" value="35" percentage={50} color="#f97316" icon="person" iconBg="bg-orange-500/20" />
+          <StatusProgress label="Reserved" value="10" percentage={14} color="#eab308" icon="event" iconBg="bg-yellow-500/20" />
+          <StatusProgress label="Maintenance" value="5" percentage={7} color="#a855f7" icon="build" iconBg="bg-purple-500/20" />
+        </View>
+
+        {/* Floor Overview */}
+        <View className="mt-8 mb-24">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-base font-semibold text-white">Floor Overview</Text>
+            <TouchableOpacity>
+              <Text className="text-sm text-indigo-400">View All</Text>
+            </TouchableOpacity>
+          </View>
+          {[
+            { floor: '1st Floor', code: '2B', rooms: '12 / 16', percentage: 75, color: '#818cf8' },
+            { floor: '2nd Floor', code: '3B', rooms: '14 / 16', percentage: 88, color: '#a855f7' },
+            { floor: '3rd Floor', code: '3S', rooms: '16 / 16', percentage: 100, color: '#4ade80' },
+          ].map((item, idx) => (
+            <View key={idx} className="flex-row items-center space-x-3 mb-4">
+              <View className="w-8 h-8 rounded-lg bg-gray-800 items-center justify-center">
+                <Text className="text-[10px] font-bold" style={{ color: item.color }}>{item.code}</Text>
+              </View>
+              <View className="flex-1">
+                <View className="flex-row justify-between mb-1">
+                  <Text className="text-xs text-gray-300">{item.floor}</Text>
+                  <Text className="text-[10px] text-gray-500">
+                    {item.rooms} Rooms <Text className="text-white font-bold ml-2">{item.percentage}%</Text>
                   </Text>
                 </View>
-                <Text style={styles.statusValue}>{status.value}</Text>
+                <View className="w-full bg-gray-700 h-1.5 rounded-full overflow-hidden">
+                  <View className="h-full bg-green-500" style={{ width: `${item.percentage}%` }} />
+                </View>
               </View>
-              <View style={styles.progressBarBackground}>
-                <View
-                  style={[
-                    styles.progressBar,
-                    {
-                      width: `${status.progress}%`,
-                      backgroundColor: status.color,
-                    },
-                  ]}
-                />
-              </View>
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Floor Overview</Text>
-          <TouchableOpacity activeOpacity={0.8}>
-            <Text style={styles.sectionAction}>Details</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.floorList}>
-          {floors.map((floor) => (
-            <View key={floor.id} style={styles.floorRow}>
-              <View
-                style={[
-                  styles.floorBadge,
-                  { backgroundColor: floor.color + "15" },
-                ]}
-              >
-                <Text style={[styles.floorBadgeText, { color: floor.color }]}>
-                  {floor.id}
-                </Text>
-              </View>
-              <View style={styles.floorInfo}>
-                <Text style={styles.floorLabel}>{floor.label}</Text>
-                <Text style={styles.floorMeta}>{floor.value}</Text>
-              </View>
-              <Text style={[styles.floorPercent, { color: floor.color }]}>
-                {floor.percent}%
-              </Text>
             </View>
           ))}
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: "#0d1117",
-  },
-  content: {
-    padding: 20,
-    paddingBottom: 80,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  iconButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 14,
-  },
-  title: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "800",
-  },
-  actionGroup: {
-    flexDirection: "row",
-    gap: 10,
-  },
-  smallButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: "rgba(255,255,255,0.06)",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 10,
-  },
-  statsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginBottom: 22,
-  },
-  categoryCard: {
-    width: "48%",
-    borderWidth: 1,
-    borderRadius: 24,
-    padding: 18,
-    marginBottom: 12,
-    backgroundColor: "#111827",
-  },
-  categoryLabel: {
-    color: "#94A3B8",
-    fontSize: 12,
-    textTransform: "uppercase",
-    marginBottom: 10,
-  },
-  categoryRooms: {
-    color: "#fff",
-    fontSize: 28,
-    fontWeight: "800",
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 14,
-  },
-  sectionTitle: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-  },
-  sectionAction: {
-    color: "#818CF8",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  statusList: {
-    marginBottom: 24,
-  },
-  statusCard: {
-    backgroundColor: "#111827",
-    borderRadius: 24,
-    padding: 16,
-    marginBottom: 14,
-  },
-  statusLeft: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  statusPill: {
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  statusPillText: {
-    fontSize: 10,
-    fontWeight: "700",
-  },
-  statusValue: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "800",
-  },
-  progressBarBackground: {
-    height: 8,
-    borderRadius: 99,
-    backgroundColor: "#0b1121",
-    overflow: "hidden",
-  },
-  progressBar: {
-    height: "100%",
-    borderRadius: 99,
-  },
-  floorList: {
-    marginBottom: 20,
-  },
-  floorRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#111827",
-    borderRadius: 20,
-    padding: 16,
-    marginBottom: 12,
-  },
-  floorBadge: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 12,
-  },
-  floorBadgeText: {
-    fontSize: 12,
-    fontWeight: "800",
-  },
-  floorInfo: {
-    flex: 1,
-  },
-  floorLabel: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "700",
-    marginBottom: 4,
-  },
-  floorMeta: {
-    color: "#94A3B8",
-    fontSize: 12,
-  },
-  floorPercent: {
-    fontSize: 14,
-    fontWeight: "700",
-  },
-});

@@ -49,7 +49,8 @@ export const useAuthLoading = (): boolean => {
  */
 export const useQuery = <T,>(
   queryFn: () => Promise<T>,
-  deps: any[] = []
+  deps: any[] = [],
+  options?: { enabled?: boolean }
 ): { data: T | null; loading: boolean; error: Error | null; refetch: () => Promise<void> } => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,6 +70,7 @@ export const useQuery = <T,>(
   };
 
   useEffect(() => {
+    if (options?.enabled === false) return;
     fetchData();
   }, deps);
 

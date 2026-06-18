@@ -6,6 +6,7 @@ import { CardProvider } from "./payment/card";
 import { PaypalProvider } from "./payment/paypal";
 import { BankTransferProvider } from "./payment/bankTransfer";
 import { ShopnoWalletProvider } from "./payment/shopnoWallet";
+import { GooglePayProvider } from "./payment/googlePay";
 import type {
   IPaymentProvider,
   PaymentMethod,
@@ -15,6 +16,7 @@ import type {
 } from "./payment/types";
 
 const providers: Record<PaymentMethod, IPaymentProvider> = {
+  google_pay: new GooglePayProvider(),
   bkash: new BkashProvider(),
   nagad: new NagadProvider(),
   rocket: new RocketProvider(),

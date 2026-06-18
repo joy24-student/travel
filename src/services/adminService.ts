@@ -398,6 +398,26 @@ export const userManagementService = {
 // ============================================================================
 
 export const agencyManagementService = {
+  // Get all agencies for management
+  async getAllAgencies(
+    limit: number = 100,
+    offset: number = 0,
+  ): Promise<AgencyAdminDetails[]> {
+    try {
+      const { data, error } = await supabase
+        .from("agency_admin_details")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error("Error fetching agencies:", error);
+      return [];
+    }
+  },
+
   // Get agency details
   async getAgencyDetails(agencyId: string): Promise<AgencyAdminDetails | null> {
     try {
@@ -496,6 +516,41 @@ export const agencyManagementService = {
       return false;
     }
   },
+
+  // Reject agency
+  async rejectAgency(
+    agencyId: string,
+    reason: string,
+    adminId: string,
+  ): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from("agency_admin_details")
+        .update({
+          verification_status: "rejected",
+          rejection_reason: reason,
+          rejected_by: adminId,
+          rejected_at: new Date().toISOString(),
+        })
+        .eq("agency_id", agencyId);
+
+      if (error) throw error;
+
+      await adminService.logActivity({
+        admin_id: adminId,
+        action: "reject_agency",
+        module: "agencies",
+        entity_type: "agency",
+        entity_id: agencyId,
+        details: { reason },
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error rejecting agency:", error);
+      return false;
+    }
+  },
 };
 
 // ============================================================================
@@ -585,6 +640,101 @@ export const destinationService = {
       return true;
     } catch (error) {
       console.error("Error updating destination:", error);
+      return false;
+    }
+  },
+
+  // Publish destination
+  async publishDestination(
+    destinationId: string,
+    adminId: string,
+  ): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from("destination_cms")
+        .update({
+          is_published: true,
+          published_by: adminId,
+          published_at: new Date().toISOString(),
+        })
+        .eq("id", destinationId);
+
+      if (error) throw error;
+
+      await adminService.logActivity({
+        admin_id: adminId,
+        action: "publish_destination",
+        module: "destinations",
+        entity_type: "destination",
+        entity_id: destinationId,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error publishing destination:", error);
+      return false;
+    }
+  },
+
+  // Unpublish destination
+  async unpublishDestination(
+    destinationId: string,
+    adminId: string,
+  ): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from("destination_cms")
+        .update({
+          is_published: false,
+          unpublished_at: new Date().toISOString(),
+        })
+        .eq("id", destinationId);
+
+      if (error) throw error;
+
+      await adminService.logActivity({
+        admin_id: adminId,
+        action: "unpublish_destination",
+        module: "destinations",
+        entity_type: "destination",
+        entity_id: destinationId,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error unpublishing destination:", error);
+      return false;
+    }
+  },
+
+  // Feature destination
+  async featureDestination(
+    destinationId: string,
+    adminId: string,
+  ): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from("destination_cms")
+        .update({
+          is_featured: true,
+          featured_by: adminId,
+          featured_at: new Date().toISOString(),
+        })
+        .eq("id", destinationId);
+
+      if (error) throw error;
+
+      await adminService.logActivity({
+        admin_id: adminId,
+        action: "feature_destination",
+        module: "destinations",
+        entity_type: "destination",
+        entity_id: destinationId,
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error featuring destination:", error);
       return false;
     }
   },
@@ -684,6 +834,76 @@ export const refundService = {
       return true;
     } catch (error) {
       console.error("Error rejecting refund:", error);
+      return false;
+    }
+  },
+
+  // Process refund
+  async processRefund(
+    refundId: string,
+    adminId: string,
+    notes: string = "",
+  ): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from("refund_requests")
+        .update({
+          status: "processing",
+          processed_by: adminId,
+          processed_at: new Date().toISOString(),
+          processing_notes: notes,
+        })
+        .eq("id", refundId);
+
+      if (error) throw error;
+
+      await adminService.logActivity({
+        admin_id: adminId,
+        action: "process_refund",
+        module: "refunds",
+        entity_type: "refund",
+        entity_id: refundId,
+        details: { notes },
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error processing refund:", error);
+      return false;
+    }
+  },
+
+  // Hold refund
+  async holdRefund(
+    refundId: string,
+    adminId: string,
+    reason: string = "",
+  ): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from("refund_requests")
+        .update({
+          status: "on_hold",
+          held_by: adminId,
+          held_at: new Date().toISOString(),
+          hold_reason: reason,
+        })
+        .eq("id", refundId);
+
+      if (error) throw error;
+
+      await adminService.logActivity({
+        admin_id: adminId,
+        action: "hold_refund",
+        module: "refunds",
+        entity_type: "refund",
+        entity_id: refundId,
+        details: { reason },
+      });
+
+      return true;
+    } catch (error) {
+      console.error("Error holding refund:", error);
       return false;
     }
   },

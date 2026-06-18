@@ -1,19 +1,63 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useEffect, useState } from "react";
 
+import { useAuth } from "../../src/hooks/useAuth";
+import { supabase } from "../../src/utils/supabase";
 import { BottomNav, AiPill } from "../../src/screens/Navigation";
 
 const PRIMARY = "#287dfa";
 
-const REVIEWS = [
-  { id: "1", location: "Cox's Bazar", rating: 5, review: "Amazing beach view and great service!", date: "2 weeks ago" },
-  { id: "2", location: "Ocean View Resort", rating: 4, review: "Clean rooms, friendly staff", date: "1 month ago" },
-  { id: "3", location: "Bangkok Trip", rating: 5, review: "Perfect itinerary and guides", date: "2 months ago" },
-];
-
 export default function ReviewsScreen() {
+  const { user } = useAuth();
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+
+    const loadReviews = async () => {
+      try {
+        setLoading(true);
+        // Fetch user's hotel reviews
+        const { data, error } = await supabase
+          .from("hotel_reviews")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+        setReviews(data || []);
+      } catch (err) {
+        console.error("Error loading reviews:", err);
+        setReviews([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadReviews();
+  }, [user?.id]);
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const now = new Date();
+    const daysAgo = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (daysAgo === 0) return "Today";
+    if (daysAgo === 1) return "Yesterday";
+    if (daysAgo < 7) return `${daysAgo} days ago`;
+    if (daysAgo < 30) return `${Math.floor(daysAgo / 7)} weeks ago`;
+    if (daysAgo < 365) return `${Math.floor(daysAgo / 30)} months ago`;
+    return `${Math.floor(daysAgo / 365)} years ago`;
+  };
+
   return (
     <SafeAreaView style={styles.shell}>
       <View style={styles.header}>
@@ -24,31 +68,42 @@ export default function ReviewsScreen() {
         <View style={styles.spacer} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {REVIEWS.length === 0 ? (
-          <View style={styles.empty}>
-            <Ionicons name="star-outline" size={64} color="#d1d5db" />
-            <Text style={styles.emptyTitle}>No reviews yet</Text>
-            <Text style={styles.emptySubtitle}>Your reviews will appear here after your trips</Text>
-          </View>
-        ) : (
-          REVIEWS.map((review) => (
-            <View key={review.id} style={styles.reviewCard}>
-              <View style={styles.reviewHeader}>
-                <Text style={styles.reviewLocation}>{review.location}</Text>
-                <View style={styles.ratingRow}>
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Ionicons key={i} name={i < review.rating ? "star" : "star-outline"} size={14} color="#f59e0b" />
-                  ))}
-                </View>
-              </View>
-              <Text style={styles.reviewText}>{review.review}</Text>
-              <Text style={styles.reviewDate}>{review.date}</Text>
+      {loading ? (
+        <View style={[styles.scroll, { justifyContent: "center", alignItems: "center" }]}>
+          <ActivityIndicator size="large" color={PRIMARY} />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+          {reviews.length === 0 ? (
+            <View style={styles.empty}>
+              <Ionicons name="star-outline" size={64} color="#d1d5db" />
+              <Text style={styles.emptyTitle}>No reviews yet</Text>
+              <Text style={styles.emptySubtitle}>Your reviews will appear here after your trips</Text>
             </View>
-          ))
-        )}
-        <View style={{ height: 100 }} />
-      </ScrollView>
+          ) : (
+            reviews.map((review) => (
+              <View key={review.id} style={styles.reviewCard}>
+                <View style={styles.reviewHeader}>
+                  <Text style={styles.reviewLocation}>{review.hotel_name || review.location}</Text>
+                  <View style={styles.ratingRow}>
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Ionicons
+                        key={i}
+                        name={i < (review.rating || 0) ? "star" : "star-outline"}
+                        size={14}
+                        color="#f59e0b"
+                      />
+                    ))}
+                  </View>
+                </View>
+                <Text style={styles.reviewText}>{review.comment || review.review}</Text>
+                <Text style={styles.reviewDate}>{formatDate(review.created_at)}</Text>
+              </View>
+            ))
+          )}
+          <View style={{ height: 100 }} />
+        </ScrollView>
+      )}
 
       <AiPill color={PRIMARY} />
       <BottomNav active="Account" color={PRIMARY} />
