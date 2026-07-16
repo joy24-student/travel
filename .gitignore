@@ -121,3 +121,9 @@ app/assets/builds/*
 ehthumbs.db
 Thumbs.dbAGEN/
 hotel/
+admin/
+admin-panel/
+*admin*
+**/*admin*
+**/admin/*
+**/ADMIN/*
