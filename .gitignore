@@ -119,11 +119,14 @@ app/assets/builds/*
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.dbAGEN/
+Thumbs.db
+
+# Exclude large or private app folders
+AGEN/
 hotel/
 admin/
 admin-panel/
-*admin*
+**/admin/**
+**/ADMIN/**
 **/*admin*
-**/admin/*
-**/ADMIN/*
+**/Admin*
